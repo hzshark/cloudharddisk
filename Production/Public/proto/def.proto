@@ -23,6 +23,34 @@ namespace cpp proto
 namespace java proto
 namespace php proto
 
+typedef i32 attrib
+typedef map < attrib,set<FileInfo> >	FilesMatchList
+typedef i64 Token
+
+
+enum Errcode
+{
+    SUCCESS 			= 0;
+    AUTH_ERR 			= 1;
+    OUT_OF_SERVICE 		= 2;
+    INVAILD_PARAMETER		= 3;
+    INVAILD_IDENTIFY		= 4;// token 验证错误
+    EXCEED_SESSION_LIMIT	= 5;// 并发限制 
+    TRY_LATER		        = 6;
+    ERR_OCCURED			= 7;// 未知异常错误     	
+}
+
+enum FTYPE{
+  NORMAL = 1,           //普通文件
+  SMS = 2,		// 短信备份文件
+  ADDRESS = 3		//通讯录备份文件
+  }
+
+
+struct RetHead{ 
+ 1: Errcode ret;
+ 2: optional string errmsg;  
+}
 
 struct FileInfo{ 
  1:string filename;
@@ -31,35 +59,28 @@ struct FileInfo{
 }
 
 
-typedef i32 attrib
-typedef map < attrib,set<FileInfo> >	FilesMatchList
-typedef i64 Token
-
-
 // rpc return 	data
 struct queryResult {
-  1: i8 retcode;
-  2: string message;
-  3: optional FilesMatchList files;
+  1: RetHead result;
+  2: optional FilesMatchList files;
 }
 
 // login result
 struct loginResult {
-  1: Token  token;    //身份牌
-  2: i8 retcode ;
-  3: string message;
+  1: RetHead result;
+  2: Token  token;  //身份牌
+  3: i32  space ;   //用户空间单位K
+  4: i32  uspace;   //已经使用的用户空间 单位k
 }
 
 // download result
 struct downloadResult {
-  1: i8 retcode ;
-  2: string message;
+ 1: RetHead result;
 }
 
 // upload result
 struct uploaddResult {
-  1: i8 retcode ;
-  2: string message;
+  1: RetHead result;
 }
 
 /**
@@ -70,12 +91,7 @@ exception InvalidOperation {
 }
  */
 
-enum FTYPE{
-  NORMAL = 1,           //普通文件
-  SMS = 2,		// 短信备份文件
-  ADDRESS = 3		//通讯录备份文件
-  
-  }
+
 
 /**
  * Ahh, now onto the cool part, defining a service. Services just need a name
@@ -85,6 +101,7 @@ service CloudHardDiskService {
 	
        /*
 	 imie,password可以为空 登录成功后会记录imie 和username的对应关系,如果 2者匹配关系发生变化,需要重新输入password
+	 for auto login
 	*/
 	
     loginResult loginAuthApp(1:string imie ,2:string username ,3:string password ,4:i32 salt);  
