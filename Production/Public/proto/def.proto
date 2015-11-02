@@ -1,3 +1,5 @@
+/**
+
 Skip to content
 This repository  
 Search
@@ -162,7 +164,7 @@ service CloudHardDiskService {
    /*
     申请新的存储obj
    */
-    AllocObjResult  allocobj(1:Token token ,2:FTYPE type,3:String tagname);	
+    AllocObjResult  allocobj(1:Token token ,2:FTYPE type,3:string tagname);	
 
     RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin );// 分块写入文件
     
