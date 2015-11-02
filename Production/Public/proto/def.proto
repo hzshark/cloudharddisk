@@ -1,3 +1,19 @@
+Skip to content
+This repository  
+Search
+Pull requests
+Issues
+Gist
+ @yarhoo
+ Unwatch 1
+  Star 0
+ Fork 1 yarhoo/cloudharddisk
+forked from hzshark/cloudharddisk
+ Branch: patch-7  cloudharddisk/Production/Public/proto/def.proto
+82ae2cb  just now
+@yarhoo yarhoo Update def.proto
+1 contributor
+RawBlameHistory     160 lines (121 sloc)  3.79 KB
 
 
 
@@ -26,6 +42,7 @@ namespace php proto
 typedef i32 attrib
 typedef map < attrib,set<FileInfo> >	FilesMatchList
 typedef i64 Token
+typedef string OBJID   //资源id ,某个bucket的一个ojbect 
 
 
 enum Errcode
@@ -46,6 +63,20 @@ enum FTYPE{
   ADDRESS = 3		//通讯录备份文件
   }
 
+enum SYNCTYPE{
+  UPDATE = 1,           //改
+  DELETE = 2,		//删
+  ADD	 = 3		//增
+  }
+
+// the description of obj
+//struct ObjDescrp{ 
+// 1: string  key;
+// 2: string vlue;  
+//}
+
+// 利用thrift的序列化变成string 或bin 存储在ojbect中.
+typedef map<string,string> ObjDescrp
 
 struct RetHead{ 
  1: Errcode ret;
@@ -83,6 +114,12 @@ struct uploaddResult {
   1: RetHead result;
 }
 
+// apply new result // 申请新的文件资源id  用于备份上传到  短信,通讯录
+struct AllocObjResult {
+  1: RetHead result;
+  2: string  resourceid ;   //资源号, 指向bucket下或某个object资源
+}
+
 /**
  * Structs can also be exceptions, if they are nasty
 exception InvalidOperation {
@@ -113,8 +150,25 @@ service CloudHardDiskService {
     uploaddResult uploadFile(1:i64 userid,2:string url);
 
     //queryResult queryFileList(1:i64 userid);
-    queryResult queryFileList(1:Token token ,2:FTYPE type);	  
+    queryResult queryFileList(1:Token token ,2:FTYPE type);
+    
+    //RetHead     sysncnotepad(1:SYNCTYPE , 2:List notes);//完善中
+ 
+    /*
+    申请备份通讯录,作为文件方式上传给服务器
+    */
+    //ApplyNewResult  applybackupAddressbook(1:Token token ,2:String baktag);
 
+   /*
+    申请新的存储obj
+   */
+    AllocObjResult  allocobj(1:Token token ,2:FTYPE type,3:String tagname);	
+
+    RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin );// 分块写入文件
+    
+    RetHead   commitObj(1:Token token,2:OBJID oid,3:ObjDescrp odescr );// param3 object 的描述  存放sms 通信表述信息
+		   
+    
     //downloadResult downloadFile(1:i64 userid, 2:string filename ); 
 
 }
