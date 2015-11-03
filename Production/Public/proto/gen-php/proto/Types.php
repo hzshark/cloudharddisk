@@ -17,13 +17,27 @@ use Thrift\Protocol\TBinaryProtocolAccelerated;
 use Thrift\Exception\TApplicationException;
 
 
-/**
- *  * Structs can also be exceptions, if they are nasty
- * exception InvalidOperation {
- *   1: i32 what,
- *   2: string why
- * }
- */
+final class Errcode {
+  const SUCCESS = 0;
+  const AUTH_ERR = 1;
+  const OUT_OF_SERVICE = 2;
+  const INVAILD_PARAMETER = 3;
+  const INVAILD_IDENTIFY = 4;
+  const EXCEED_SESSION_LIMIT = 5;
+  const TRY_LATER = 6;
+  const ERR_OCCURED = 7;
+  static public $__names = array(
+    0 => 'SUCCESS',
+    1 => 'AUTH_ERR',
+    2 => 'OUT_OF_SERVICE',
+    3 => 'INVAILD_PARAMETER',
+    4 => 'INVAILD_IDENTIFY',
+    5 => 'EXCEED_SESSION_LIMIT',
+    6 => 'TRY_LATER',
+    7 => 'ERR_OCCURED',
+  );
+}
+
 final class FTYPE {
   const NORMAL = 1;
   const SMS = 2;
@@ -33,6 +47,115 @@ final class FTYPE {
     2 => 'SMS',
     3 => 'ADDRESS',
   );
+}
+
+final class SYNCTYPE {
+  const UPDATE = 1;
+  const DELETE = 2;
+  const ADD = 3;
+  static public $__names = array(
+    1 => 'UPDATE',
+    2 => 'DELETE',
+    3 => 'ADD',
+  );
+}
+
+class RetHead {
+  static $_TSPEC;
+
+  /**
+   * @var int
+   */
+  public $ret = null;
+  /**
+   * @var string
+   */
+  public $errmsg = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'ret',
+          'type' => TType::I32,
+          ),
+        2 => array(
+          'var' => 'errmsg',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['ret'])) {
+        $this->ret = $vals['ret'];
+      }
+      if (isset($vals['errmsg'])) {
+        $this->errmsg = $vals['errmsg'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'RetHead';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->ret);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->errmsg);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('RetHead');
+    if ($this->ret !== null) {
+      $xfer += $output->writeFieldBegin('ret', TType::I32, 1);
+      $xfer += $output->writeI32($this->ret);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->errmsg !== null) {
+      $xfer += $output->writeFieldBegin('errmsg', TType::STRING, 2);
+      $xfer += $output->writeString($this->errmsg);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
 }
 
 class FileInfo {
@@ -160,13 +283,9 @@ class queryResult {
   static $_TSPEC;
 
   /**
-   * @var int
+   * @var \proto\RetHead
    */
-  public $retcode = null;
-  /**
-   * @var string
-   */
-  public $message = null;
+  public $result = null;
   /**
    * @var array
    */
@@ -176,14 +295,11 @@ class queryResult {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'retcode',
-          'type' => TType::BYTE,
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
           ),
         2 => array(
-          'var' => 'message',
-          'type' => TType::STRING,
-          ),
-        3 => array(
           'var' => 'files',
           'type' => TType::MAP,
           'ktype' => TType::I32,
@@ -203,11 +319,8 @@ class queryResult {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['retcode'])) {
-        $this->retcode = $vals['retcode'];
-      }
-      if (isset($vals['message'])) {
-        $this->message = $vals['message'];
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
       }
       if (isset($vals['files'])) {
         $this->files = $vals['files'];
@@ -235,20 +348,14 @@ class queryResult {
       switch ($fid)
       {
         case 1:
-          if ($ftype == TType::BYTE) {
-            $xfer += $input->readByte($this->retcode);
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->message);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
           if ($ftype == TType::MAP) {
             $this->files = array();
             $_size0 = 0;
@@ -296,21 +403,19 @@ class queryResult {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('queryResult');
-    if ($this->retcode !== null) {
-      $xfer += $output->writeFieldBegin('retcode', TType::BYTE, 1);
-      $xfer += $output->writeByte($this->retcode);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->message !== null) {
-      $xfer += $output->writeFieldBegin('message', TType::STRING, 2);
-      $xfer += $output->writeString($this->message);
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->files !== null) {
       if (!is_array($this->files)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
       }
-      $xfer += $output->writeFieldBegin('files', TType::MAP, 3);
+      $xfer += $output->writeFieldBegin('files', TType::MAP, 2);
       {
         $output->writeMapBegin(TType::I32, TType::SET, count($this->files));
         {
@@ -348,44 +453,56 @@ class loginResult {
   static $_TSPEC;
 
   /**
-   * @var int
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var string
    */
   public $token = null;
   /**
    * @var int
    */
-  public $retcode = null;
+  public $space = null;
   /**
-   * @var string
+   * @var int
    */
-  public $message = null;
+  public $uspace = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'token',
-          'type' => TType::I64,
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
           ),
         2 => array(
-          'var' => 'retcode',
-          'type' => TType::BYTE,
+          'var' => 'token',
+          'type' => TType::STRING,
           ),
         3 => array(
-          'var' => 'message',
-          'type' => TType::STRING,
+          'var' => 'space',
+          'type' => TType::I32,
+          ),
+        4 => array(
+          'var' => 'uspace',
+          'type' => TType::I32,
           ),
         );
     }
     if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
       }
-      if (isset($vals['retcode'])) {
-        $this->retcode = $vals['retcode'];
+      if (isset($vals['space'])) {
+        $this->space = $vals['space'];
       }
-      if (isset($vals['message'])) {
-        $this->message = $vals['message'];
+      if (isset($vals['uspace'])) {
+        $this->uspace = $vals['uspace'];
       }
     }
   }
@@ -410,22 +527,30 @@ class loginResult {
       switch ($fid)
       {
         case 1:
-          if ($ftype == TType::I64) {
-            $xfer += $input->readI64($this->token);
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 2:
-          if ($ftype == TType::BYTE) {
-            $xfer += $input->readByte($this->retcode);
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->message);
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->space);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->uspace);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -443,19 +568,27 @@ class loginResult {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('loginResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::I64, 1);
-      $xfer += $output->writeI64($this->token);
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 2);
+      $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->retcode !== null) {
-      $xfer += $output->writeFieldBegin('retcode', TType::BYTE, 2);
-      $xfer += $output->writeByte($this->retcode);
+    if ($this->space !== null) {
+      $xfer += $output->writeFieldBegin('space', TType::I32, 3);
+      $xfer += $output->writeI32($this->space);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->message !== null) {
-      $xfer += $output->writeFieldBegin('message', TType::STRING, 3);
-      $xfer += $output->writeString($this->message);
+    if ($this->uspace !== null) {
+      $xfer += $output->writeFieldBegin('uspace', TType::I32, 4);
+      $xfer += $output->writeI32($this->uspace);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -469,33 +602,23 @@ class downloadResult {
   static $_TSPEC;
 
   /**
-   * @var int
+   * @var \proto\RetHead
    */
-  public $retcode = null;
-  /**
-   * @var string
-   */
-  public $message = null;
+  public $result = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'retcode',
-          'type' => TType::BYTE,
-          ),
-        2 => array(
-          'var' => 'message',
-          'type' => TType::STRING,
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['retcode'])) {
-        $this->retcode = $vals['retcode'];
-      }
-      if (isset($vals['message'])) {
-        $this->message = $vals['message'];
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
       }
     }
   }
@@ -520,15 +643,9 @@ class downloadResult {
       switch ($fid)
       {
         case 1:
-          if ($ftype == TType::BYTE) {
-            $xfer += $input->readByte($this->retcode);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->message);
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -546,14 +663,12 @@ class downloadResult {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('downloadResult');
-    if ($this->retcode !== null) {
-      $xfer += $output->writeFieldBegin('retcode', TType::BYTE, 1);
-      $xfer += $output->writeByte($this->retcode);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->message !== null) {
-      $xfer += $output->writeFieldBegin('message', TType::STRING, 2);
-      $xfer += $output->writeString($this->message);
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -567,33 +682,23 @@ class uploaddResult {
   static $_TSPEC;
 
   /**
-   * @var int
+   * @var \proto\RetHead
    */
-  public $retcode = null;
-  /**
-   * @var string
-   */
-  public $message = null;
+  public $result = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'retcode',
-          'type' => TType::BYTE,
-          ),
-        2 => array(
-          'var' => 'message',
-          'type' => TType::STRING,
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['retcode'])) {
-        $this->retcode = $vals['retcode'];
-      }
-      if (isset($vals['message'])) {
-        $this->message = $vals['message'];
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
       }
     }
   }
@@ -618,15 +723,9 @@ class uploaddResult {
       switch ($fid)
       {
         case 1:
-          if ($ftype == TType::BYTE) {
-            $xfer += $input->readByte($this->retcode);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->message);
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -644,14 +743,243 @@ class uploaddResult {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('uploaddResult');
-    if ($this->retcode !== null) {
-      $xfer += $output->writeFieldBegin('retcode', TType::BYTE, 1);
-      $xfer += $output->writeByte($this->retcode);
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->message !== null) {
-      $xfer += $output->writeFieldBegin('message', TType::STRING, 2);
-      $xfer += $output->writeString($this->message);
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class AllocObjResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var string
+   */
+  public $resourceid = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'resourceid',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['resourceid'])) {
+        $this->resourceid = $vals['resourceid'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'AllocObjResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->resourceid);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('AllocObjResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->resourceid !== null) {
+      $xfer += $output->writeFieldBegin('resourceid', TType::STRING, 2);
+      $xfer += $output->writeString($this->resourceid);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+/**
+ * *
+ *  upload parameter
+ *  1: Token token
+ *  2: string filename
+ *  3: i64 offerstar
+ */
+class UploadParam {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $token = null;
+  /**
+   * @var string
+   */
+  public $filename = null;
+  /**
+   * @var int
+   */
+  public $offerstar = 0;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'filename',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'offerstar',
+          'type' => TType::I64,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+      if (isset($vals['filename'])) {
+        $this->filename = $vals['filename'];
+      }
+      if (isset($vals['offerstar'])) {
+        $this->offerstar = $vals['offerstar'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UploadParam';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->filename);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->offerstar);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UploadParam');
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->filename !== null) {
+      $xfer += $output->writeFieldBegin('filename', TType::STRING, 2);
+      $xfer += $output->writeString($this->filename);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->offerstar !== null) {
+      $xfer += $output->writeFieldBegin('offerstar', TType::I64, 3);
+      $xfer += $output->writeI64($this->offerstar);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
