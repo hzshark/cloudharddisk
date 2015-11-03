@@ -11,14 +11,14 @@ import java.util.Map;
 import java.util.HashMap;
 import org.apache.thrift.TEnum;
 
-public enum FTYPE implements org.apache.thrift.TEnum {
-  NORMAL(1),
-  SMS(2),
-  ADDRESS(3);
+public enum SYNCTYPE implements org.apache.thrift.TEnum {
+  UPDATE(1),
+  DELETE(2),
+  ADD(3);
 
   private final int value;
 
-  private FTYPE(int value) {
+  private SYNCTYPE(int value) {
     this.value = value;
   }
 
@@ -33,14 +33,14 @@ public enum FTYPE implements org.apache.thrift.TEnum {
    * Find a the enum type by its integer value, as defined in the Thrift IDL.
    * @return null if the value is not found.
    */
-  public static FTYPE findByValue(int value) { 
+  public static SYNCTYPE findByValue(int value) { 
     switch (value) {
       case 1:
-        return NORMAL;
+        return UPDATE;
       case 2:
-        return SMS;
+        return DELETE;
       case 3:
-        return ADDRESS;
+        return ADD;
       default:
         return null;
     }

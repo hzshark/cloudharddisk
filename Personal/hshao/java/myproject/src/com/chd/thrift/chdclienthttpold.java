@@ -1,5 +1,9 @@
 package com.chd.thrift;
 
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.http.HttpVersion;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -53,10 +57,52 @@ public class chdclienthttpold {
 		THttpClient thc = new THttpClient(servletUrl, new DefaultHttpClient(tscm, params));
 		TProtocol loPFactory = new TBinaryProtocol(thc);
 		CloudHardDiskService.Client client = new CloudHardDiskService.Client(loPFactory);
+		
+		System.out.println("loginAuth************************");
+		String username = "hzshark";
+		String password = "aerohive";
+		int salt = 1;
+		loginResult login_ret = client.loginAuth(username, password, salt);
+		System.out.println(login_ret.toString());
+		System.out.println("loginAuthApp************************");
+		String imie = "imie";
+		salt = 2;
+		loginResult loginapp_ret = client.loginAuthApp(imie, username, password, salt);
+		System.out.println(loginapp_ret.toString());
+		System.out.println("verificationLoginAuth************************");
+		String authcode = "authcode";
+		loginResult v_login_ret = client.verificationLoginAuth(username, password, authcode);
+		System.out.println(v_login_ret.toString());
+		System.out.println("queryFileList************************");
+		String token = "token";
+		FTYPE type = FTYPE.findByValue(1);
+		queryResult files = client.queryFileList(token, type);
+		System.out.println(files.toString());
+		System.out.println("uploadFile************************");
+		String upload_token = "test token";
+		String filename = "test1.txt";
+		long offerset = 0;
+		UploadParam uploadparam = new UploadParam(upload_token, filename, offerset);
+		uploaddResult upload_ret = client.uploadFile(uploadparam);
+		System.out.println(upload_ret.toString());
+		
+		System.out.println("allocobj************************");
+		String tagname = "tagname";type = FTYPE.findByValue(2);
+		AllocObjResult aor = client.allocobj(token, type, tagname);
+		System.out.println(aor.toString());
+		
+		System.out.println("appendObj************************");
+		String oid = "oid";
+		ByteBuffer bin = ByteBuffer.allocateDirect(1);
+		RetHead aob = client.appendObj(token, oid, bin);
+		System.out.println(aob.toString());
+		
+		System.out.println("appendObj************************");
+		Map<String, String> odescr = new HashMap();
+		odescr.put("test", "test val");
+		RetHead cob = client.commitObj(token, oid, odescr);
+		System.out.println(cob.toString());
 
-		int sum = client.testsum(1, 2);
-		//Assert.assertEquals("OK", bean.getStringObject());
-		System.out.println("1+1="+sum);
 	}
 		
 	

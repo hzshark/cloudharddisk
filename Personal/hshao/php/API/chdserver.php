@@ -4,6 +4,7 @@ namespace API;
 
 error_reporting(E_ALL);
 require_once __DIR__ .'/lib/Thrift/ClassLoader/ThriftClassLoader.php';
+require_once __DIR__ .'/lib/ptoken.php';
 
 use Thrift\ClassLoader\ThriftClassLoader;
 
@@ -51,30 +52,88 @@ use Thrift\Transport\TPhpStream;
 use Thrift\Transport\TBufferedTransport;
 
 use CloudHardDiskServiceIf;
+use proto\loginResult;
+use proto\uploaddResult;
+use proto\queryResult;
+use proto\FileInfo;
+use proto\AllocObjResult;
 
 class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
 
-  public function uploadFile($userid, $url){
-      error_log("uploadFile()");
+  public function uploadFile(\proto\UploadParam $uploadParam){
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'uploadFile  suc'));
+      $upload_ret = new uploaddResult(array('result'=>$ret_h));
+      return $upload_ret;
   }
   
   public function verificationLoginAuth($username, $password, $authcode){
-      error_log("uploadFile()");
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'verificationLoginAuth=>'.$username.'|'.$password.'|'.$authcode));
+      $ret_arr = array('result'=>$ret_h,
+          'token'=>$token,'space'=>1024,'uspace'=>512);
+      $loginret = new loginResult($ret_arr);
+      
+      return $loginret;
   }
   public function loginAuth($username, $password, $salt){
-      error_log("loginAuth({$username}, {$password}, {$salt})");
-      return array('token'=>111122222222222211,'retcode'=>1,'message'=>'succ');
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'loginAuth=>'.$username.'|'.$password.'|'.$salt));
+      $ret_arr = array('result'=>$ret_h,
+          'token'=>$token,'space'=>1024,'uspace'=>512);
+      $loginret = new loginResult($ret_arr);
+      
+      return $loginret;
   }
   
   public function loginAuthApp($imie, $username, $password, $salt){
-  
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'loginAuthApp=>'.$imie.'|'.$username.'|'.$password.'|'.$salt));
+      $ret_arr = array('result'=>$ret_h,
+          'token'=>$token,'space'=>1024,'uspace'=>512);
+      $loginret = new loginResult($ret_arr);
+      
+      return $loginret;
+        
   }
   public function queryFileList($token, $type){
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'queryFileList=>'.$token.'|'.$type));
+      $fileinfo = new FileInfo(array('filename'=>'test1.txt','filesize'=>'10240',
+          'lastModified'=>'2015-11-2'));
       
+      $fileinfo2 = new FileInfo(array('filename'=>'test2.txt','filesize'=>'20480',
+          'lastModified'=>'2015-11-1'));
+      
+      $files = array($fileinfo,$fileinfo2);
+      $ret_arr = array('result'=>$ret_h,'files1'=>$files);
+      
+      $qret = new queryResult($ret_arr);
+      
+      return $qret;
+  }
+  public function allocobj($token, $type, $tagname){
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'allocobj=>'.$token.'|'.$type));
+      $alloco_ret = new AllocObjResult(array('resourceid'=>resourceid,'result'=>$ret_h));
+      return $alloco_ret;
   }
   
-  public function testsum($sum1, $sum2){
-      return $sum1+$sum2;
+  public function commitObj($token, $oid, $odescr){
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'commitObj=>'.$token.'|'.$odescr));
+      return $ret_h;
+  }
+  public function appendObj($token, $oid, $bin){
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'appendObj=>'.$token.'|'.$oid));
+      return $ret_h;
   }
 
 };

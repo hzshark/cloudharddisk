@@ -65,11 +65,45 @@ try {
 
     $transport->open();
 
-    $sum = $client->testsum(2,100);
-    print "testsum()\n";
-    print "2+100 = $sum\n";
-
-
+    $auth_ret = $client->loginAuth('hzshark', 'aerohive', 1);
+    
+    var_dump($auth_ret);
+    
+    echo "<br />";
+    $token = "01b01749295bde67648c687b44ff408c";
+    $filename = "aa.txt";
+    $offerstar = 1024;
+    
+    $param['token'] = $token;
+    $param['filename'] = $filename;
+    $param['offerstar'] = $offerstar;
+    
+    $uploadParam = new \proto\UploadParam($param);
+    
+    $upload_ret = $client->uploadFile($uploadParam);
+    print "<br />********************<br />";
+    var_dump($upload_ret);
+    print "<br />********************<br />";
+    $ret = $client->verificationLoginAuth('hzshark', 'aerohive', 'ssss');
+    var_dump($ret);
+    print "<br />********************<br />";
+    $ret = $client->loginAuthApp('loginAuthApp','hzshark', 'aerohive', 2);
+    var_dump($ret);
+    print "<br />********************<br />";
+    $ret = $client->queryFileList('hzshark', 1);
+    var_dump($ret);
+    print "<br />********************<br />";
+    $ret = $client->allocobj('token', 1,'allocobj');
+    var_dump($ret);
+    print "<br />********************<br />";
+    $comobj = array('com');
+    $ret = $client->commitObj('token', 'commitObj',$comobj);
+    var_dump($ret);
+    print "<br />********************<br />";
+    $appendobj = array('appendobj');
+    $ret = $client->appendObj('token','appendObj',$appendobj);
+    var_dump($ret);
+    print "<br />********************<br />";
     $transport->close();
 
 } catch (TException $tx) {
