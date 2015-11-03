@@ -43,7 +43,7 @@ namespace php proto
 
 typedef i32 attrib
 typedef map < attrib,set<FileInfo> >	FilesMatchList
-typedef i64 Token
+typedef string Token
 typedef string OBJID   //资源id ,某个bucket的一个ojbect 
 
 
@@ -123,6 +123,18 @@ struct AllocObjResult {
 }
 
 /**
+**
+* upload parameter
+* 1: Token token
+* 2: string filename
+* 3: i64 offerstar
+*/
+struct UploadParam {
+   1: Token  token;  //身份牌
+   2: string filename;
+   3: i64 offerstar=0;
+}
+/**
  * Structs can also be exceptions, if they are nasty
 exception InvalidOperation {
   1: i32 what,
@@ -149,7 +161,7 @@ service CloudHardDiskService {
 
     loginResult verificationLoginAuth(1:string username,2:string password,3:string authcode );
 
-    uploaddResult uploadFile(1:i64 userid,2:string url);
+    uploaddResult uploadFile(1:UploadParam uploadparam);
 
     //queryResult queryFileList(1:i64 userid);
     queryResult queryFileList(1:Token token ,2:FTYPE type);
