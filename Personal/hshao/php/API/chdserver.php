@@ -57,11 +57,19 @@ use proto\uploaddResult;
 use proto\queryResult;
 use proto\FileInfo;
 use proto\AllocObjResult;
+use proto\usageResult;
+use proto\DownloadResult;
 
 class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
 
   public function uploadFile(\proto\UploadParam $uploadParam){
-      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'uploadFile  suc'));
+      
+      $filename = $uploadParam->filename;
+      $offer_set = $uploadParam->offerstar;
+      $token = $uploadParam->token;
+      $bin = $uploadParam->bin;
+      
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'uploadFile=>filename['.$filename.']|token['.$token.']|bin['.$bin.']'));
       $upload_ret = new uploaddResult(array('result'=>$ret_h));
       return $upload_ret;
   }
@@ -109,7 +117,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           'lastModified'=>'2015-11-1'));
       
       $files = array($fileinfo,$fileinfo2);
-      $ret_arr = array('result'=>$ret_h,'files1'=>$files);
+      $ret_arr = array('result'=>$ret_h,'files'=>$files);
       
       $qret = new queryResult($ret_arr);
       
@@ -134,6 +142,34 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $token = $token_c->grante_key();
       $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'appendObj=>'.$token.'|'.$oid));
       return $ret_h;
+  }
+  
+  public function querusage($token, $type){
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'querusage=>'.$token.'|'.$type));
+      $usage = 10240;
+      $capacity = 204800;
+      $ret_usahe = new usageResult(array('result'=>$ret_h,'usage'=>$usage,'capacity'=>$capacity));
+      
+      return $ret_usahe;
+  }
+  
+  public function downloadFile(\proto\DownloadParam $param){
+      
+      $filename = $param->filepath;
+      $offer_set = $param->offerset;
+      $token = $param->token;
+      
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'downloadFile=>'.$token.'|'.filepath));
+      
+      $bin = 'file read bin';
+      $ret_arr = array('result'=>$ret_h,'offerset'=>512,'token'=>$token,'bin'=>$bin);
+      
+      $ret_d = new DownloadResult($ret_arr);
+      return $ret_d;
   }
 
 };
