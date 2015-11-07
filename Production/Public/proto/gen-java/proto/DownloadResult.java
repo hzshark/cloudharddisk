@@ -39,6 +39,9 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("DownloadResult");
 
   private static final org.apache.thrift.protocol.TField RESULT_FIELD_DESC = new org.apache.thrift.protocol.TField("result", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+  private static final org.apache.thrift.protocol.TField OFFERSET_FIELD_DESC = new org.apache.thrift.protocol.TField("offerset", org.apache.thrift.protocol.TType.I64, (short)2);
+  private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)3);
+  private static final org.apache.thrift.protocol.TField BIN_FIELD_DESC = new org.apache.thrift.protocol.TField("bin", org.apache.thrift.protocol.TType.STRING, (short)4);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -47,10 +50,16 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
   }
 
   public RetHead result; // required
+  public long offerset; // required
+  public String token; // required
+  public ByteBuffer bin; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    RESULT((short)1, "result");
+    RESULT((short)1, "result"),
+    OFFERSET((short)2, "offerset"),
+    TOKEN((short)3, "token"),
+    BIN((short)4, "bin");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -67,6 +76,12 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       switch(fieldId) {
         case 1: // RESULT
           return RESULT;
+        case 2: // OFFERSET
+          return OFFERSET;
+        case 3: // TOKEN
+          return TOKEN;
+        case 4: // BIN
+          return BIN;
         default:
           return null;
       }
@@ -107,11 +122,19 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
   }
 
   // isset id assignments
+  private static final int __OFFERSET_ISSET_ID = 0;
+  private byte __isset_bitfield = 0;
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.RESULT, new org.apache.thrift.meta_data.FieldMetaData("result", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RetHead.class)));
+    tmpMap.put(_Fields.OFFERSET, new org.apache.thrift.meta_data.FieldMetaData("offerset", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
+    tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , "Token")));
+    tmpMap.put(_Fields.BIN, new org.apache.thrift.meta_data.FieldMetaData("bin", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , true)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(DownloadResult.class, metaDataMap);
   }
@@ -120,18 +143,33 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
   }
 
   public DownloadResult(
-    RetHead result)
+    RetHead result,
+    long offerset,
+    String token,
+    ByteBuffer bin)
   {
     this();
     this.result = result;
+    this.offerset = offerset;
+    setOffersetIsSet(true);
+    this.token = token;
+    this.bin = org.apache.thrift.TBaseHelper.copyBinary(bin);
   }
 
   /**
    * Performs a deep copy on <i>other</i>.
    */
   public DownloadResult(DownloadResult other) {
+    __isset_bitfield = other.__isset_bitfield;
     if (other.isSetResult()) {
       this.result = new RetHead(other.result);
+    }
+    this.offerset = other.offerset;
+    if (other.isSetToken()) {
+      this.token = other.token;
+    }
+    if (other.isSetBin()) {
+      this.bin = org.apache.thrift.TBaseHelper.copyBinary(other.bin);
     }
   }
 
@@ -142,6 +180,10 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
   @Override
   public void clear() {
     this.result = null;
+    setOffersetIsSet(false);
+    this.offerset = 0;
+    this.token = null;
+    this.bin = null;
   }
 
   public RetHead getResult() {
@@ -168,6 +210,87 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
     }
   }
 
+  public long getOfferset() {
+    return this.offerset;
+  }
+
+  public DownloadResult setOfferset(long offerset) {
+    this.offerset = offerset;
+    setOffersetIsSet(true);
+    return this;
+  }
+
+  public void unsetOfferset() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __OFFERSET_ISSET_ID);
+  }
+
+  /** Returns true if field offerset is set (has been assigned a value) and false otherwise */
+  public boolean isSetOfferset() {
+    return EncodingUtils.testBit(__isset_bitfield, __OFFERSET_ISSET_ID);
+  }
+
+  public void setOffersetIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __OFFERSET_ISSET_ID, value);
+  }
+
+  public String getToken() {
+    return this.token;
+  }
+
+  public DownloadResult setToken(String token) {
+    this.token = token;
+    return this;
+  }
+
+  public void unsetToken() {
+    this.token = null;
+  }
+
+  /** Returns true if field token is set (has been assigned a value) and false otherwise */
+  public boolean isSetToken() {
+    return this.token != null;
+  }
+
+  public void setTokenIsSet(boolean value) {
+    if (!value) {
+      this.token = null;
+    }
+  }
+
+  public byte[] getBin() {
+    setBin(org.apache.thrift.TBaseHelper.rightSize(bin));
+    return bin == null ? null : bin.array();
+  }
+
+  public ByteBuffer bufferForBin() {
+    return org.apache.thrift.TBaseHelper.copyBinary(bin);
+  }
+
+  public DownloadResult setBin(byte[] bin) {
+    this.bin = bin == null ? (ByteBuffer)null : ByteBuffer.wrap(Arrays.copyOf(bin, bin.length));
+    return this;
+  }
+
+  public DownloadResult setBin(ByteBuffer bin) {
+    this.bin = org.apache.thrift.TBaseHelper.copyBinary(bin);
+    return this;
+  }
+
+  public void unsetBin() {
+    this.bin = null;
+  }
+
+  /** Returns true if field bin is set (has been assigned a value) and false otherwise */
+  public boolean isSetBin() {
+    return this.bin != null;
+  }
+
+  public void setBinIsSet(boolean value) {
+    if (!value) {
+      this.bin = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case RESULT:
@@ -178,6 +301,30 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       }
       break;
 
+    case OFFERSET:
+      if (value == null) {
+        unsetOfferset();
+      } else {
+        setOfferset((Long)value);
+      }
+      break;
+
+    case TOKEN:
+      if (value == null) {
+        unsetToken();
+      } else {
+        setToken((String)value);
+      }
+      break;
+
+    case BIN:
+      if (value == null) {
+        unsetBin();
+      } else {
+        setBin((ByteBuffer)value);
+      }
+      break;
+
     }
   }
 
@@ -185,6 +332,15 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
     switch (field) {
     case RESULT:
       return getResult();
+
+    case OFFERSET:
+      return getOfferset();
+
+    case TOKEN:
+      return getToken();
+
+    case BIN:
+      return getBin();
 
     }
     throw new IllegalStateException();
@@ -199,6 +355,12 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
     switch (field) {
     case RESULT:
       return isSetResult();
+    case OFFERSET:
+      return isSetOfferset();
+    case TOKEN:
+      return isSetToken();
+    case BIN:
+      return isSetBin();
     }
     throw new IllegalStateException();
   }
@@ -225,6 +387,33 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
         return false;
     }
 
+    boolean this_present_offerset = true;
+    boolean that_present_offerset = true;
+    if (this_present_offerset || that_present_offerset) {
+      if (!(this_present_offerset && that_present_offerset))
+        return false;
+      if (this.offerset != that.offerset)
+        return false;
+    }
+
+    boolean this_present_token = true && this.isSetToken();
+    boolean that_present_token = true && that.isSetToken();
+    if (this_present_token || that_present_token) {
+      if (!(this_present_token && that_present_token))
+        return false;
+      if (!this.token.equals(that.token))
+        return false;
+    }
+
+    boolean this_present_bin = true && this.isSetBin();
+    boolean that_present_bin = true && that.isSetBin();
+    if (this_present_bin || that_present_bin) {
+      if (!(this_present_bin && that_present_bin))
+        return false;
+      if (!this.bin.equals(that.bin))
+        return false;
+    }
+
     return true;
   }
 
@@ -236,6 +425,21 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
     list.add(present_result);
     if (present_result)
       list.add(result);
+
+    boolean present_offerset = true;
+    list.add(present_offerset);
+    if (present_offerset)
+      list.add(offerset);
+
+    boolean present_token = true && (isSetToken());
+    list.add(present_token);
+    if (present_token)
+      list.add(token);
+
+    boolean present_bin = true && (isSetBin());
+    list.add(present_bin);
+    if (present_bin)
+      list.add(bin);
 
     return list.hashCode();
   }
@@ -254,6 +458,36 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
     }
     if (isSetResult()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.result, other.result);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetOfferset()).compareTo(other.isSetOfferset());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetOfferset()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.offerset, other.offerset);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetToken()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetBin()).compareTo(other.isSetBin());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetBin()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.bin, other.bin);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -285,6 +519,26 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       sb.append(this.result);
     }
     first = false;
+    if (!first) sb.append(", ");
+    sb.append("offerset:");
+    sb.append(this.offerset);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("token:");
+    if (this.token == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.token);
+    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("bin:");
+    if (this.bin == null) {
+      sb.append("null");
+    } else {
+      org.apache.thrift.TBaseHelper.toString(this.bin, sb);
+    }
+    first = false;
     sb.append(")");
     return sb.toString();
   }
@@ -307,6 +561,8 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
 
   private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
     try {
+      // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+      __isset_bitfield = 0;
       read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
     } catch (org.apache.thrift.TException te) {
       throw new java.io.IOException(te);
@@ -340,6 +596,30 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 2: // OFFERSET
+            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
+              struct.offerset = iprot.readI64();
+              struct.setOffersetIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 3: // TOKEN
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.token = iprot.readString();
+              struct.setTokenIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 4: // BIN
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.bin = iprot.readBinary();
+              struct.setBinIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -358,6 +638,19 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       if (struct.result != null) {
         oprot.writeFieldBegin(RESULT_FIELD_DESC);
         struct.result.write(oprot);
+        oprot.writeFieldEnd();
+      }
+      oprot.writeFieldBegin(OFFERSET_FIELD_DESC);
+      oprot.writeI64(struct.offerset);
+      oprot.writeFieldEnd();
+      if (struct.token != null) {
+        oprot.writeFieldBegin(TOKEN_FIELD_DESC);
+        oprot.writeString(struct.token);
+        oprot.writeFieldEnd();
+      }
+      if (struct.bin != null) {
+        oprot.writeFieldBegin(BIN_FIELD_DESC);
+        oprot.writeBinary(struct.bin);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -381,20 +674,50 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       if (struct.isSetResult()) {
         optionals.set(0);
       }
-      oprot.writeBitSet(optionals, 1);
+      if (struct.isSetOfferset()) {
+        optionals.set(1);
+      }
+      if (struct.isSetToken()) {
+        optionals.set(2);
+      }
+      if (struct.isSetBin()) {
+        optionals.set(3);
+      }
+      oprot.writeBitSet(optionals, 4);
       if (struct.isSetResult()) {
         struct.result.write(oprot);
+      }
+      if (struct.isSetOfferset()) {
+        oprot.writeI64(struct.offerset);
+      }
+      if (struct.isSetToken()) {
+        oprot.writeString(struct.token);
+      }
+      if (struct.isSetBin()) {
+        oprot.writeBinary(struct.bin);
       }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, DownloadResult struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(1);
+      BitSet incoming = iprot.readBitSet(4);
       if (incoming.get(0)) {
         struct.result = new RetHead();
         struct.result.read(iprot);
         struct.setResultIsSet(true);
+      }
+      if (incoming.get(1)) {
+        struct.offerset = iprot.readI64();
+        struct.setOffersetIsSet(true);
+      }
+      if (incoming.get(2)) {
+        struct.token = iprot.readString();
+        struct.setTokenIsSet(true);
+      }
+      if (incoming.get(3)) {
+        struct.bin = iprot.readBinary();
+        struct.setBinIsSet(true);
       }
     }
   }

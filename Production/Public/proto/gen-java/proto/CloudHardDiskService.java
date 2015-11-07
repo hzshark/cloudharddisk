@@ -61,6 +61,8 @@ public class CloudHardDiskService {
 
     public usageResult querusage(String token, FTYPE type) throws org.apache.thrift.TException;
 
+    public DownloadResult downloadFile(DownloadParam param) throws org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
@@ -82,6 +84,8 @@ public class CloudHardDiskService {
     public void commitObj(String token, String oid, Map<String,String> odescr, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void querusage(String token, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+
+    public void downloadFile(DownloadParam param, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -325,6 +329,29 @@ public class CloudHardDiskService {
         return result.success;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "querusage failed: unknown result");
+    }
+
+    public DownloadResult downloadFile(DownloadParam param) throws org.apache.thrift.TException
+    {
+      send_downloadFile(param);
+      return recv_downloadFile();
+    }
+
+    public void send_downloadFile(DownloadParam param) throws org.apache.thrift.TException
+    {
+      downloadFile_args args = new downloadFile_args();
+      args.setParam(param);
+      sendBase("downloadFile", args);
+    }
+
+    public DownloadResult recv_downloadFile() throws org.apache.thrift.TException
+    {
+      downloadFile_result result = new downloadFile_result();
+      receiveBase(result, "downloadFile");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "downloadFile failed: unknown result");
     }
 
   }
@@ -678,6 +705,38 @@ public class CloudHardDiskService {
       }
     }
 
+    public void downloadFile(DownloadParam param, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      downloadFile_call method_call = new downloadFile_call(param, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class downloadFile_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private DownloadParam param;
+      public downloadFile_call(DownloadParam param, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.param = param;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("downloadFile", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        downloadFile_args args = new downloadFile_args();
+        args.setParam(param);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public DownloadResult getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_downloadFile();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -700,6 +759,7 @@ public class CloudHardDiskService {
       processMap.put("appendObj", new appendObj());
       processMap.put("commitObj", new commitObj());
       processMap.put("querusage", new querusage());
+      processMap.put("downloadFile", new downloadFile());
       return processMap;
     }
 
@@ -883,6 +943,26 @@ public class CloudHardDiskService {
       }
     }
 
+    public static class downloadFile<I extends Iface> extends org.apache.thrift.ProcessFunction<I, downloadFile_args> {
+      public downloadFile() {
+        super("downloadFile");
+      }
+
+      public downloadFile_args getEmptyArgsInstance() {
+        return new downloadFile_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public downloadFile_result getResult(I iface, downloadFile_args args) throws org.apache.thrift.TException {
+        downloadFile_result result = new downloadFile_result();
+        result.success = iface.downloadFile(args.param);
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -905,6 +985,7 @@ public class CloudHardDiskService {
       processMap.put("appendObj", new appendObj());
       processMap.put("commitObj", new commitObj());
       processMap.put("querusage", new querusage());
+      processMap.put("downloadFile", new downloadFile());
       return processMap;
     }
 
@@ -1364,6 +1445,57 @@ public class CloudHardDiskService {
 
       public void start(I iface, querusage_args args, org.apache.thrift.async.AsyncMethodCallback<usageResult> resultHandler) throws TException {
         iface.querusage(args.token, args.type,resultHandler);
+      }
+    }
+
+    public static class downloadFile<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, downloadFile_args, DownloadResult> {
+      public downloadFile() {
+        super("downloadFile");
+      }
+
+      public downloadFile_args getEmptyArgsInstance() {
+        return new downloadFile_args();
+      }
+
+      public AsyncMethodCallback<DownloadResult> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new AsyncMethodCallback<DownloadResult>() { 
+          public void onComplete(DownloadResult o) {
+            downloadFile_result result = new downloadFile_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+              return;
+            } catch (Exception e) {
+              LOGGER.error("Exception writing to internal frame buffer", e);
+            }
+            fb.close();
+          }
+          public void onError(Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TBase msg;
+            downloadFile_result result = new downloadFile_result();
+            {
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+              return;
+            } catch (Exception ex) {
+              LOGGER.error("Exception writing to internal frame buffer", ex);
+            }
+            fb.close();
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, downloadFile_args args, org.apache.thrift.async.AsyncMethodCallback<DownloadResult> resultHandler) throws TException {
+        iface.downloadFile(args.param,resultHandler);
       }
     }
 
@@ -9587,6 +9719,738 @@ public class CloudHardDiskService {
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           struct.success = new usageResult();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class downloadFile_args implements org.apache.thrift.TBase<downloadFile_args, downloadFile_args._Fields>, java.io.Serializable, Cloneable, Comparable<downloadFile_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("downloadFile_args");
+
+    private static final org.apache.thrift.protocol.TField PARAM_FIELD_DESC = new org.apache.thrift.protocol.TField("param", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new downloadFile_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new downloadFile_argsTupleSchemeFactory());
+    }
+
+    public DownloadParam param; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      PARAM((short)1, "param");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // PARAM
+            return PARAM;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.PARAM, new org.apache.thrift.meta_data.FieldMetaData("param", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, DownloadParam.class)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(downloadFile_args.class, metaDataMap);
+    }
+
+    public downloadFile_args() {
+    }
+
+    public downloadFile_args(
+      DownloadParam param)
+    {
+      this();
+      this.param = param;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public downloadFile_args(downloadFile_args other) {
+      if (other.isSetParam()) {
+        this.param = new DownloadParam(other.param);
+      }
+    }
+
+    public downloadFile_args deepCopy() {
+      return new downloadFile_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.param = null;
+    }
+
+    public DownloadParam getParam() {
+      return this.param;
+    }
+
+    public downloadFile_args setParam(DownloadParam param) {
+      this.param = param;
+      return this;
+    }
+
+    public void unsetParam() {
+      this.param = null;
+    }
+
+    /** Returns true if field param is set (has been assigned a value) and false otherwise */
+    public boolean isSetParam() {
+      return this.param != null;
+    }
+
+    public void setParamIsSet(boolean value) {
+      if (!value) {
+        this.param = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case PARAM:
+        if (value == null) {
+          unsetParam();
+        } else {
+          setParam((DownloadParam)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case PARAM:
+        return getParam();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case PARAM:
+        return isSetParam();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof downloadFile_args)
+        return this.equals((downloadFile_args)that);
+      return false;
+    }
+
+    public boolean equals(downloadFile_args that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_param = true && this.isSetParam();
+      boolean that_present_param = true && that.isSetParam();
+      if (this_present_param || that_present_param) {
+        if (!(this_present_param && that_present_param))
+          return false;
+        if (!this.param.equals(that.param))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_param = true && (isSetParam());
+      list.add(present_param);
+      if (present_param)
+        list.add(param);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(downloadFile_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetParam()).compareTo(other.isSetParam());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetParam()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.param, other.param);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("downloadFile_args(");
+      boolean first = true;
+
+      sb.append("param:");
+      if (this.param == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.param);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (param != null) {
+        param.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class downloadFile_argsStandardSchemeFactory implements SchemeFactory {
+      public downloadFile_argsStandardScheme getScheme() {
+        return new downloadFile_argsStandardScheme();
+      }
+    }
+
+    private static class downloadFile_argsStandardScheme extends StandardScheme<downloadFile_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, downloadFile_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // PARAM
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.param = new DownloadParam();
+                struct.param.read(iprot);
+                struct.setParamIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, downloadFile_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.param != null) {
+          oprot.writeFieldBegin(PARAM_FIELD_DESC);
+          struct.param.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class downloadFile_argsTupleSchemeFactory implements SchemeFactory {
+      public downloadFile_argsTupleScheme getScheme() {
+        return new downloadFile_argsTupleScheme();
+      }
+    }
+
+    private static class downloadFile_argsTupleScheme extends TupleScheme<downloadFile_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, downloadFile_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetParam()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetParam()) {
+          struct.param.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, downloadFile_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.param = new DownloadParam();
+          struct.param.read(iprot);
+          struct.setParamIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class downloadFile_result implements org.apache.thrift.TBase<downloadFile_result, downloadFile_result._Fields>, java.io.Serializable, Cloneable, Comparable<downloadFile_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("downloadFile_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new downloadFile_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new downloadFile_resultTupleSchemeFactory());
+    }
+
+    public DownloadResult success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, DownloadResult.class)));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(downloadFile_result.class, metaDataMap);
+    }
+
+    public downloadFile_result() {
+    }
+
+    public downloadFile_result(
+      DownloadResult success)
+    {
+      this();
+      this.success = success;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public downloadFile_result(downloadFile_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new DownloadResult(other.success);
+      }
+    }
+
+    public downloadFile_result deepCopy() {
+      return new downloadFile_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+    }
+
+    public DownloadResult getSuccess() {
+      return this.success;
+    }
+
+    public downloadFile_result setSuccess(DownloadResult success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((DownloadResult)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof downloadFile_result)
+        return this.equals((downloadFile_result)that);
+      return false;
+    }
+
+    public boolean equals(downloadFile_result that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_success = true && (isSetSuccess());
+      list.add(present_success);
+      if (present_success)
+        list.add(success);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(downloadFile_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+      }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("downloadFile_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class downloadFile_resultStandardSchemeFactory implements SchemeFactory {
+      public downloadFile_resultStandardScheme getScheme() {
+        return new downloadFile_resultStandardScheme();
+      }
+    }
+
+    private static class downloadFile_resultStandardScheme extends StandardScheme<downloadFile_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, downloadFile_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new DownloadResult();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, downloadFile_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class downloadFile_resultTupleSchemeFactory implements SchemeFactory {
+      public downloadFile_resultTupleScheme getScheme() {
+        return new downloadFile_resultTupleScheme();
+      }
+    }
+
+    private static class downloadFile_resultTupleScheme extends TupleScheme<downloadFile_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, downloadFile_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, downloadFile_result struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = new DownloadResult();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }

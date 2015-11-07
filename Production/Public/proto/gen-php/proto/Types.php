@@ -616,6 +616,18 @@ class DownloadResult {
    * @var \proto\RetHead
    */
   public $result = null;
+  /**
+   * @var int
+   */
+  public $offerset = null;
+  /**
+   * @var string
+   */
+  public $token = null;
+  /**
+   * @var string
+   */
+  public $bin = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -625,11 +637,32 @@ class DownloadResult {
           'type' => TType::STRUCT,
           'class' => '\proto\RetHead',
           ),
+        2 => array(
+          'var' => 'offerset',
+          'type' => TType::I64,
+          ),
+        3 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        4 => array(
+          'var' => 'bin',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
       if (isset($vals['result'])) {
         $this->result = $vals['result'];
+      }
+      if (isset($vals['offerset'])) {
+        $this->offerset = $vals['offerset'];
+      }
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+      if (isset($vals['bin'])) {
+        $this->bin = $vals['bin'];
       }
     }
   }
@@ -661,6 +694,27 @@ class DownloadResult {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 2:
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->offerset);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->bin);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -680,6 +734,149 @@ class DownloadResult {
       }
       $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
       $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->offerset !== null) {
+      $xfer += $output->writeFieldBegin('offerset', TType::I64, 2);
+      $xfer += $output->writeI64($this->offerset);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 3);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->bin !== null) {
+      $xfer += $output->writeFieldBegin('bin', TType::STRING, 4);
+      $xfer += $output->writeString($this->bin);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+/**
+ * *
+ *  download parameter
+ *  1: Token token
+ *  2: string filepath
+ *  3: i64 offerstar
+ */
+class DownloadParam {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $token = null;
+  /**
+   * @var string
+   */
+  public $filepath = null;
+  /**
+   * @var int
+   */
+  public $offerset = 0;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'filepath',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'offerset',
+          'type' => TType::I64,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+      if (isset($vals['filepath'])) {
+        $this->filepath = $vals['filepath'];
+      }
+      if (isset($vals['offerset'])) {
+        $this->offerset = $vals['offerset'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'DownloadParam';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->filepath);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->offerset);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('DownloadParam');
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->filepath !== null) {
+      $xfer += $output->writeFieldBegin('filepath', TType::STRING, 2);
+      $xfer += $output->writeString($this->filepath);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->offerset !== null) {
+      $xfer += $output->writeFieldBegin('offerset', TType::I64, 3);
+      $xfer += $output->writeI64($this->offerset);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

@@ -112,7 +112,24 @@ struct LoginResult {
 // download result
 struct DownloadResult {
  1: RetHead result;
+ 2: i64 offerset;
+ 3: Token token;
+ 4: binary bin;
 }
+
+/**
+**
+* download parameter
+* 1: Token token
+* 2: string filepath
+* 3: i64 offerstar
+*/
+struct DownloadParam {
+   1: Token  token;  //身份牌
+   2: string filepath;
+   3: i64 offerset=0;
+}
+
 
 // upload result
 struct UploaddResult {
@@ -196,7 +213,7 @@ service CloudHardDiskService {
 
     usageResult querusage(1:Token token,2:FTYPE type)		   
     
-    //downloadResult downloadFile(1:i64 userid, 2:string filename ); 
+    DownloadResult downloadFile(1:DownloadParam param); 
 
 }
 
