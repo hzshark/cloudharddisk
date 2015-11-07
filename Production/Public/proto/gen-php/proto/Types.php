@@ -42,10 +42,14 @@ final class FTYPE {
   const NORMAL = 1;
   const SMS = 2;
   const ADDRESS = 3;
+  const DDDOW = 4;
+  const STORE = 5;
   static public $__names = array(
     1 => 'NORMAL',
     2 => 'SMS',
     3 => 'ADDRESS',
+    4 => 'DDDOW',
+    5 => 'STORE',
   );
 }
 
@@ -429,6 +433,14 @@ class LoginResult {
    * @var int
    */
   public $uspace = null;
+  /**
+   * @var int
+   */
+  public $flow = null;
+  /**
+   * @var int
+   */
+  public $uflow = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -450,6 +462,14 @@ class LoginResult {
           'var' => 'uspace',
           'type' => TType::I32,
           ),
+        5 => array(
+          'var' => 'flow',
+          'type' => TType::I32,
+          ),
+        6 => array(
+          'var' => 'uflow',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -464,6 +484,12 @@ class LoginResult {
       }
       if (isset($vals['uspace'])) {
         $this->uspace = $vals['uspace'];
+      }
+      if (isset($vals['flow'])) {
+        $this->flow = $vals['flow'];
+      }
+      if (isset($vals['uflow'])) {
+        $this->uflow = $vals['uflow'];
       }
     }
   }
@@ -516,6 +542,20 @@ class LoginResult {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 5:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->flow);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 6:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->uflow);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -550,6 +590,16 @@ class LoginResult {
     if ($this->uspace !== null) {
       $xfer += $output->writeFieldBegin('uspace', TType::I32, 4);
       $xfer += $output->writeI32($this->uspace);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->flow !== null) {
+      $xfer += $output->writeFieldBegin('flow', TType::I32, 5);
+      $xfer += $output->writeI32($this->flow);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->uflow !== null) {
+      $xfer += $output->writeFieldBegin('uflow', TType::I32, 6);
+      $xfer += $output->writeI32($this->uflow);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -813,6 +863,132 @@ class AllocObjResult {
     if ($this->resourceid !== null) {
       $xfer += $output->writeFieldBegin('resourceid', TType::STRING, 2);
       $xfer += $output->writeString($this->resourceid);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class usageResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var int
+   */
+  public $capacity = null;
+  /**
+   * @var int
+   */
+  public $usage = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'capacity',
+          'type' => TType::I32,
+          ),
+        3 => array(
+          'var' => 'usage',
+          'type' => TType::I32,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['capacity'])) {
+        $this->capacity = $vals['capacity'];
+      }
+      if (isset($vals['usage'])) {
+        $this->usage = $vals['usage'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'usageResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->capacity);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->usage);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('usageResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->capacity !== null) {
+      $xfer += $output->writeFieldBegin('capacity', TType::I32, 2);
+      $xfer += $output->writeI32($this->capacity);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->usage !== null) {
+      $xfer += $output->writeFieldBegin('usage', TType::I32, 3);
+      $xfer += $output->writeI32($this->usage);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

@@ -14,7 +14,9 @@ import org.apache.thrift.TEnum;
 public enum FTYPE implements org.apache.thrift.TEnum {
   NORMAL(1),
   SMS(2),
-  ADDRESS(3);
+  ADDRESS(3),
+  DDDOW(4),
+  STORE(5);
 
   private final int value;
 
@@ -41,6 +43,10 @@ public enum FTYPE implements org.apache.thrift.TEnum {
         return SMS;
       case 3:
         return ADDRESS;
+      case 4:
+        return DDDOW;
+      case 5:
+        return STORE;
       default:
         return null;
     }

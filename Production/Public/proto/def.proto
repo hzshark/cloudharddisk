@@ -62,7 +62,7 @@ enum FTYPE{
   NORMAL = 1,           //普通文件
   SMS = 2,		// 短信备份文件
   ADDRESS = 3,		//通讯录备份文件
-  3GFLOW = 4,            // 3g 流量
+  DDDOW = 4,            // 3g 流量
   STORE   =5              //存储 
   }
 

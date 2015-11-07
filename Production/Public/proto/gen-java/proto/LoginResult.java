@@ -42,6 +42,8 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
   private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField SPACE_FIELD_DESC = new org.apache.thrift.protocol.TField("space", org.apache.thrift.protocol.TType.I32, (short)3);
   private static final org.apache.thrift.protocol.TField USPACE_FIELD_DESC = new org.apache.thrift.protocol.TField("uspace", org.apache.thrift.protocol.TType.I32, (short)4);
+  private static final org.apache.thrift.protocol.TField FLOW_FIELD_DESC = new org.apache.thrift.protocol.TField("flow", org.apache.thrift.protocol.TType.I32, (short)5);
+  private static final org.apache.thrift.protocol.TField UFLOW_FIELD_DESC = new org.apache.thrift.protocol.TField("uflow", org.apache.thrift.protocol.TType.I32, (short)6);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -53,13 +55,17 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
   public String token; // required
   public int space; // required
   public int uspace; // required
+  public int flow; // optional
+  public int uflow; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     RESULT((short)1, "result"),
     TOKEN((short)2, "token"),
     SPACE((short)3, "space"),
-    USPACE((short)4, "uspace");
+    USPACE((short)4, "uspace"),
+    FLOW((short)5, "flow"),
+    UFLOW((short)6, "uflow");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -82,6 +88,10 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
           return SPACE;
         case 4: // USPACE
           return USPACE;
+        case 5: // FLOW
+          return FLOW;
+        case 6: // UFLOW
+          return UFLOW;
         default:
           return null;
       }
@@ -124,7 +134,10 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
   // isset id assignments
   private static final int __SPACE_ISSET_ID = 0;
   private static final int __USPACE_ISSET_ID = 1;
+  private static final int __FLOW_ISSET_ID = 2;
+  private static final int __UFLOW_ISSET_ID = 3;
   private byte __isset_bitfield = 0;
+  private static final _Fields optionals[] = {_Fields.FLOW,_Fields.UFLOW};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -135,6 +148,10 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     tmpMap.put(_Fields.SPACE, new org.apache.thrift.meta_data.FieldMetaData("space", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.USPACE, new org.apache.thrift.meta_data.FieldMetaData("uspace", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.FLOW, new org.apache.thrift.meta_data.FieldMetaData("flow", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+    tmpMap.put(_Fields.UFLOW, new org.apache.thrift.meta_data.FieldMetaData("uflow", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(LoginResult.class, metaDataMap);
@@ -171,6 +188,8 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     }
     this.space = other.space;
     this.uspace = other.uspace;
+    this.flow = other.flow;
+    this.uflow = other.uflow;
   }
 
   public LoginResult deepCopy() {
@@ -185,6 +204,10 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     this.space = 0;
     setUspaceIsSet(false);
     this.uspace = 0;
+    setFlowIsSet(false);
+    this.flow = 0;
+    setUflowIsSet(false);
+    this.uflow = 0;
   }
 
   public RetHead getResult() {
@@ -281,6 +304,52 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __USPACE_ISSET_ID, value);
   }
 
+  public int getFlow() {
+    return this.flow;
+  }
+
+  public LoginResult setFlow(int flow) {
+    this.flow = flow;
+    setFlowIsSet(true);
+    return this;
+  }
+
+  public void unsetFlow() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __FLOW_ISSET_ID);
+  }
+
+  /** Returns true if field flow is set (has been assigned a value) and false otherwise */
+  public boolean isSetFlow() {
+    return EncodingUtils.testBit(__isset_bitfield, __FLOW_ISSET_ID);
+  }
+
+  public void setFlowIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __FLOW_ISSET_ID, value);
+  }
+
+  public int getUflow() {
+    return this.uflow;
+  }
+
+  public LoginResult setUflow(int uflow) {
+    this.uflow = uflow;
+    setUflowIsSet(true);
+    return this;
+  }
+
+  public void unsetUflow() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __UFLOW_ISSET_ID);
+  }
+
+  /** Returns true if field uflow is set (has been assigned a value) and false otherwise */
+  public boolean isSetUflow() {
+    return EncodingUtils.testBit(__isset_bitfield, __UFLOW_ISSET_ID);
+  }
+
+  public void setUflowIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __UFLOW_ISSET_ID, value);
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case RESULT:
@@ -315,6 +384,22 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       }
       break;
 
+    case FLOW:
+      if (value == null) {
+        unsetFlow();
+      } else {
+        setFlow((Integer)value);
+      }
+      break;
+
+    case UFLOW:
+      if (value == null) {
+        unsetUflow();
+      } else {
+        setUflow((Integer)value);
+      }
+      break;
+
     }
   }
 
@@ -331,6 +416,12 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
 
     case USPACE:
       return getUspace();
+
+    case FLOW:
+      return getFlow();
+
+    case UFLOW:
+      return getUflow();
 
     }
     throw new IllegalStateException();
@@ -351,6 +442,10 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       return isSetSpace();
     case USPACE:
       return isSetUspace();
+    case FLOW:
+      return isSetFlow();
+    case UFLOW:
+      return isSetUflow();
     }
     throw new IllegalStateException();
   }
@@ -404,6 +499,24 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
         return false;
     }
 
+    boolean this_present_flow = true && this.isSetFlow();
+    boolean that_present_flow = true && that.isSetFlow();
+    if (this_present_flow || that_present_flow) {
+      if (!(this_present_flow && that_present_flow))
+        return false;
+      if (this.flow != that.flow)
+        return false;
+    }
+
+    boolean this_present_uflow = true && this.isSetUflow();
+    boolean that_present_uflow = true && that.isSetUflow();
+    if (this_present_uflow || that_present_uflow) {
+      if (!(this_present_uflow && that_present_uflow))
+        return false;
+      if (this.uflow != that.uflow)
+        return false;
+    }
+
     return true;
   }
 
@@ -430,6 +543,16 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     list.add(present_uspace);
     if (present_uspace)
       list.add(uspace);
+
+    boolean present_flow = true && (isSetFlow());
+    list.add(present_flow);
+    if (present_flow)
+      list.add(flow);
+
+    boolean present_uflow = true && (isSetUflow());
+    list.add(present_uflow);
+    if (present_uflow)
+      list.add(uflow);
 
     return list.hashCode();
   }
@@ -482,6 +605,26 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetFlow()).compareTo(other.isSetFlow());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetFlow()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.flow, other.flow);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = Boolean.valueOf(isSetUflow()).compareTo(other.isSetUflow());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetUflow()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.uflow, other.uflow);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -525,6 +668,18 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     sb.append("uspace:");
     sb.append(this.uspace);
     first = false;
+    if (isSetFlow()) {
+      if (!first) sb.append(", ");
+      sb.append("flow:");
+      sb.append(this.flow);
+      first = false;
+    }
+    if (isSetUflow()) {
+      if (!first) sb.append(", ");
+      sb.append("uflow:");
+      sb.append(this.uflow);
+      first = false;
+    }
     sb.append(")");
     return sb.toString();
   }
@@ -606,6 +761,22 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 5: // FLOW
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.flow = iprot.readI32();
+              struct.setFlowIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 6: // UFLOW
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.uflow = iprot.readI32();
+              struct.setUflowIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -637,6 +808,16 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       oprot.writeFieldBegin(USPACE_FIELD_DESC);
       oprot.writeI32(struct.uspace);
       oprot.writeFieldEnd();
+      if (struct.isSetFlow()) {
+        oprot.writeFieldBegin(FLOW_FIELD_DESC);
+        oprot.writeI32(struct.flow);
+        oprot.writeFieldEnd();
+      }
+      if (struct.isSetUflow()) {
+        oprot.writeFieldBegin(UFLOW_FIELD_DESC);
+        oprot.writeI32(struct.uflow);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -667,7 +848,13 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       if (struct.isSetUspace()) {
         optionals.set(3);
       }
-      oprot.writeBitSet(optionals, 4);
+      if (struct.isSetFlow()) {
+        optionals.set(4);
+      }
+      if (struct.isSetUflow()) {
+        optionals.set(5);
+      }
+      oprot.writeBitSet(optionals, 6);
       if (struct.isSetResult()) {
         struct.result.write(oprot);
       }
@@ -680,12 +867,18 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       if (struct.isSetUspace()) {
         oprot.writeI32(struct.uspace);
       }
+      if (struct.isSetFlow()) {
+        oprot.writeI32(struct.flow);
+      }
+      if (struct.isSetUflow()) {
+        oprot.writeI32(struct.uflow);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, LoginResult struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(4);
+      BitSet incoming = iprot.readBitSet(6);
       if (incoming.get(0)) {
         struct.result = new RetHead();
         struct.result.read(iprot);
@@ -702,6 +895,14 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       if (incoming.get(3)) {
         struct.uspace = iprot.readI32();
         struct.setUspaceIsSet(true);
+      }
+      if (incoming.get(4)) {
+        struct.flow = iprot.readI32();
+        struct.setFlowIsSet(true);
+      }
+      if (incoming.get(5)) {
+        struct.uflow = iprot.readI32();
+        struct.setUflowIsSet(true);
       }
     }
   }
