@@ -62,7 +62,9 @@ enum Errcode
 enum FTYPE{
   NORMAL = 1,           //普通文件
   SMS = 2,		// 短信备份文件
-  ADDRESS = 3		//通讯录备份文件
+  ADDRESS = 3,		//通讯录备份文件
+  3GFLOW = 4,            // 3g 流量
+  STORE   =5              //存储 
   }
 
 enum SYNCTYPE{
@@ -104,6 +106,8 @@ struct loginResult {
   2: Token  token;  //身份牌
   3: i32  space ;   //用户空间单位K
   4: i32  uspace;   //已经使用的用户空间 单位k
+  5: optional i32  flow;     // 免费流量
+  6: optional i32  uflow;    // 已使用流量
 }
 
 // download result
@@ -120,6 +124,14 @@ struct uploaddResult {
 struct AllocObjResult {
   1: RetHead result;
   2: string  resourceid ;   //资源号, 指向bucket下或某个object资源
+}
+
+//query usage
+struct  usageResult
+{
+  1:RetHead result; 	
+  2:i32 capacity;
+  3:i32 usage;
 }
 
 /**
@@ -181,7 +193,8 @@ service CloudHardDiskService {
     RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin );// 分块写入文件
     
     RetHead   commitObj(1:Token token,2:OBJID oid,3:ObjDescrp odescr );// param3 object 的描述  存放sms 通信表述信息
-		   
+
+    usageResult querusage(1:Token token,2:FTYPE type)		   
     
     //downloadResult downloadFile(1:i64 userid, 2:string filename ); 
 
