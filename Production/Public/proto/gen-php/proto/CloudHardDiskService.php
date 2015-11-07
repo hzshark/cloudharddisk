@@ -26,32 +26,32 @@ interface CloudHardDiskServiceIf {
    * @param string $username
    * @param string $password
    * @param int $salt
-   * @return \proto\loginResult
+   * @return \proto\LoginResult
    */
   public function loginAuthApp($imie, $username, $password, $salt);
   /**
    * @param string $username
    * @param string $password
    * @param int $salt
-   * @return \proto\loginResult
+   * @return \proto\LoginResult
    */
   public function loginAuth($username, $password, $salt);
   /**
    * @param string $username
    * @param string $password
    * @param string $authcode
-   * @return \proto\loginResult
+   * @return \proto\LoginResult
    */
   public function verificationLoginAuth($username, $password, $authcode);
   /**
    * @param \proto\UploadParam $uploadparam
-   * @return \proto\uploaddResult
+   * @return \proto\UploaddResult
    */
   public function uploadFile(\proto\UploadParam $uploadparam);
   /**
    * @param string $token
    * @param int $type
-   * @return \proto\queryResult
+   * @return \proto\QueryResult
    */
   public function queryFileList($token, $type);
   /**
@@ -662,7 +662,7 @@ class CloudHardDiskService_loginAuthApp_result {
   static $_TSPEC;
 
   /**
-   * @var \proto\loginResult
+   * @var \proto\LoginResult
    */
   public $success = null;
 
@@ -672,7 +672,7 @@ class CloudHardDiskService_loginAuthApp_result {
         0 => array(
           'var' => 'success',
           'type' => TType::STRUCT,
-          'class' => '\proto\loginResult',
+          'class' => '\proto\LoginResult',
           ),
         );
     }
@@ -704,7 +704,7 @@ class CloudHardDiskService_loginAuthApp_result {
       {
         case 0:
           if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\loginResult();
+            $this->success = new \proto\LoginResult();
             $xfer += $this->success->read($input);
           } else {
             $xfer += $input->skip($ftype);
@@ -863,7 +863,7 @@ class CloudHardDiskService_loginAuth_result {
   static $_TSPEC;
 
   /**
-   * @var \proto\loginResult
+   * @var \proto\LoginResult
    */
   public $success = null;
 
@@ -873,7 +873,7 @@ class CloudHardDiskService_loginAuth_result {
         0 => array(
           'var' => 'success',
           'type' => TType::STRUCT,
-          'class' => '\proto\loginResult',
+          'class' => '\proto\LoginResult',
           ),
         );
     }
@@ -905,7 +905,7 @@ class CloudHardDiskService_loginAuth_result {
       {
         case 0:
           if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\loginResult();
+            $this->success = new \proto\LoginResult();
             $xfer += $this->success->read($input);
           } else {
             $xfer += $input->skip($ftype);
@@ -1064,7 +1064,7 @@ class CloudHardDiskService_verificationLoginAuth_result {
   static $_TSPEC;
 
   /**
-   * @var \proto\loginResult
+   * @var \proto\LoginResult
    */
   public $success = null;
 
@@ -1074,7 +1074,7 @@ class CloudHardDiskService_verificationLoginAuth_result {
         0 => array(
           'var' => 'success',
           'type' => TType::STRUCT,
-          'class' => '\proto\loginResult',
+          'class' => '\proto\LoginResult',
           ),
         );
     }
@@ -1106,7 +1106,7 @@ class CloudHardDiskService_verificationLoginAuth_result {
       {
         case 0:
           if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\loginResult();
+            $this->success = new \proto\LoginResult();
             $xfer += $this->success->read($input);
           } else {
             $xfer += $input->skip($ftype);
@@ -1224,7 +1224,7 @@ class CloudHardDiskService_uploadFile_result {
   static $_TSPEC;
 
   /**
-   * @var \proto\uploaddResult
+   * @var \proto\UploaddResult
    */
   public $success = null;
 
@@ -1234,7 +1234,7 @@ class CloudHardDiskService_uploadFile_result {
         0 => array(
           'var' => 'success',
           'type' => TType::STRUCT,
-          'class' => '\proto\uploaddResult',
+          'class' => '\proto\UploaddResult',
           ),
         );
     }
@@ -1266,7 +1266,7 @@ class CloudHardDiskService_uploadFile_result {
       {
         case 0:
           if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\uploaddResult();
+            $this->success = new \proto\UploaddResult();
             $xfer += $this->success->read($input);
           } else {
             $xfer += $input->skip($ftype);
@@ -1402,7 +1402,7 @@ class CloudHardDiskService_queryFileList_result {
   static $_TSPEC;
 
   /**
-   * @var \proto\queryResult
+   * @var \proto\QueryResult
    */
   public $success = null;
 
@@ -1412,7 +1412,7 @@ class CloudHardDiskService_queryFileList_result {
         0 => array(
           'var' => 'success',
           'type' => TType::STRUCT,
-          'class' => '\proto\queryResult',
+          'class' => '\proto\QueryResult',
           ),
         );
     }
@@ -1444,7 +1444,7 @@ class CloudHardDiskService_queryFileList_result {
       {
         case 0:
           if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\queryResult();
+            $this->success = new \proto\QueryResult();
             $xfer += $this->success->read($input);
           } else {
             $xfer += $input->skip($ftype);
@@ -1970,17 +1970,17 @@ class CloudHardDiskService_commitObj_args {
         case 3:
           if ($ftype == TType::MAP) {
             $this->odescr = array();
-            $_size17 = 0;
-            $_ktype18 = 0;
-            $_vtype19 = 0;
-            $xfer += $input->readMapBegin($_ktype18, $_vtype19, $_size17);
-            for ($_i21 = 0; $_i21 < $_size17; ++$_i21)
+            $_size7 = 0;
+            $_ktype8 = 0;
+            $_vtype9 = 0;
+            $xfer += $input->readMapBegin($_ktype8, $_vtype9, $_size7);
+            for ($_i11 = 0; $_i11 < $_size7; ++$_i11)
             {
-              $key22 = '';
-              $val23 = '';
-              $xfer += $input->readString($key22);
-              $xfer += $input->readString($val23);
-              $this->odescr[$key22] = $val23;
+              $key12 = '';
+              $val13 = '';
+              $xfer += $input->readString($key12);
+              $xfer += $input->readString($val13);
+              $this->odescr[$key12] = $val13;
             }
             $xfer += $input->readMapEnd();
           } else {
@@ -2018,10 +2018,10 @@ class CloudHardDiskService_commitObj_args {
       {
         $output->writeMapBegin(TType::STRING, TType::STRING, count($this->odescr));
         {
-          foreach ($this->odescr as $kiter24 => $viter25)
+          foreach ($this->odescr as $kiter14 => $viter15)
           {
-            $xfer += $output->writeString($kiter24);
-            $xfer += $output->writeString($viter25);
+            $xfer += $output->writeString($kiter14);
+            $xfer += $output->writeString($viter15);
           }
         }
         $output->writeMapEnd();
@@ -2115,4 +2115,184 @@ class CloudHardDiskService_commitObj_result {
 
 }
 
+class CloudHardDiskServiceProcessor {
+  protected $handler_ = null;
+  public function __construct($handler) {
+    $this->handler_ = $handler;
+  }
+
+  public function process($input, $output) {
+    $rseqid = 0;
+    $fname = null;
+    $mtype = 0;
+
+    $input->readMessageBegin($fname, $mtype, $rseqid);
+    $methodname = 'process_'.$fname;
+    if (!method_exists($this, $methodname)) {
+      $input->skip(TType::STRUCT);
+      $input->readMessageEnd();
+      $x = new TApplicationException('Function '.$fname.' not implemented.', TApplicationException::UNKNOWN_METHOD);
+      $output->writeMessageBegin($fname, TMessageType::EXCEPTION, $rseqid);
+      $x->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+      return;
+    }
+    $this->$methodname($rseqid, $input, $output);
+    return true;
+  }
+
+  protected function process_loginAuthApp($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_loginAuthApp_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_loginAuthApp_result();
+    $result->success = $this->handler_->loginAuthApp($args->imie, $args->username, $args->password, $args->salt);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'loginAuthApp', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('loginAuthApp', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_loginAuth($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_loginAuth_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_loginAuth_result();
+    $result->success = $this->handler_->loginAuth($args->username, $args->password, $args->salt);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'loginAuth', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('loginAuth', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_verificationLoginAuth($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_verificationLoginAuth_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_verificationLoginAuth_result();
+    $result->success = $this->handler_->verificationLoginAuth($args->username, $args->password, $args->authcode);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'verificationLoginAuth', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('verificationLoginAuth', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_uploadFile($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_uploadFile_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_uploadFile_result();
+    $result->success = $this->handler_->uploadFile($args->uploadparam);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'uploadFile', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('uploadFile', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_queryFileList($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_queryFileList_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_queryFileList_result();
+    $result->success = $this->handler_->queryFileList($args->token, $args->type);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'queryFileList', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('queryFileList', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_allocobj($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_allocobj_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_allocobj_result();
+    $result->success = $this->handler_->allocobj($args->token, $args->type, $args->tagname);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'allocobj', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('allocobj', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_appendObj($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_appendObj_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_appendObj_result();
+    $result->success = $this->handler_->appendObj($args->token, $args->oid, $args->bin);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'appendObj', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('appendObj', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_commitObj($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_commitObj_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_commitObj_result();
+    $result->success = $this->handler_->commitObj($args->token, $args->oid, $args->odescr);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'commitObj', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('commitObj', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+}
 
