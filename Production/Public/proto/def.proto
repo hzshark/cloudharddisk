@@ -58,10 +58,11 @@ enum SYNCTYPE{
   }
 
 // the description of obj
-//struct ObjDescrp{ 
-// 1: string  key;
-// 2: string vlue;  
-//}
+struct ReqObjparam{ 
+ 1: string  filename; 
+ 2: FTYPE   type;    //根据类型 放置 存储目录
+ 3: string   comm;   //备注
+}
 
 // 利用thrift的序列化变成string 或bin 存储在ojbect中.
 typedef map<string,string> ObjDescrp
@@ -123,7 +124,7 @@ struct UploaddResult {
 // apply new result // 申请新的文件资源id  用于备份上传到  短信,通讯录
 struct AllocObjResult {
   1: RetHead result;
-  2: string  resourceid ;   //资源号, 指向bucket下或某个object资源
+  2: OBJID  resourceid ;   //资源号, 指向bucket下或某个object资源
 }
 
 //query usage
