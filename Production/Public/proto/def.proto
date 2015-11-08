@@ -61,7 +61,7 @@ enum SYNCTYPE{
 struct ReqObjparam{ 
  1: string  filename; 
  2: FTYPE   type;    //根据类型 放置 存储目录
- 3: string   comm;   //备注
+ 3: optional string   comm;   //备注
 }
 
 // 利用thrift的序列化变成string 或bin 存储在ojbect中.
