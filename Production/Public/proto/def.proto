@@ -1,21 +1,4 @@
-/**
 
-Skip to content
-This repository  
-Search
-Pull requests
-Issues
-Gist
- @yarhoo
- Unwatch 1
-  Star 0
- Fork 1 yarhoo/cloudharddisk
-forked from hzshark/cloudharddisk
- Branch: patch-7  cloudharddisk/Production/Public/proto/def.proto
-82ae2cb  just now
-@yarhoo yarhoo Update def.proto
-1 contributor
-RawBlameHistory     160 lines (121 sloc)  3.79 KB
 
 
 
@@ -62,8 +45,10 @@ enum FTYPE{
   NORMAL = 1,           //普通文件
   SMS = 2,		// 短信备份文件
   ADDRESS = 3,		//通讯录备份文件
-  DDDOW = 4,            // 3g 流量
-  STORE   =5              //存储 
+  DFlOW = 4,            // 3g 流量
+  STORE   =5 ,              //存储 
+  PICTURE = 6 ,		//图片
+  MUSIC =7              //音乐
   }
 
 enum SYNCTYPE{
@@ -88,13 +73,14 @@ struct RetHead{
 
 struct FileInfo{ 
  1:string filename;
- 2:string filesize;
- 3:string lastModified;
+ 2:i32    filesize;  //单位k
+ 3:OBJID  objid   ;  // 对象资源号 
+ 4:optional string lastModified;
 }
 
 
 // rpc return 	data
-struct QueryResult {
+struct QueryFResult {
   1: RetHead result;
   2: optional FilesMatchList files;
 }
@@ -110,24 +96,22 @@ struct LoginResult {
 }
 
 // download result
+
 struct DownloadResult {
  1: RetHead result;
- 2: i64 offerset;
- 3: Token token;
- 4: binary bin;
+ 2: binary bin;
+ 3: i64  offset ;   //
 }
+
 
 /**
 **
 * download parameter
-* 1: Token token
-* 2: string filepath
-* 3: i64 offerstar
 */
 struct DownloadParam {
-   1: Token  token;  //身份牌
-   2: string filepath;
-   3: i64 offerset=0;
+   1: OBJID  objid;	
+   2: i64 offerset=0;  
+   3: i32 reqlen=1024; //默认传1k 一次
 }
 
 
@@ -193,7 +177,7 @@ service CloudHardDiskService {
     UploaddResult uploadFile(1:UploadParam uploadparam);
 
     //queryResult queryFileList(1:i64 userid);
-    QueryResult queryFileList(1:Token token ,2:FTYPE type);
+    QueryFResult queryFileList(1:Token token ,2:FTYPE type);
     
     //RetHead     sysncnotepad(1:SYNCTYPE , 2:List notes);//完善中
  
@@ -213,7 +197,7 @@ service CloudHardDiskService {
 
     usageResult querusage(1:Token token,2:FTYPE type)		   
     
-    DownloadResult downloadFile(1:DownloadParam param); 
+    DownloadResult downloadFile(1:Token token,2:DownloadParam param); 
 
 }
 
