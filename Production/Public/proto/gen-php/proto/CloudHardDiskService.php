@@ -44,10 +44,11 @@ interface CloudHardDiskServiceIf {
    */
   public function verificationLoginAuth($username, $password, $authcode);
   /**
+   * @param string $token
    * @param \proto\UploadParam $uploadparam
    * @return \proto\UploaddResult
    */
-  public function uploadFile(\proto\UploadParam $uploadparam);
+  public function uploadFile($token, \proto\UploadParam $uploadparam);
   /**
    * @param string $token
    * @param int $type
@@ -55,10 +56,12 @@ interface CloudHardDiskServiceIf {
    */
   public function queryFileList($token, $type);
   /**
-   * @param \proto\QueryAttribute $qAttribute
+   * @param string $token
+   * @param string $attribute
+   * @param string $objid
    * @return \proto\QueryAttributeResult
    */
-  public function queryAttribute(\proto\QueryAttribute $qAttribute);
+  public function queryAttribute($token, $attribute, $objid);
   /**
    * @param string $token
    * @param int $type
@@ -87,10 +90,11 @@ interface CloudHardDiskServiceIf {
    */
   public function querusage($token, $type);
   /**
+   * @param string $token
    * @param \proto\DownloadParam $param
    * @return \proto\DownloadResult
    */
-  public function downloadFile(\proto\DownloadParam $param);
+  public function downloadFile($token, \proto\DownloadParam $param);
 }
 
 class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
@@ -264,15 +268,16 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("verificationLoginAuth failed: unknown result");
   }
 
-  public function uploadFile(\proto\UploadParam $uploadparam)
+  public function uploadFile($token, \proto\UploadParam $uploadparam)
   {
-    $this->send_uploadFile($uploadparam);
+    $this->send_uploadFile($token, $uploadparam);
     return $this->recv_uploadFile();
   }
 
-  public function send_uploadFile(\proto\UploadParam $uploadparam)
+  public function send_uploadFile($token, \proto\UploadParam $uploadparam)
   {
     $args = new \proto\CloudHardDiskService_uploadFile_args();
+    $args->token = $token;
     $args->uploadparam = $uploadparam;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -367,16 +372,18 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("queryFileList failed: unknown result");
   }
 
-  public function queryAttribute(\proto\QueryAttribute $qAttribute)
+  public function queryAttribute($token, $attribute, $objid)
   {
-    $this->send_queryAttribute($qAttribute);
+    $this->send_queryAttribute($token, $attribute, $objid);
     return $this->recv_queryAttribute();
   }
 
-  public function send_queryAttribute(\proto\QueryAttribute $qAttribute)
+  public function send_queryAttribute($token, $attribute, $objid)
   {
     $args = new \proto\CloudHardDiskService_queryAttribute_args();
-    $args->qAttribute = $qAttribute;
+    $args->token = $token;
+    $args->attribute = $attribute;
+    $args->objid = $objid;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -629,15 +636,16 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("querusage failed: unknown result");
   }
 
-  public function downloadFile(\proto\DownloadParam $param)
+  public function downloadFile($token, \proto\DownloadParam $param)
   {
-    $this->send_downloadFile($param);
+    $this->send_downloadFile($token, $param);
     return $this->recv_downloadFile();
   }
 
-  public function send_downloadFile(\proto\DownloadParam $param)
+  public function send_downloadFile($token, \proto\DownloadParam $param)
   {
     $args = new \proto\CloudHardDiskService_downloadFile_args();
+    $args->token = $token;
     $args->param = $param;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -1314,6 +1322,10 @@ class CloudHardDiskService_uploadFile_args {
   static $_TSPEC;
 
   /**
+   * @var string
+   */
+  public $token = null;
+  /**
    * @var \proto\UploadParam
    */
   public $uploadparam = null;
@@ -1322,6 +1334,10 @@ class CloudHardDiskService_uploadFile_args {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        2 => array(
           'var' => 'uploadparam',
           'type' => TType::STRUCT,
           'class' => '\proto\UploadParam',
@@ -1329,6 +1345,9 @@ class CloudHardDiskService_uploadFile_args {
         );
     }
     if (is_array($vals)) {
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
       if (isset($vals['uploadparam'])) {
         $this->uploadparam = $vals['uploadparam'];
       }
@@ -1355,6 +1374,13 @@ class CloudHardDiskService_uploadFile_args {
       switch ($fid)
       {
         case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
           if ($ftype == TType::STRUCT) {
             $this->uploadparam = new \proto\UploadParam();
             $xfer += $this->uploadparam->read($input);
@@ -1375,11 +1401,16 @@ class CloudHardDiskService_uploadFile_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('CloudHardDiskService_uploadFile_args');
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->uploadparam !== null) {
       if (!is_object($this->uploadparam)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
       }
-      $xfer += $output->writeFieldBegin('uploadparam', TType::STRUCT, 1);
+      $xfer += $output->writeFieldBegin('uploadparam', TType::STRUCT, 2);
       $xfer += $this->uploadparam->write($output);
       $xfer += $output->writeFieldEnd();
     }
@@ -1652,23 +1683,44 @@ class CloudHardDiskService_queryAttribute_args {
   static $_TSPEC;
 
   /**
-   * @var \proto\QueryAttribute
+   * @var string
    */
-  public $qAttribute = null;
+  public $token = null;
+  /**
+   * @var string
+   */
+  public $attribute = null;
+  /**
+   * @var string
+   */
+  public $objid = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'qAttribute',
-          'type' => TType::STRUCT,
-          'class' => '\proto\QueryAttribute',
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'attribute',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'objid',
+          'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['qAttribute'])) {
-        $this->qAttribute = $vals['qAttribute'];
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
+      if (isset($vals['attribute'])) {
+        $this->attribute = $vals['attribute'];
+      }
+      if (isset($vals['objid'])) {
+        $this->objid = $vals['objid'];
       }
     }
   }
@@ -1693,9 +1745,22 @@ class CloudHardDiskService_queryAttribute_args {
       switch ($fid)
       {
         case 1:
-          if ($ftype == TType::STRUCT) {
-            $this->qAttribute = new \proto\QueryAttribute();
-            $xfer += $this->qAttribute->read($input);
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->attribute);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->objid);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -1713,12 +1778,19 @@ class CloudHardDiskService_queryAttribute_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('CloudHardDiskService_queryAttribute_args');
-    if ($this->qAttribute !== null) {
-      if (!is_object($this->qAttribute)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('qAttribute', TType::STRUCT, 1);
-      $xfer += $this->qAttribute->write($output);
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->attribute !== null) {
+      $xfer += $output->writeFieldBegin('attribute', TType::STRING, 2);
+      $xfer += $output->writeString($this->attribute);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->objid !== null) {
+      $xfer += $output->writeFieldBegin('objid', TType::STRING, 3);
+      $xfer += $output->writeString($this->objid);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -2627,6 +2699,10 @@ class CloudHardDiskService_downloadFile_args {
   static $_TSPEC;
 
   /**
+   * @var string
+   */
+  public $token = null;
+  /**
    * @var \proto\DownloadParam
    */
   public $param = null;
@@ -2635,6 +2711,10 @@ class CloudHardDiskService_downloadFile_args {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
+        2 => array(
           'var' => 'param',
           'type' => TType::STRUCT,
           'class' => '\proto\DownloadParam',
@@ -2642,6 +2722,9 @@ class CloudHardDiskService_downloadFile_args {
         );
     }
     if (is_array($vals)) {
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
       if (isset($vals['param'])) {
         $this->param = $vals['param'];
       }
@@ -2668,6 +2751,13 @@ class CloudHardDiskService_downloadFile_args {
       switch ($fid)
       {
         case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
           if ($ftype == TType::STRUCT) {
             $this->param = new \proto\DownloadParam();
             $xfer += $this->param->read($input);
@@ -2688,11 +2778,16 @@ class CloudHardDiskService_downloadFile_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('CloudHardDiskService_downloadFile_args');
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->param !== null) {
       if (!is_object($this->param)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
       }
-      $xfer += $output->writeFieldBegin('param', TType::STRUCT, 1);
+      $xfer += $output->writeFieldBegin('param', TType::STRUCT, 2);
       $xfer += $this->param->write($output);
       $xfer += $output->writeFieldEnd();
     }
@@ -2872,7 +2967,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_uploadFile_result();
-    $result->success = $this->handler_->uploadFile($args->uploadparam);
+    $result->success = $this->handler_->uploadFile($args->token, $args->uploadparam);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -2910,7 +3005,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_queryAttribute_result();
-    $result->success = $this->handler_->queryAttribute($args->qAttribute);
+    $result->success = $this->handler_->queryAttribute($args->token, $args->attribute, $args->objid);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -3005,7 +3100,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_downloadFile_result();
-    $result->success = $this->handler_->downloadFile($args->param);
+    $result->success = $this->handler_->downloadFile($args->token, $args->param);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {

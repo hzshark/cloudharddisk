@@ -38,8 +38,9 @@ import org.slf4j.LoggerFactory;
 public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttributeResult, QueryAttributeResult._Fields>, java.io.Serializable, Cloneable, Comparable<QueryAttributeResult> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("QueryAttributeResult");
 
-  private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
-  private static final org.apache.thrift.protocol.TField ATTRIBUTE_VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("attribute_value", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField RESULT_FIELD_DESC = new org.apache.thrift.protocol.TField("result", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+  private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField ATTRIBUTE_VALUE_FIELD_DESC = new org.apache.thrift.protocol.TField("attribute_value", org.apache.thrift.protocol.TType.STRING, (short)3);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -47,13 +48,15 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
     schemes.put(TupleScheme.class, new QueryAttributeResultTupleSchemeFactory());
   }
 
+  public RetHead result; // required
   public String token; // required
   public String attribute_value; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    TOKEN((short)1, "token"),
-    ATTRIBUTE_VALUE((short)2, "attribute_value");
+    RESULT((short)1, "result"),
+    TOKEN((short)2, "token"),
+    ATTRIBUTE_VALUE((short)3, "attribute_value");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -68,9 +71,11 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // TOKEN
+        case 1: // RESULT
+          return RESULT;
+        case 2: // TOKEN
           return TOKEN;
-        case 2: // ATTRIBUTE_VALUE
+        case 3: // ATTRIBUTE_VALUE
           return ATTRIBUTE_VALUE;
         default:
           return null;
@@ -115,6 +120,8 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+    tmpMap.put(_Fields.RESULT, new org.apache.thrift.meta_data.FieldMetaData("result", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RetHead.class)));
     tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , "Token")));
     tmpMap.put(_Fields.ATTRIBUTE_VALUE, new org.apache.thrift.meta_data.FieldMetaData("attribute_value", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -127,10 +134,12 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
   }
 
   public QueryAttributeResult(
+    RetHead result,
     String token,
     String attribute_value)
   {
     this();
+    this.result = result;
     this.token = token;
     this.attribute_value = attribute_value;
   }
@@ -139,6 +148,9 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
    * Performs a deep copy on <i>other</i>.
    */
   public QueryAttributeResult(QueryAttributeResult other) {
+    if (other.isSetResult()) {
+      this.result = new RetHead(other.result);
+    }
     if (other.isSetToken()) {
       this.token = other.token;
     }
@@ -153,8 +165,33 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
 
   @Override
   public void clear() {
+    this.result = null;
     this.token = null;
     this.attribute_value = null;
+  }
+
+  public RetHead getResult() {
+    return this.result;
+  }
+
+  public QueryAttributeResult setResult(RetHead result) {
+    this.result = result;
+    return this;
+  }
+
+  public void unsetResult() {
+    this.result = null;
+  }
+
+  /** Returns true if field result is set (has been assigned a value) and false otherwise */
+  public boolean isSetResult() {
+    return this.result != null;
+  }
+
+  public void setResultIsSet(boolean value) {
+    if (!value) {
+      this.result = null;
+    }
   }
 
   public String getToken() {
@@ -207,6 +244,14 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
+    case RESULT:
+      if (value == null) {
+        unsetResult();
+      } else {
+        setResult((RetHead)value);
+      }
+      break;
+
     case TOKEN:
       if (value == null) {
         unsetToken();
@@ -228,6 +273,9 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
+    case RESULT:
+      return getResult();
+
     case TOKEN:
       return getToken();
 
@@ -245,6 +293,8 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
     }
 
     switch (field) {
+    case RESULT:
+      return isSetResult();
     case TOKEN:
       return isSetToken();
     case ATTRIBUTE_VALUE:
@@ -265,6 +315,15 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
   public boolean equals(QueryAttributeResult that) {
     if (that == null)
       return false;
+
+    boolean this_present_result = true && this.isSetResult();
+    boolean that_present_result = true && that.isSetResult();
+    if (this_present_result || that_present_result) {
+      if (!(this_present_result && that_present_result))
+        return false;
+      if (!this.result.equals(that.result))
+        return false;
+    }
 
     boolean this_present_token = true && this.isSetToken();
     boolean that_present_token = true && that.isSetToken();
@@ -291,6 +350,11 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
   public int hashCode() {
     List<Object> list = new ArrayList<Object>();
 
+    boolean present_result = true && (isSetResult());
+    list.add(present_result);
+    if (present_result)
+      list.add(result);
+
     boolean present_token = true && (isSetToken());
     list.add(present_token);
     if (present_token)
@@ -312,6 +376,16 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
 
     int lastComparison = 0;
 
+    lastComparison = Boolean.valueOf(isSetResult()).compareTo(other.isSetResult());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetResult()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.result, other.result);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
     if (lastComparison != 0) {
       return lastComparison;
@@ -352,6 +426,14 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
     StringBuilder sb = new StringBuilder("QueryAttributeResult(");
     boolean first = true;
 
+    sb.append("result:");
+    if (this.result == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.result);
+    }
+    first = false;
+    if (!first) sb.append(", ");
     sb.append("token:");
     if (this.token == null) {
       sb.append("null");
@@ -374,6 +456,9 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
   public void validate() throws org.apache.thrift.TException {
     // check for required fields
     // check for sub-struct validity
+    if (result != null) {
+      result.validate();
+    }
   }
 
   private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -410,7 +495,16 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
           break;
         }
         switch (schemeField.id) {
-          case 1: // TOKEN
+          case 1: // RESULT
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+              struct.result = new RetHead();
+              struct.result.read(iprot);
+              struct.setResultIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 2: // TOKEN
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.token = iprot.readString();
               struct.setTokenIsSet(true);
@@ -418,7 +512,7 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // ATTRIBUTE_VALUE
+          case 3: // ATTRIBUTE_VALUE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.attribute_value = iprot.readString();
               struct.setAttribute_valueIsSet(true);
@@ -441,6 +535,11 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
+      if (struct.result != null) {
+        oprot.writeFieldBegin(RESULT_FIELD_DESC);
+        struct.result.write(oprot);
+        oprot.writeFieldEnd();
+      }
       if (struct.token != null) {
         oprot.writeFieldBegin(TOKEN_FIELD_DESC);
         oprot.writeString(struct.token);
@@ -469,13 +568,19 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
     public void write(org.apache.thrift.protocol.TProtocol prot, QueryAttributeResult struct) throws org.apache.thrift.TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetToken()) {
+      if (struct.isSetResult()) {
         optionals.set(0);
       }
-      if (struct.isSetAttribute_value()) {
+      if (struct.isSetToken()) {
         optionals.set(1);
       }
-      oprot.writeBitSet(optionals, 2);
+      if (struct.isSetAttribute_value()) {
+        optionals.set(2);
+      }
+      oprot.writeBitSet(optionals, 3);
+      if (struct.isSetResult()) {
+        struct.result.write(oprot);
+      }
       if (struct.isSetToken()) {
         oprot.writeString(struct.token);
       }
@@ -487,12 +592,17 @@ public class QueryAttributeResult implements org.apache.thrift.TBase<QueryAttrib
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, QueryAttributeResult struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(2);
+      BitSet incoming = iprot.readBitSet(3);
       if (incoming.get(0)) {
+        struct.result = new RetHead();
+        struct.result.read(iprot);
+        struct.setResultIsSet(true);
+      }
+      if (incoming.get(1)) {
         struct.token = iprot.readString();
         struct.setTokenIsSet(true);
       }
-      if (incoming.get(1)) {
+      if (incoming.get(2)) {
         struct.attribute_value = iprot.readString();
         struct.setAttribute_valueIsSet(true);
       }

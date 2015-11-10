@@ -102,6 +102,7 @@ struct DownloadResult {
  1: RetHead result;
  2: binary bin;
  3: i64  offset ;   //
+ 4:Token token;
 }
 
 
@@ -113,7 +114,6 @@ struct DownloadParam {
    1: OBJID objid;	
    2: i64 offerset=0;  
    3: i32 reqlen=1024; //默认传1k 一次
-   4:Token token;
 }
 
 
@@ -144,21 +144,15 @@ struct UsageResult
 * 3: i64 offerstar
 */
 struct UploadParam {
-   1: Token  token;  //身份牌
-   2: string filename;
-   3: i64 offerstar=0;
-   4: binary bin;
-}
-
-struct QueryAttribute {
-    1: Token token;
-    2: string attribute;
-    3: OBJID  objid;  //资源id ,某个bucket的一个ojbect 
+   1: string filename;
+   2: i64 offerstar=0;
+   3: binary bin;
 }
 
 struct QueryAttributeResult {
-    1: Token token;
-    2: string attribute_value;
+    1: RetHead result; 	
+    2: Token token;
+    3: string attribute_value;
 }
 
 
@@ -191,13 +185,13 @@ service CloudHardDiskService {
 
     LoginResult verificationLoginAuth(1:string username,2:string password,3:string authcode );
 
-    UploaddResult uploadFile(1:UploadParam uploadparam);
+    UploaddResult uploadFile(1:Token token ,2:UploadParam uploadparam);
 
     //queryResult queryFileList(1:i64 userid);
     QueryFResult queryFileList(1:Token token ,2:FTYPE type);
 
 
-    QueryAttributeResult queryAttribute(1:QueryAttribute qAttribute);
+    QueryAttributeResult queryAttribute(1:Token token,2: string attribute,3: OBJID  objid);
     
     //RetHead     sysncnotepad(1:SYNCTYPE , 2:List notes);//完善中
  
@@ -217,7 +211,7 @@ service CloudHardDiskService {
 
     UsageResult querusage(1:Token token,2:FTYPE type)		   
     
-    DownloadResult downloadFile(1:DownloadParam param); 
+    DownloadResult downloadFile(1:Token token ,2:DownloadParam param); 
 
 }
 

@@ -49,11 +49,11 @@ public class CloudHardDiskService {
 
     public LoginResult verificationLoginAuth(String username, String password, String authcode) throws org.apache.thrift.TException;
 
-    public UploaddResult uploadFile(UploadParam uploadparam) throws org.apache.thrift.TException;
+    public UploaddResult uploadFile(String token, UploadParam uploadparam) throws org.apache.thrift.TException;
 
     public QueryFResult queryFileList(String token, FTYPE type) throws org.apache.thrift.TException;
 
-    public QueryAttributeResult queryAttribute(QueryAttribute qAttribute) throws org.apache.thrift.TException;
+    public QueryAttributeResult queryAttribute(String token, String attribute, String objid) throws org.apache.thrift.TException;
 
     public AllocObjResult allocobj(String token, FTYPE type, String tagname) throws org.apache.thrift.TException;
 
@@ -63,7 +63,7 @@ public class CloudHardDiskService {
 
     public UsageResult querusage(String token, FTYPE type) throws org.apache.thrift.TException;
 
-    public DownloadResult downloadFile(DownloadParam param) throws org.apache.thrift.TException;
+    public DownloadResult downloadFile(String token, DownloadParam param) throws org.apache.thrift.TException;
 
   }
 
@@ -75,11 +75,11 @@ public class CloudHardDiskService {
 
     public void verificationLoginAuth(String username, String password, String authcode, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void uploadFile(UploadParam uploadparam, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void uploadFile(String token, UploadParam uploadparam, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void queryFileList(String token, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void queryAttribute(QueryAttribute qAttribute, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void queryAttribute(String token, String attribute, String objid, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void allocobj(String token, FTYPE type, String tagname, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -89,7 +89,7 @@ public class CloudHardDiskService {
 
     public void querusage(String token, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void downloadFile(DownloadParam param, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void downloadFile(String token, DownloadParam param, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -189,15 +189,16 @@ public class CloudHardDiskService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "verificationLoginAuth failed: unknown result");
     }
 
-    public UploaddResult uploadFile(UploadParam uploadparam) throws org.apache.thrift.TException
+    public UploaddResult uploadFile(String token, UploadParam uploadparam) throws org.apache.thrift.TException
     {
-      send_uploadFile(uploadparam);
+      send_uploadFile(token, uploadparam);
       return recv_uploadFile();
     }
 
-    public void send_uploadFile(UploadParam uploadparam) throws org.apache.thrift.TException
+    public void send_uploadFile(String token, UploadParam uploadparam) throws org.apache.thrift.TException
     {
       uploadFile_args args = new uploadFile_args();
+      args.setToken(token);
       args.setUploadparam(uploadparam);
       sendBase("uploadFile", args);
     }
@@ -236,16 +237,18 @@ public class CloudHardDiskService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "queryFileList failed: unknown result");
     }
 
-    public QueryAttributeResult queryAttribute(QueryAttribute qAttribute) throws org.apache.thrift.TException
+    public QueryAttributeResult queryAttribute(String token, String attribute, String objid) throws org.apache.thrift.TException
     {
-      send_queryAttribute(qAttribute);
+      send_queryAttribute(token, attribute, objid);
       return recv_queryAttribute();
     }
 
-    public void send_queryAttribute(QueryAttribute qAttribute) throws org.apache.thrift.TException
+    public void send_queryAttribute(String token, String attribute, String objid) throws org.apache.thrift.TException
     {
       queryAttribute_args args = new queryAttribute_args();
-      args.setQAttribute(qAttribute);
+      args.setToken(token);
+      args.setAttribute(attribute);
+      args.setObjid(objid);
       sendBase("queryAttribute", args);
     }
 
@@ -358,15 +361,16 @@ public class CloudHardDiskService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "querusage failed: unknown result");
     }
 
-    public DownloadResult downloadFile(DownloadParam param) throws org.apache.thrift.TException
+    public DownloadResult downloadFile(String token, DownloadParam param) throws org.apache.thrift.TException
     {
-      send_downloadFile(param);
+      send_downloadFile(token, param);
       return recv_downloadFile();
     }
 
-    public void send_downloadFile(DownloadParam param) throws org.apache.thrift.TException
+    public void send_downloadFile(String token, DownloadParam param) throws org.apache.thrift.TException
     {
       downloadFile_args args = new downloadFile_args();
+      args.setToken(token);
       args.setParam(param);
       sendBase("downloadFile", args);
     }
@@ -516,23 +520,26 @@ public class CloudHardDiskService {
       }
     }
 
-    public void uploadFile(UploadParam uploadparam, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void uploadFile(String token, UploadParam uploadparam, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      uploadFile_call method_call = new uploadFile_call(uploadparam, resultHandler, this, ___protocolFactory, ___transport);
+      uploadFile_call method_call = new uploadFile_call(token, uploadparam, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class uploadFile_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String token;
       private UploadParam uploadparam;
-      public uploadFile_call(UploadParam uploadparam, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public uploadFile_call(String token, UploadParam uploadparam, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
+        this.token = token;
         this.uploadparam = uploadparam;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("uploadFile", org.apache.thrift.protocol.TMessageType.CALL, 0));
         uploadFile_args args = new uploadFile_args();
+        args.setToken(token);
         args.setUploadparam(uploadparam);
         args.write(prot);
         prot.writeMessageEnd();
@@ -583,24 +590,30 @@ public class CloudHardDiskService {
       }
     }
 
-    public void queryAttribute(QueryAttribute qAttribute, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void queryAttribute(String token, String attribute, String objid, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      queryAttribute_call method_call = new queryAttribute_call(qAttribute, resultHandler, this, ___protocolFactory, ___transport);
+      queryAttribute_call method_call = new queryAttribute_call(token, attribute, objid, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class queryAttribute_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private QueryAttribute qAttribute;
-      public queryAttribute_call(QueryAttribute qAttribute, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String token;
+      private String attribute;
+      private String objid;
+      public queryAttribute_call(String token, String attribute, String objid, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.qAttribute = qAttribute;
+        this.token = token;
+        this.attribute = attribute;
+        this.objid = objid;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("queryAttribute", org.apache.thrift.protocol.TMessageType.CALL, 0));
         queryAttribute_args args = new queryAttribute_args();
-        args.setQAttribute(qAttribute);
+        args.setToken(token);
+        args.setAttribute(attribute);
+        args.setObjid(objid);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -764,23 +777,26 @@ public class CloudHardDiskService {
       }
     }
 
-    public void downloadFile(DownloadParam param, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void downloadFile(String token, DownloadParam param, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      downloadFile_call method_call = new downloadFile_call(param, resultHandler, this, ___protocolFactory, ___transport);
+      downloadFile_call method_call = new downloadFile_call(token, param, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class downloadFile_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String token;
       private DownloadParam param;
-      public downloadFile_call(DownloadParam param, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public downloadFile_call(String token, DownloadParam param, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
+        this.token = token;
         this.param = param;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("downloadFile", org.apache.thrift.protocol.TMessageType.CALL, 0));
         downloadFile_args args = new downloadFile_args();
+        args.setToken(token);
         args.setParam(param);
         args.write(prot);
         prot.writeMessageEnd();
@@ -898,7 +914,7 @@ public class CloudHardDiskService {
 
       public uploadFile_result getResult(I iface, uploadFile_args args) throws org.apache.thrift.TException {
         uploadFile_result result = new uploadFile_result();
-        result.success = iface.uploadFile(args.uploadparam);
+        result.success = iface.uploadFile(args.token, args.uploadparam);
         return result;
       }
     }
@@ -938,7 +954,7 @@ public class CloudHardDiskService {
 
       public queryAttribute_result getResult(I iface, queryAttribute_args args) throws org.apache.thrift.TException {
         queryAttribute_result result = new queryAttribute_result();
-        result.success = iface.queryAttribute(args.qAttribute);
+        result.success = iface.queryAttribute(args.token, args.attribute, args.objid);
         return result;
       }
     }
@@ -1038,7 +1054,7 @@ public class CloudHardDiskService {
 
       public downloadFile_result getResult(I iface, downloadFile_args args) throws org.apache.thrift.TException {
         downloadFile_result result = new downloadFile_result();
-        result.success = iface.downloadFile(args.param);
+        result.success = iface.downloadFile(args.token, args.param);
         return result;
       }
     }
@@ -1270,7 +1286,7 @@ public class CloudHardDiskService {
       }
 
       public void start(I iface, uploadFile_args args, org.apache.thrift.async.AsyncMethodCallback<UploaddResult> resultHandler) throws TException {
-        iface.uploadFile(args.uploadparam,resultHandler);
+        iface.uploadFile(args.token, args.uploadparam,resultHandler);
       }
     }
 
@@ -1372,7 +1388,7 @@ public class CloudHardDiskService {
       }
 
       public void start(I iface, queryAttribute_args args, org.apache.thrift.async.AsyncMethodCallback<QueryAttributeResult> resultHandler) throws TException {
-        iface.queryAttribute(args.qAttribute,resultHandler);
+        iface.queryAttribute(args.token, args.attribute, args.objid,resultHandler);
       }
     }
 
@@ -1627,7 +1643,7 @@ public class CloudHardDiskService {
       }
 
       public void start(I iface, downloadFile_args args, org.apache.thrift.async.AsyncMethodCallback<DownloadResult> resultHandler) throws TException {
-        iface.downloadFile(args.param,resultHandler);
+        iface.downloadFile(args.token, args.param,resultHandler);
       }
     }
 
@@ -4548,7 +4564,8 @@ public class CloudHardDiskService {
   public static class uploadFile_args implements org.apache.thrift.TBase<uploadFile_args, uploadFile_args._Fields>, java.io.Serializable, Cloneable, Comparable<uploadFile_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("uploadFile_args");
 
-    private static final org.apache.thrift.protocol.TField UPLOADPARAM_FIELD_DESC = new org.apache.thrift.protocol.TField("uploadparam", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField UPLOADPARAM_FIELD_DESC = new org.apache.thrift.protocol.TField("uploadparam", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -4556,11 +4573,13 @@ public class CloudHardDiskService {
       schemes.put(TupleScheme.class, new uploadFile_argsTupleSchemeFactory());
     }
 
+    public String token; // required
     public UploadParam uploadparam; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      UPLOADPARAM((short)1, "uploadparam");
+      TOKEN((short)1, "token"),
+      UPLOADPARAM((short)2, "uploadparam");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -4575,7 +4594,9 @@ public class CloudHardDiskService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // UPLOADPARAM
+          case 1: // TOKEN
+            return TOKEN;
+          case 2: // UPLOADPARAM
             return UPLOADPARAM;
           default:
             return null;
@@ -4620,6 +4641,8 @@ public class CloudHardDiskService {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "Token")));
       tmpMap.put(_Fields.UPLOADPARAM, new org.apache.thrift.meta_data.FieldMetaData("uploadparam", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, UploadParam.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -4630,9 +4653,11 @@ public class CloudHardDiskService {
     }
 
     public uploadFile_args(
+      String token,
       UploadParam uploadparam)
     {
       this();
+      this.token = token;
       this.uploadparam = uploadparam;
     }
 
@@ -4640,6 +4665,9 @@ public class CloudHardDiskService {
      * Performs a deep copy on <i>other</i>.
      */
     public uploadFile_args(uploadFile_args other) {
+      if (other.isSetToken()) {
+        this.token = other.token;
+      }
       if (other.isSetUploadparam()) {
         this.uploadparam = new UploadParam(other.uploadparam);
       }
@@ -4651,7 +4679,32 @@ public class CloudHardDiskService {
 
     @Override
     public void clear() {
+      this.token = null;
       this.uploadparam = null;
+    }
+
+    public String getToken() {
+      return this.token;
+    }
+
+    public uploadFile_args setToken(String token) {
+      this.token = token;
+      return this;
+    }
+
+    public void unsetToken() {
+      this.token = null;
+    }
+
+    /** Returns true if field token is set (has been assigned a value) and false otherwise */
+    public boolean isSetToken() {
+      return this.token != null;
+    }
+
+    public void setTokenIsSet(boolean value) {
+      if (!value) {
+        this.token = null;
+      }
     }
 
     public UploadParam getUploadparam() {
@@ -4680,6 +4733,14 @@ public class CloudHardDiskService {
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case TOKEN:
+        if (value == null) {
+          unsetToken();
+        } else {
+          setToken((String)value);
+        }
+        break;
+
       case UPLOADPARAM:
         if (value == null) {
           unsetUploadparam();
@@ -4693,6 +4754,9 @@ public class CloudHardDiskService {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case TOKEN:
+        return getToken();
+
       case UPLOADPARAM:
         return getUploadparam();
 
@@ -4707,6 +4771,8 @@ public class CloudHardDiskService {
       }
 
       switch (field) {
+      case TOKEN:
+        return isSetToken();
       case UPLOADPARAM:
         return isSetUploadparam();
       }
@@ -4726,6 +4792,15 @@ public class CloudHardDiskService {
       if (that == null)
         return false;
 
+      boolean this_present_token = true && this.isSetToken();
+      boolean that_present_token = true && that.isSetToken();
+      if (this_present_token || that_present_token) {
+        if (!(this_present_token && that_present_token))
+          return false;
+        if (!this.token.equals(that.token))
+          return false;
+      }
+
       boolean this_present_uploadparam = true && this.isSetUploadparam();
       boolean that_present_uploadparam = true && that.isSetUploadparam();
       if (this_present_uploadparam || that_present_uploadparam) {
@@ -4741,6 +4816,11 @@ public class CloudHardDiskService {
     @Override
     public int hashCode() {
       List<Object> list = new ArrayList<Object>();
+
+      boolean present_token = true && (isSetToken());
+      list.add(present_token);
+      if (present_token)
+        list.add(token);
 
       boolean present_uploadparam = true && (isSetUploadparam());
       list.add(present_uploadparam);
@@ -4758,6 +4838,16 @@ public class CloudHardDiskService {
 
       int lastComparison = 0;
 
+      lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetToken()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       lastComparison = Boolean.valueOf(isSetUploadparam()).compareTo(other.isSetUploadparam());
       if (lastComparison != 0) {
         return lastComparison;
@@ -4788,6 +4878,14 @@ public class CloudHardDiskService {
       StringBuilder sb = new StringBuilder("uploadFile_args(");
       boolean first = true;
 
+      sb.append("token:");
+      if (this.token == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.token);
+      }
+      first = false;
+      if (!first) sb.append(", ");
       sb.append("uploadparam:");
       if (this.uploadparam == null) {
         sb.append("null");
@@ -4841,7 +4939,15 @@ public class CloudHardDiskService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // UPLOADPARAM
+            case 1: // TOKEN
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.token = iprot.readString();
+                struct.setTokenIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // UPLOADPARAM
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
                 struct.uploadparam = new UploadParam();
                 struct.uploadparam.read(iprot);
@@ -4865,6 +4971,11 @@ public class CloudHardDiskService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.token != null) {
+          oprot.writeFieldBegin(TOKEN_FIELD_DESC);
+          oprot.writeString(struct.token);
+          oprot.writeFieldEnd();
+        }
         if (struct.uploadparam != null) {
           oprot.writeFieldBegin(UPLOADPARAM_FIELD_DESC);
           struct.uploadparam.write(oprot);
@@ -4888,10 +4999,16 @@ public class CloudHardDiskService {
       public void write(org.apache.thrift.protocol.TProtocol prot, uploadFile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetUploadparam()) {
+        if (struct.isSetToken()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetUploadparam()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetToken()) {
+          oprot.writeString(struct.token);
+        }
         if (struct.isSetUploadparam()) {
           struct.uploadparam.write(oprot);
         }
@@ -4900,8 +5017,12 @@ public class CloudHardDiskService {
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, uploadFile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
+          struct.token = iprot.readString();
+          struct.setTokenIsSet(true);
+        }
+        if (incoming.get(1)) {
           struct.uploadparam = new UploadParam();
           struct.uploadparam.read(iprot);
           struct.setUploadparamIsSet(true);
@@ -6128,7 +6249,9 @@ public class CloudHardDiskService {
   public static class queryAttribute_args implements org.apache.thrift.TBase<queryAttribute_args, queryAttribute_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryAttribute_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryAttribute_args");
 
-    private static final org.apache.thrift.protocol.TField Q_ATTRIBUTE_FIELD_DESC = new org.apache.thrift.protocol.TField("qAttribute", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField ATTRIBUTE_FIELD_DESC = new org.apache.thrift.protocol.TField("attribute", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField OBJID_FIELD_DESC = new org.apache.thrift.protocol.TField("objid", org.apache.thrift.protocol.TType.STRING, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -6136,11 +6259,15 @@ public class CloudHardDiskService {
       schemes.put(TupleScheme.class, new queryAttribute_argsTupleSchemeFactory());
     }
 
-    public QueryAttribute qAttribute; // required
+    public String token; // required
+    public String attribute; // required
+    public String objid; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      Q_ATTRIBUTE((short)1, "qAttribute");
+      TOKEN((short)1, "token"),
+      ATTRIBUTE((short)2, "attribute"),
+      OBJID((short)3, "objid");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -6155,8 +6282,12 @@ public class CloudHardDiskService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // Q_ATTRIBUTE
-            return Q_ATTRIBUTE;
+          case 1: // TOKEN
+            return TOKEN;
+          case 2: // ATTRIBUTE
+            return ATTRIBUTE;
+          case 3: // OBJID
+            return OBJID;
           default:
             return null;
         }
@@ -6200,8 +6331,12 @@ public class CloudHardDiskService {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.Q_ATTRIBUTE, new org.apache.thrift.meta_data.FieldMetaData("qAttribute", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, QueryAttribute.class)));
+      tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "Token")));
+      tmpMap.put(_Fields.ATTRIBUTE, new org.apache.thrift.meta_data.FieldMetaData("attribute", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.OBJID, new org.apache.thrift.meta_data.FieldMetaData("objid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "OBJID")));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(queryAttribute_args.class, metaDataMap);
     }
@@ -6210,18 +6345,28 @@ public class CloudHardDiskService {
     }
 
     public queryAttribute_args(
-      QueryAttribute qAttribute)
+      String token,
+      String attribute,
+      String objid)
     {
       this();
-      this.qAttribute = qAttribute;
+      this.token = token;
+      this.attribute = attribute;
+      this.objid = objid;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public queryAttribute_args(queryAttribute_args other) {
-      if (other.isSetQAttribute()) {
-        this.qAttribute = new QueryAttribute(other.qAttribute);
+      if (other.isSetToken()) {
+        this.token = other.token;
+      }
+      if (other.isSetAttribute()) {
+        this.attribute = other.attribute;
+      }
+      if (other.isSetObjid()) {
+        this.objid = other.objid;
       }
     }
 
@@ -6231,40 +6376,106 @@ public class CloudHardDiskService {
 
     @Override
     public void clear() {
-      this.qAttribute = null;
+      this.token = null;
+      this.attribute = null;
+      this.objid = null;
     }
 
-    public QueryAttribute getQAttribute() {
-      return this.qAttribute;
+    public String getToken() {
+      return this.token;
     }
 
-    public queryAttribute_args setQAttribute(QueryAttribute qAttribute) {
-      this.qAttribute = qAttribute;
+    public queryAttribute_args setToken(String token) {
+      this.token = token;
       return this;
     }
 
-    public void unsetQAttribute() {
-      this.qAttribute = null;
+    public void unsetToken() {
+      this.token = null;
     }
 
-    /** Returns true if field qAttribute is set (has been assigned a value) and false otherwise */
-    public boolean isSetQAttribute() {
-      return this.qAttribute != null;
+    /** Returns true if field token is set (has been assigned a value) and false otherwise */
+    public boolean isSetToken() {
+      return this.token != null;
     }
 
-    public void setQAttributeIsSet(boolean value) {
+    public void setTokenIsSet(boolean value) {
       if (!value) {
-        this.qAttribute = null;
+        this.token = null;
+      }
+    }
+
+    public String getAttribute() {
+      return this.attribute;
+    }
+
+    public queryAttribute_args setAttribute(String attribute) {
+      this.attribute = attribute;
+      return this;
+    }
+
+    public void unsetAttribute() {
+      this.attribute = null;
+    }
+
+    /** Returns true if field attribute is set (has been assigned a value) and false otherwise */
+    public boolean isSetAttribute() {
+      return this.attribute != null;
+    }
+
+    public void setAttributeIsSet(boolean value) {
+      if (!value) {
+        this.attribute = null;
+      }
+    }
+
+    public String getObjid() {
+      return this.objid;
+    }
+
+    public queryAttribute_args setObjid(String objid) {
+      this.objid = objid;
+      return this;
+    }
+
+    public void unsetObjid() {
+      this.objid = null;
+    }
+
+    /** Returns true if field objid is set (has been assigned a value) and false otherwise */
+    public boolean isSetObjid() {
+      return this.objid != null;
+    }
+
+    public void setObjidIsSet(boolean value) {
+      if (!value) {
+        this.objid = null;
       }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case Q_ATTRIBUTE:
+      case TOKEN:
         if (value == null) {
-          unsetQAttribute();
+          unsetToken();
         } else {
-          setQAttribute((QueryAttribute)value);
+          setToken((String)value);
+        }
+        break;
+
+      case ATTRIBUTE:
+        if (value == null) {
+          unsetAttribute();
+        } else {
+          setAttribute((String)value);
+        }
+        break;
+
+      case OBJID:
+        if (value == null) {
+          unsetObjid();
+        } else {
+          setObjid((String)value);
         }
         break;
 
@@ -6273,8 +6484,14 @@ public class CloudHardDiskService {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case Q_ATTRIBUTE:
-        return getQAttribute();
+      case TOKEN:
+        return getToken();
+
+      case ATTRIBUTE:
+        return getAttribute();
+
+      case OBJID:
+        return getObjid();
 
       }
       throw new IllegalStateException();
@@ -6287,8 +6504,12 @@ public class CloudHardDiskService {
       }
 
       switch (field) {
-      case Q_ATTRIBUTE:
-        return isSetQAttribute();
+      case TOKEN:
+        return isSetToken();
+      case ATTRIBUTE:
+        return isSetAttribute();
+      case OBJID:
+        return isSetObjid();
       }
       throw new IllegalStateException();
     }
@@ -6306,12 +6527,30 @@ public class CloudHardDiskService {
       if (that == null)
         return false;
 
-      boolean this_present_qAttribute = true && this.isSetQAttribute();
-      boolean that_present_qAttribute = true && that.isSetQAttribute();
-      if (this_present_qAttribute || that_present_qAttribute) {
-        if (!(this_present_qAttribute && that_present_qAttribute))
+      boolean this_present_token = true && this.isSetToken();
+      boolean that_present_token = true && that.isSetToken();
+      if (this_present_token || that_present_token) {
+        if (!(this_present_token && that_present_token))
           return false;
-        if (!this.qAttribute.equals(that.qAttribute))
+        if (!this.token.equals(that.token))
+          return false;
+      }
+
+      boolean this_present_attribute = true && this.isSetAttribute();
+      boolean that_present_attribute = true && that.isSetAttribute();
+      if (this_present_attribute || that_present_attribute) {
+        if (!(this_present_attribute && that_present_attribute))
+          return false;
+        if (!this.attribute.equals(that.attribute))
+          return false;
+      }
+
+      boolean this_present_objid = true && this.isSetObjid();
+      boolean that_present_objid = true && that.isSetObjid();
+      if (this_present_objid || that_present_objid) {
+        if (!(this_present_objid && that_present_objid))
+          return false;
+        if (!this.objid.equals(that.objid))
           return false;
       }
 
@@ -6322,10 +6561,20 @@ public class CloudHardDiskService {
     public int hashCode() {
       List<Object> list = new ArrayList<Object>();
 
-      boolean present_qAttribute = true && (isSetQAttribute());
-      list.add(present_qAttribute);
-      if (present_qAttribute)
-        list.add(qAttribute);
+      boolean present_token = true && (isSetToken());
+      list.add(present_token);
+      if (present_token)
+        list.add(token);
+
+      boolean present_attribute = true && (isSetAttribute());
+      list.add(present_attribute);
+      if (present_attribute)
+        list.add(attribute);
+
+      boolean present_objid = true && (isSetObjid());
+      list.add(present_objid);
+      if (present_objid)
+        list.add(objid);
 
       return list.hashCode();
     }
@@ -6338,12 +6587,32 @@ public class CloudHardDiskService {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetQAttribute()).compareTo(other.isSetQAttribute());
+      lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetQAttribute()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.qAttribute, other.qAttribute);
+      if (isSetToken()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetAttribute()).compareTo(other.isSetAttribute());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetAttribute()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.attribute, other.attribute);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetObjid()).compareTo(other.isSetObjid());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetObjid()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.objid, other.objid);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -6368,11 +6637,27 @@ public class CloudHardDiskService {
       StringBuilder sb = new StringBuilder("queryAttribute_args(");
       boolean first = true;
 
-      sb.append("qAttribute:");
-      if (this.qAttribute == null) {
+      sb.append("token:");
+      if (this.token == null) {
         sb.append("null");
       } else {
-        sb.append(this.qAttribute);
+        sb.append(this.token);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("attribute:");
+      if (this.attribute == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.attribute);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("objid:");
+      if (this.objid == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.objid);
       }
       first = false;
       sb.append(")");
@@ -6382,9 +6667,6 @@ public class CloudHardDiskService {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
-      if (qAttribute != null) {
-        qAttribute.validate();
-      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -6421,11 +6703,26 @@ public class CloudHardDiskService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // Q_ATTRIBUTE
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.qAttribute = new QueryAttribute();
-                struct.qAttribute.read(iprot);
-                struct.setQAttributeIsSet(true);
+            case 1: // TOKEN
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.token = iprot.readString();
+                struct.setTokenIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // ATTRIBUTE
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.attribute = iprot.readString();
+                struct.setAttributeIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // OBJID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.objid = iprot.readString();
+                struct.setObjidIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -6445,9 +6742,19 @@ public class CloudHardDiskService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.qAttribute != null) {
-          oprot.writeFieldBegin(Q_ATTRIBUTE_FIELD_DESC);
-          struct.qAttribute.write(oprot);
+        if (struct.token != null) {
+          oprot.writeFieldBegin(TOKEN_FIELD_DESC);
+          oprot.writeString(struct.token);
+          oprot.writeFieldEnd();
+        }
+        if (struct.attribute != null) {
+          oprot.writeFieldBegin(ATTRIBUTE_FIELD_DESC);
+          oprot.writeString(struct.attribute);
+          oprot.writeFieldEnd();
+        }
+        if (struct.objid != null) {
+          oprot.writeFieldBegin(OBJID_FIELD_DESC);
+          oprot.writeString(struct.objid);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -6468,23 +6775,42 @@ public class CloudHardDiskService {
       public void write(org.apache.thrift.protocol.TProtocol prot, queryAttribute_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetQAttribute()) {
+        if (struct.isSetToken()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetQAttribute()) {
-          struct.qAttribute.write(oprot);
+        if (struct.isSetAttribute()) {
+          optionals.set(1);
+        }
+        if (struct.isSetObjid()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
+        if (struct.isSetToken()) {
+          oprot.writeString(struct.token);
+        }
+        if (struct.isSetAttribute()) {
+          oprot.writeString(struct.attribute);
+        }
+        if (struct.isSetObjid()) {
+          oprot.writeString(struct.objid);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, queryAttribute_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
-          struct.qAttribute = new QueryAttribute();
-          struct.qAttribute.read(iprot);
-          struct.setQAttributeIsSet(true);
+          struct.token = iprot.readString();
+          struct.setTokenIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.attribute = iprot.readString();
+          struct.setAttributeIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.objid = iprot.readString();
+          struct.setObjidIsSet(true);
         }
       }
     }
@@ -10594,7 +10920,8 @@ public class CloudHardDiskService {
   public static class downloadFile_args implements org.apache.thrift.TBase<downloadFile_args, downloadFile_args._Fields>, java.io.Serializable, Cloneable, Comparable<downloadFile_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("downloadFile_args");
 
-    private static final org.apache.thrift.protocol.TField PARAM_FIELD_DESC = new org.apache.thrift.protocol.TField("param", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+    private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField PARAM_FIELD_DESC = new org.apache.thrift.protocol.TField("param", org.apache.thrift.protocol.TType.STRUCT, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -10602,11 +10929,13 @@ public class CloudHardDiskService {
       schemes.put(TupleScheme.class, new downloadFile_argsTupleSchemeFactory());
     }
 
+    public String token; // required
     public DownloadParam param; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      PARAM((short)1, "param");
+      TOKEN((short)1, "token"),
+      PARAM((short)2, "param");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -10621,7 +10950,9 @@ public class CloudHardDiskService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // PARAM
+          case 1: // TOKEN
+            return TOKEN;
+          case 2: // PARAM
             return PARAM;
           default:
             return null;
@@ -10666,6 +10997,8 @@ public class CloudHardDiskService {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "Token")));
       tmpMap.put(_Fields.PARAM, new org.apache.thrift.meta_data.FieldMetaData("param", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, DownloadParam.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -10676,9 +11009,11 @@ public class CloudHardDiskService {
     }
 
     public downloadFile_args(
+      String token,
       DownloadParam param)
     {
       this();
+      this.token = token;
       this.param = param;
     }
 
@@ -10686,6 +11021,9 @@ public class CloudHardDiskService {
      * Performs a deep copy on <i>other</i>.
      */
     public downloadFile_args(downloadFile_args other) {
+      if (other.isSetToken()) {
+        this.token = other.token;
+      }
       if (other.isSetParam()) {
         this.param = new DownloadParam(other.param);
       }
@@ -10697,7 +11035,32 @@ public class CloudHardDiskService {
 
     @Override
     public void clear() {
+      this.token = null;
       this.param = null;
+    }
+
+    public String getToken() {
+      return this.token;
+    }
+
+    public downloadFile_args setToken(String token) {
+      this.token = token;
+      return this;
+    }
+
+    public void unsetToken() {
+      this.token = null;
+    }
+
+    /** Returns true if field token is set (has been assigned a value) and false otherwise */
+    public boolean isSetToken() {
+      return this.token != null;
+    }
+
+    public void setTokenIsSet(boolean value) {
+      if (!value) {
+        this.token = null;
+      }
     }
 
     public DownloadParam getParam() {
@@ -10726,6 +11089,14 @@ public class CloudHardDiskService {
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case TOKEN:
+        if (value == null) {
+          unsetToken();
+        } else {
+          setToken((String)value);
+        }
+        break;
+
       case PARAM:
         if (value == null) {
           unsetParam();
@@ -10739,6 +11110,9 @@ public class CloudHardDiskService {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case TOKEN:
+        return getToken();
+
       case PARAM:
         return getParam();
 
@@ -10753,6 +11127,8 @@ public class CloudHardDiskService {
       }
 
       switch (field) {
+      case TOKEN:
+        return isSetToken();
       case PARAM:
         return isSetParam();
       }
@@ -10772,6 +11148,15 @@ public class CloudHardDiskService {
       if (that == null)
         return false;
 
+      boolean this_present_token = true && this.isSetToken();
+      boolean that_present_token = true && that.isSetToken();
+      if (this_present_token || that_present_token) {
+        if (!(this_present_token && that_present_token))
+          return false;
+        if (!this.token.equals(that.token))
+          return false;
+      }
+
       boolean this_present_param = true && this.isSetParam();
       boolean that_present_param = true && that.isSetParam();
       if (this_present_param || that_present_param) {
@@ -10787,6 +11172,11 @@ public class CloudHardDiskService {
     @Override
     public int hashCode() {
       List<Object> list = new ArrayList<Object>();
+
+      boolean present_token = true && (isSetToken());
+      list.add(present_token);
+      if (present_token)
+        list.add(token);
 
       boolean present_param = true && (isSetParam());
       list.add(present_param);
@@ -10804,6 +11194,16 @@ public class CloudHardDiskService {
 
       int lastComparison = 0;
 
+      lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetToken()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       lastComparison = Boolean.valueOf(isSetParam()).compareTo(other.isSetParam());
       if (lastComparison != 0) {
         return lastComparison;
@@ -10834,6 +11234,14 @@ public class CloudHardDiskService {
       StringBuilder sb = new StringBuilder("downloadFile_args(");
       boolean first = true;
 
+      sb.append("token:");
+      if (this.token == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.token);
+      }
+      first = false;
+      if (!first) sb.append(", ");
       sb.append("param:");
       if (this.param == null) {
         sb.append("null");
@@ -10887,7 +11295,15 @@ public class CloudHardDiskService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // PARAM
+            case 1: // TOKEN
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.token = iprot.readString();
+                struct.setTokenIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // PARAM
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
                 struct.param = new DownloadParam();
                 struct.param.read(iprot);
@@ -10911,6 +11327,11 @@ public class CloudHardDiskService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.token != null) {
+          oprot.writeFieldBegin(TOKEN_FIELD_DESC);
+          oprot.writeString(struct.token);
+          oprot.writeFieldEnd();
+        }
         if (struct.param != null) {
           oprot.writeFieldBegin(PARAM_FIELD_DESC);
           struct.param.write(oprot);
@@ -10934,10 +11355,16 @@ public class CloudHardDiskService {
       public void write(org.apache.thrift.protocol.TProtocol prot, downloadFile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetParam()) {
+        if (struct.isSetToken()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetParam()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetToken()) {
+          oprot.writeString(struct.token);
+        }
         if (struct.isSetParam()) {
           struct.param.write(oprot);
         }
@@ -10946,8 +11373,12 @@ public class CloudHardDiskService {
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, downloadFile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
+          struct.token = iprot.readString();
+          struct.setTokenIsSet(true);
+        }
+        if (incoming.get(1)) {
           struct.param = new DownloadParam();
           struct.param.read(iprot);
           struct.setParamIsSet(true);

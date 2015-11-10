@@ -41,6 +41,7 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
   private static final org.apache.thrift.protocol.TField RESULT_FIELD_DESC = new org.apache.thrift.protocol.TField("result", org.apache.thrift.protocol.TType.STRUCT, (short)1);
   private static final org.apache.thrift.protocol.TField BIN_FIELD_DESC = new org.apache.thrift.protocol.TField("bin", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField OFFSET_FIELD_DESC = new org.apache.thrift.protocol.TField("offset", org.apache.thrift.protocol.TType.I64, (short)3);
+  private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)4);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -51,12 +52,14 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
   public RetHead result; // required
   public ByteBuffer bin; // required
   public long offset; // required
+  public String token; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     RESULT((short)1, "result"),
     BIN((short)2, "bin"),
-    OFFSET((short)3, "offset");
+    OFFSET((short)3, "offset"),
+    TOKEN((short)4, "token");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -77,6 +80,8 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
           return BIN;
         case 3: // OFFSET
           return OFFSET;
+        case 4: // TOKEN
+          return TOKEN;
         default:
           return null;
       }
@@ -128,6 +133,8 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , true)));
     tmpMap.put(_Fields.OFFSET, new org.apache.thrift.meta_data.FieldMetaData("offset", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
+    tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , "Token")));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(DownloadResult.class, metaDataMap);
   }
@@ -138,13 +145,15 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
   public DownloadResult(
     RetHead result,
     ByteBuffer bin,
-    long offset)
+    long offset,
+    String token)
   {
     this();
     this.result = result;
     this.bin = org.apache.thrift.TBaseHelper.copyBinary(bin);
     this.offset = offset;
     setOffsetIsSet(true);
+    this.token = token;
   }
 
   /**
@@ -159,6 +168,9 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       this.bin = org.apache.thrift.TBaseHelper.copyBinary(other.bin);
     }
     this.offset = other.offset;
+    if (other.isSetToken()) {
+      this.token = other.token;
+    }
   }
 
   public DownloadResult deepCopy() {
@@ -171,6 +183,7 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
     this.bin = null;
     setOffsetIsSet(false);
     this.offset = 0;
+    this.token = null;
   }
 
   public RetHead getResult() {
@@ -254,6 +267,30 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __OFFSET_ISSET_ID, value);
   }
 
+  public String getToken() {
+    return this.token;
+  }
+
+  public DownloadResult setToken(String token) {
+    this.token = token;
+    return this;
+  }
+
+  public void unsetToken() {
+    this.token = null;
+  }
+
+  /** Returns true if field token is set (has been assigned a value) and false otherwise */
+  public boolean isSetToken() {
+    return this.token != null;
+  }
+
+  public void setTokenIsSet(boolean value) {
+    if (!value) {
+      this.token = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case RESULT:
@@ -280,6 +317,14 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       }
       break;
 
+    case TOKEN:
+      if (value == null) {
+        unsetToken();
+      } else {
+        setToken((String)value);
+      }
+      break;
+
     }
   }
 
@@ -293,6 +338,9 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
 
     case OFFSET:
       return getOffset();
+
+    case TOKEN:
+      return getToken();
 
     }
     throw new IllegalStateException();
@@ -311,6 +359,8 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       return isSetBin();
     case OFFSET:
       return isSetOffset();
+    case TOKEN:
+      return isSetToken();
     }
     throw new IllegalStateException();
   }
@@ -355,6 +405,15 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
         return false;
     }
 
+    boolean this_present_token = true && this.isSetToken();
+    boolean that_present_token = true && that.isSetToken();
+    if (this_present_token || that_present_token) {
+      if (!(this_present_token && that_present_token))
+        return false;
+      if (!this.token.equals(that.token))
+        return false;
+    }
+
     return true;
   }
 
@@ -376,6 +435,11 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
     list.add(present_offset);
     if (present_offset)
       list.add(offset);
+
+    boolean present_token = true && (isSetToken());
+    list.add(present_token);
+    if (present_token)
+      list.add(token);
 
     return list.hashCode();
   }
@@ -418,6 +482,16 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetToken()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -456,6 +530,14 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
     if (!first) sb.append(", ");
     sb.append("offset:");
     sb.append(this.offset);
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("token:");
+    if (this.token == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.token);
+    }
     first = false;
     sb.append(")");
     return sb.toString();
@@ -530,6 +612,14 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 4: // TOKEN
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.token = iprot.readString();
+              struct.setTokenIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -558,6 +648,11 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       oprot.writeFieldBegin(OFFSET_FIELD_DESC);
       oprot.writeI64(struct.offset);
       oprot.writeFieldEnd();
+      if (struct.token != null) {
+        oprot.writeFieldBegin(TOKEN_FIELD_DESC);
+        oprot.writeString(struct.token);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -585,7 +680,10 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       if (struct.isSetOffset()) {
         optionals.set(2);
       }
-      oprot.writeBitSet(optionals, 3);
+      if (struct.isSetToken()) {
+        optionals.set(3);
+      }
+      oprot.writeBitSet(optionals, 4);
       if (struct.isSetResult()) {
         struct.result.write(oprot);
       }
@@ -595,12 +693,15 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       if (struct.isSetOffset()) {
         oprot.writeI64(struct.offset);
       }
+      if (struct.isSetToken()) {
+        oprot.writeString(struct.token);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, DownloadResult struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(3);
+      BitSet incoming = iprot.readBitSet(4);
       if (incoming.get(0)) {
         struct.result = new RetHead();
         struct.result.read(iprot);
@@ -613,6 +714,10 @@ public class DownloadResult implements org.apache.thrift.TBase<DownloadResult, D
       if (incoming.get(2)) {
         struct.offset = iprot.readI64();
         struct.setOffsetIsSet(true);
+      }
+      if (incoming.get(3)) {
+        struct.token = iprot.readString();
+        struct.setTokenIsSet(true);
       }
     }
   }

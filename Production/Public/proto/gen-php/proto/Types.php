@@ -772,6 +772,10 @@ class DownloadResult {
    * @var int
    */
   public $offset = null;
+  /**
+   * @var string
+   */
+  public $token = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -789,6 +793,10 @@ class DownloadResult {
           'var' => 'offset',
           'type' => TType::I64,
           ),
+        4 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -800,6 +808,9 @@ class DownloadResult {
       }
       if (isset($vals['offset'])) {
         $this->offset = $vals['offset'];
+      }
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
       }
     }
   }
@@ -845,6 +856,13 @@ class DownloadResult {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -876,6 +894,11 @@ class DownloadResult {
       $xfer += $output->writeI64($this->offset);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 4);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -902,10 +925,6 @@ class DownloadParam {
    * @var int
    */
   public $reqlen = 1024;
-  /**
-   * @var string
-   */
-  public $token = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -922,10 +941,6 @@ class DownloadParam {
           'var' => 'reqlen',
           'type' => TType::I32,
           ),
-        4 => array(
-          'var' => 'token',
-          'type' => TType::STRING,
-          ),
         );
     }
     if (is_array($vals)) {
@@ -937,9 +952,6 @@ class DownloadParam {
       }
       if (isset($vals['reqlen'])) {
         $this->reqlen = $vals['reqlen'];
-      }
-      if (isset($vals['token'])) {
-        $this->token = $vals['token'];
       }
     }
   }
@@ -984,13 +996,6 @@ class DownloadParam {
             $xfer += $input->skip($ftype);
           }
           break;
-        case 4:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -1017,11 +1022,6 @@ class DownloadParam {
     if ($this->reqlen !== null) {
       $xfer += $output->writeFieldBegin('reqlen', TType::I32, 3);
       $xfer += $output->writeI32($this->reqlen);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 4);
-      $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -1353,10 +1353,6 @@ class UploadParam {
   /**
    * @var string
    */
-  public $token = null;
-  /**
-   * @var string
-   */
   public $filename = null;
   /**
    * @var int
@@ -1371,27 +1367,20 @@ class UploadParam {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'token',
-          'type' => TType::STRING,
-          ),
-        2 => array(
           'var' => 'filename',
           'type' => TType::STRING,
           ),
-        3 => array(
+        2 => array(
           'var' => 'offerstar',
           'type' => TType::I64,
           ),
-        4 => array(
+        3 => array(
           'var' => 'bin',
           'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['token'])) {
-        $this->token = $vals['token'];
-      }
       if (isset($vals['filename'])) {
         $this->filename = $vals['filename'];
       }
@@ -1425,26 +1414,19 @@ class UploadParam {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->filename);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
-        case 3:
+        case 2:
           if ($ftype == TType::I64) {
             $xfer += $input->readI64($this->offerstar);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
-        case 4:
+        case 3:
           if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->bin);
           } else {
@@ -1464,145 +1446,19 @@ class UploadParam {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('UploadParam');
-    if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
-      $xfer += $output->writeString($this->token);
-      $xfer += $output->writeFieldEnd();
-    }
     if ($this->filename !== null) {
-      $xfer += $output->writeFieldBegin('filename', TType::STRING, 2);
+      $xfer += $output->writeFieldBegin('filename', TType::STRING, 1);
       $xfer += $output->writeString($this->filename);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->offerstar !== null) {
-      $xfer += $output->writeFieldBegin('offerstar', TType::I64, 3);
+      $xfer += $output->writeFieldBegin('offerstar', TType::I64, 2);
       $xfer += $output->writeI64($this->offerstar);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->bin !== null) {
-      $xfer += $output->writeFieldBegin('bin', TType::STRING, 4);
+      $xfer += $output->writeFieldBegin('bin', TType::STRING, 3);
       $xfer += $output->writeString($this->bin);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
-  }
-
-}
-
-class QueryAttribute {
-  static $_TSPEC;
-
-  /**
-   * @var string
-   */
-  public $token = null;
-  /**
-   * @var string
-   */
-  public $attribute = null;
-  /**
-   * @var string
-   */
-  public $objid = null;
-
-  public function __construct($vals=null) {
-    if (!isset(self::$_TSPEC)) {
-      self::$_TSPEC = array(
-        1 => array(
-          'var' => 'token',
-          'type' => TType::STRING,
-          ),
-        2 => array(
-          'var' => 'attribute',
-          'type' => TType::STRING,
-          ),
-        3 => array(
-          'var' => 'objid',
-          'type' => TType::STRING,
-          ),
-        );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['token'])) {
-        $this->token = $vals['token'];
-      }
-      if (isset($vals['attribute'])) {
-        $this->attribute = $vals['attribute'];
-      }
-      if (isset($vals['objid'])) {
-        $this->objid = $vals['objid'];
-      }
-    }
-  }
-
-  public function getName() {
-    return 'QueryAttribute';
-  }
-
-  public function read($input)
-  {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->attribute);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->objid);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
-  }
-
-  public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('QueryAttribute');
-    if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
-      $xfer += $output->writeString($this->token);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->attribute !== null) {
-      $xfer += $output->writeFieldBegin('attribute', TType::STRING, 2);
-      $xfer += $output->writeString($this->attribute);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->objid !== null) {
-      $xfer += $output->writeFieldBegin('objid', TType::STRING, 3);
-      $xfer += $output->writeString($this->objid);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -1616,6 +1472,10 @@ class QueryAttributeResult {
   static $_TSPEC;
 
   /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
    * @var string
    */
   public $token = null;
@@ -1628,16 +1488,24 @@ class QueryAttributeResult {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
           'var' => 'token',
           'type' => TType::STRING,
           ),
-        2 => array(
+        3 => array(
           'var' => 'attribute_value',
           'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
       }
@@ -1667,13 +1535,21 @@ class QueryAttributeResult {
       switch ($fid)
       {
         case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
           if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->token);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
-        case 2:
+        case 3:
           if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->attribute_value);
           } else {
@@ -1693,13 +1569,21 @@ class QueryAttributeResult {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('QueryAttributeResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 2);
       $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->attribute_value !== null) {
-      $xfer += $output->writeFieldBegin('attribute_value', TType::STRING, 2);
+      $xfer += $output->writeFieldBegin('attribute_value', TType::STRING, 3);
       $xfer += $output->writeString($this->attribute_value);
       $xfer += $output->writeFieldEnd();
     }
