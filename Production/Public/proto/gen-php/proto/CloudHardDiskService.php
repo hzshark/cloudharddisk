@@ -51,9 +51,14 @@ interface CloudHardDiskServiceIf {
   /**
    * @param string $token
    * @param int $type
-   * @return \proto\QueryResult
+   * @return \proto\QueryFResult
    */
   public function queryFileList($token, $type);
+  /**
+   * @param \proto\QueryAttribute $qAttribute
+   * @return \proto\QueryAttributeResult
+   */
+  public function queryAttribute(\proto\QueryAttribute $qAttribute);
   /**
    * @param string $token
    * @param int $type
@@ -78,7 +83,7 @@ interface CloudHardDiskServiceIf {
   /**
    * @param string $token
    * @param int $type
-   * @return \proto\usageResult
+   * @return \proto\UsageResult
    */
   public function querusage($token, $type);
   /**
@@ -360,6 +365,57 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
       return $result->success;
     }
     throw new \Exception("queryFileList failed: unknown result");
+  }
+
+  public function queryAttribute(\proto\QueryAttribute $qAttribute)
+  {
+    $this->send_queryAttribute($qAttribute);
+    return $this->recv_queryAttribute();
+  }
+
+  public function send_queryAttribute(\proto\QueryAttribute $qAttribute)
+  {
+    $args = new \proto\CloudHardDiskService_queryAttribute_args();
+    $args->qAttribute = $qAttribute;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'queryAttribute', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('queryAttribute', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_queryAttribute()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_queryAttribute_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \proto\CloudHardDiskService_queryAttribute_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("queryAttribute failed: unknown result");
   }
 
   public function allocobj($token, $type, $tagname)
@@ -1516,7 +1572,7 @@ class CloudHardDiskService_queryFileList_result {
   static $_TSPEC;
 
   /**
-   * @var \proto\QueryResult
+   * @var \proto\QueryFResult
    */
   public $success = null;
 
@@ -1526,7 +1582,7 @@ class CloudHardDiskService_queryFileList_result {
         0 => array(
           'var' => 'success',
           'type' => TType::STRUCT,
-          'class' => '\proto\QueryResult',
+          'class' => '\proto\QueryFResult',
           ),
         );
     }
@@ -1558,7 +1614,7 @@ class CloudHardDiskService_queryFileList_result {
       {
         case 0:
           if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\QueryResult();
+            $this->success = new \proto\QueryFResult();
             $xfer += $this->success->read($input);
           } else {
             $xfer += $input->skip($ftype);
@@ -1577,6 +1633,166 @@ class CloudHardDiskService_queryFileList_result {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('CloudHardDiskService_queryFileList_result');
+    if ($this->success !== null) {
+      if (!is_object($this->success)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('success', TType::STRUCT, 0);
+      $xfer += $this->success->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class CloudHardDiskService_queryAttribute_args {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\QueryAttribute
+   */
+  public $qAttribute = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'qAttribute',
+          'type' => TType::STRUCT,
+          'class' => '\proto\QueryAttribute',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['qAttribute'])) {
+        $this->qAttribute = $vals['qAttribute'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'CloudHardDiskService_queryAttribute_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->qAttribute = new \proto\QueryAttribute();
+            $xfer += $this->qAttribute->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('CloudHardDiskService_queryAttribute_args');
+    if ($this->qAttribute !== null) {
+      if (!is_object($this->qAttribute)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('qAttribute', TType::STRUCT, 1);
+      $xfer += $this->qAttribute->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class CloudHardDiskService_queryAttribute_result {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\QueryAttributeResult
+   */
+  public $success = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::STRUCT,
+          'class' => '\proto\QueryAttributeResult',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'CloudHardDiskService_queryAttribute_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::STRUCT) {
+            $this->success = new \proto\QueryAttributeResult();
+            $xfer += $this->success->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('CloudHardDiskService_queryAttribute_result');
     if ($this->success !== null) {
       if (!is_object($this->success)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
@@ -2331,7 +2547,7 @@ class CloudHardDiskService_querusage_result {
   static $_TSPEC;
 
   /**
-   * @var \proto\usageResult
+   * @var \proto\UsageResult
    */
   public $success = null;
 
@@ -2341,7 +2557,7 @@ class CloudHardDiskService_querusage_result {
         0 => array(
           'var' => 'success',
           'type' => TType::STRUCT,
-          'class' => '\proto\usageResult',
+          'class' => '\proto\UsageResult',
           ),
         );
     }
@@ -2373,7 +2589,7 @@ class CloudHardDiskService_querusage_result {
       {
         case 0:
           if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\usageResult();
+            $this->success = new \proto\UsageResult();
             $xfer += $this->success->read($input);
           } else {
             $xfer += $input->skip($ftype);
@@ -2684,6 +2900,25 @@ class CloudHardDiskServiceProcessor {
     else
     {
       $output->writeMessageBegin('queryFileList', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_queryAttribute($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_queryAttribute_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_queryAttribute_result();
+    $result->success = $this->handler_->queryAttribute($args->qAttribute);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'queryAttribute', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('queryAttribute', TMessageType::REPLY, $seqid);
       $result->write($output);
       $output->writeMessageEnd();
       $output->getTransport()->flush();

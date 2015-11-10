@@ -110,9 +110,10 @@ struct DownloadResult {
 * download parameter
 */
 struct DownloadParam {
-   1: OBJID  objid;	
+   1: OBJID objid;	
    2: i64 offerset=0;  
    3: i32 reqlen=1024; //默认传1k 一次
+   4:Token token;
 }
 
 
@@ -124,7 +125,7 @@ struct UploaddResult {
 // apply new result // 申请新的文件资源id  用于备份上传到  短信,通讯录
 struct AllocObjResult {
   1: RetHead result;
-  2: OBJID  resourceid ;   //资源号, 指向bucket下或某个object资源
+  2: OBJID resourceid ;   //资源号, 指向bucket下或某个object资源
 }
 
 //query usage
@@ -148,6 +149,21 @@ struct UploadParam {
    3: i64 offerstar=0;
    4: binary bin;
 }
+
+struct QueryAttribute {
+    1: Token token;
+    2: string attribute;
+    3: OBJID  objid;  //资源id ,某个bucket的一个ojbect 
+}
+
+struct QueryAttributeResult {
+    1: Token token;
+    2: string attribute_value;
+}
+
+
+
+
 /**
  * Structs can also be exceptions, if they are nasty
 exception InvalidOperation {
@@ -179,6 +195,9 @@ service CloudHardDiskService {
 
     //queryResult queryFileList(1:i64 userid);
     QueryFResult queryFileList(1:Token token ,2:FTYPE type);
+
+
+    QueryAttributeResult queryAttribute(1:QueryAttribute qAttribute);
     
     //RetHead     sysncnotepad(1:SYNCTYPE , 2:List notes);//完善中
  
@@ -198,7 +217,7 @@ service CloudHardDiskService {
 
     UsageResult querusage(1:Token token,2:FTYPE type)		   
     
-    DownloadResult downloadFile(1:Token token,2:DownloadParam param); 
+    DownloadResult downloadFile(1:DownloadParam param); 
 
 }
 
