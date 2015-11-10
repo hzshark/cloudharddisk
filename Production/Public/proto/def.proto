@@ -208,10 +208,14 @@ service CloudHardDiskService {
     RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin );// 分块写入文件
     
     RetHead   commitObj(1:Token token,2:OBJID oid,3:ObjDescrp odescr );// param3 object 的描述  存放sms 通信表述信息
+    
+    RetHead  delObj(1:Token token,2:OBJID oid);
 
     UsageResult querusage(1:Token token,2:FTYPE type)		   
     
     DownloadResult downloadFile(1:Token token ,2:DownloadParam param); 
+    
+    
 
 }
 
