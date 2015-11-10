@@ -187,8 +187,8 @@ service CloudHardDiskService {
 
     UploaddResult uploadFile(1:Token token ,2:UploadParam uploadparam);
 
-    //queryResult queryFileList(1:i64 userid);
-    QueryFResult queryFileList(1:Token token ,2:FTYPE type);
+    //queryResult queryFileList(1:i64 userid); // param3 is offset , parma4 is expect return numbers 
+    QueryFResult queryFileList(1:Token token ,2:FTYPE type,3:i32 start,4:i32 excpet_num);
 
 
     QueryAttributeResult queryAttribute(1:Token token,2: string attribute,3: OBJID  objid);
