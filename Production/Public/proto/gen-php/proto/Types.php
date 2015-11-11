@@ -582,6 +582,14 @@ class LoginResult {
    */
   public $uspace = null;
   /**
+   * @var string
+   */
+  public $aliasname = null;
+  /**
+   * @var int
+   */
+  public $userid = null;
+  /**
    * @var int
    */
   public $flow = null;
@@ -611,10 +619,18 @@ class LoginResult {
           'type' => TType::I32,
           ),
         5 => array(
+          'var' => 'aliasname',
+          'type' => TType::STRING,
+          ),
+        6 => array(
+          'var' => 'userid',
+          'type' => TType::I32,
+          ),
+        7 => array(
           'var' => 'flow',
           'type' => TType::I32,
           ),
-        6 => array(
+        8 => array(
           'var' => 'uflow',
           'type' => TType::I32,
           ),
@@ -632,6 +648,12 @@ class LoginResult {
       }
       if (isset($vals['uspace'])) {
         $this->uspace = $vals['uspace'];
+      }
+      if (isset($vals['aliasname'])) {
+        $this->aliasname = $vals['aliasname'];
+      }
+      if (isset($vals['userid'])) {
+        $this->userid = $vals['userid'];
       }
       if (isset($vals['flow'])) {
         $this->flow = $vals['flow'];
@@ -691,13 +713,27 @@ class LoginResult {
           }
           break;
         case 5:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->aliasname);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 6:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->userid);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 7:
           if ($ftype == TType::I32) {
             $xfer += $input->readI32($this->flow);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
-        case 6:
+        case 8:
           if ($ftype == TType::I32) {
             $xfer += $input->readI32($this->uflow);
           } else {
@@ -740,13 +776,23 @@ class LoginResult {
       $xfer += $output->writeI32($this->uspace);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->aliasname !== null) {
+      $xfer += $output->writeFieldBegin('aliasname', TType::STRING, 5);
+      $xfer += $output->writeString($this->aliasname);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->userid !== null) {
+      $xfer += $output->writeFieldBegin('userid', TType::I32, 6);
+      $xfer += $output->writeI32($this->userid);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->flow !== null) {
-      $xfer += $output->writeFieldBegin('flow', TType::I32, 5);
+      $xfer += $output->writeFieldBegin('flow', TType::I32, 7);
       $xfer += $output->writeI32($this->flow);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->uflow !== null) {
-      $xfer += $output->writeFieldBegin('uflow', TType::I32, 6);
+      $xfer += $output->writeFieldBegin('uflow', TType::I32, 8);
       $xfer += $output->writeI32($this->uflow);
       $xfer += $output->writeFieldEnd();
     }
