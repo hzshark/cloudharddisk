@@ -85,6 +85,8 @@ struct FileInfo{
 struct QueryFResult {
   1: RetHead result;
   2: optional FilesMatchList files;
+  /* 剩余的记录条数 */
+  3: optional i32 spare ;
 }
 
 // login result
