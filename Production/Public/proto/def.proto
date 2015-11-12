@@ -106,7 +106,7 @@ struct LoginResult {
 struct DownloadResult {
  1: RetHead result;
  2: binary bin;
- 3: i64  spare ;   //剩余字节数
+// 3: i64  spare ;   //剩余字节数
 }
 
 
