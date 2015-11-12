@@ -106,8 +106,7 @@ struct LoginResult {
 struct DownloadResult {
  1: RetHead result;
  2: binary bin;
- 3: i64  offset ;   //
- 4:Token token;
+ 3: i64  spare ;   //剩余字节数
 }
 
 
@@ -118,7 +117,7 @@ struct DownloadResult {
 struct DownloadParam {
    1: OBJID objid;	
    2: i64 offerset=0;  
-   3: i32 reqlen=1024; //默认传1k 一次
+   3: i32 reqlen=1024; //默认每次请求1k字节的数据
 }
 
 
