@@ -206,6 +206,8 @@ public class TClient {
     {
 
         int fsize=0;
+        int rep_bytes=1024;
+        int req_bytes=1024;
         FileInputStream fis = null;
         FileOutputStream os =null;
         if (f.exists()) {
@@ -240,11 +242,11 @@ public class TClient {
 
         DownloadParam req=new DownloadParam();
         req.setObjid(objid);
+        req_bytes=req.getReqlen();//get defaul request 1024 bytes
 
         DownloadResult rep = null;
 
-        int rep_bytes=1024;
-        int req_bytes=1024;
+
         byte[] buffer=null;
         while ( true ) {
             try {
