@@ -2,9 +2,13 @@ package com.chd;
 
 import com.chd.proto.AllocObjResult;
 import com.chd.proto.CloudHardDiskService;
+import com.chd.proto.DownloadParam;
+import com.chd.proto.DownloadResult;
 import com.chd.proto.Errcode;
 import com.chd.proto.FTYPE;
+import com.chd.proto.FileInfo;
 import com.chd.proto.LoginResult;
+import com.chd.proto.QueryFResult;
 import com.chd.proto.RetHead;
 import com.chd.proto.mLoginResult;
 
@@ -24,11 +28,16 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class TClient {
@@ -41,7 +50,8 @@ public class TClient {
     private  static Set<URLBean> servletUrl=null;
     private static String token;
 
-    class URLBean
+
+    private class URLBean
     {
         private String url;
         private int available;
@@ -187,19 +197,135 @@ public class TClient {
             /*
             TO DO
             * */
+        bitmap.getTotalSpace();
         return true;
     }
 
-    protected boolean downloadBigfile()
+
+    public boolean downloadfile(File f,String objid,DBhandler db)
     {
-        return true;
+
+        int fsize=0;
+        FileInputStream fis = null;
+        FileOutputStream os =null;
+        if (f.exists()) {
+            try {
+
+                fis = new FileInputStream(f);
+                fsize = fis.available();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                return false;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        else {
+            try {
+                f.createNewFile();
+                 os =new FileOutputStream(f);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return  false;
+            }
+        }
+        try {
+             os =new FileOutputStream(f);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        DownloadParam req=new DownloadParam();
+        req.setObjid(objid);
+
+        DownloadResult rep = null;
+
+        int rep_bytes=1024;
+        int req_bytes=1024;
+        byte[] buffer=null;
+        while ( true ) {
+            try {
+                rep= mclient.downloadFile(token,req);
+                if (rep.isSetResult() && rep.getResult().getRet()==Errcode.SUCCESS)
+                {
+                    buffer=rep.getBin();
+                    req_bytes=buffer.length;
+
+                    os.write(buffer);
+                }
+                if (req_bytes!=rep_bytes)
+                    break;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        //db.updateDownloadingFile();
+        return  true;
+
     }
 
-    public List<?> queryfile(FTYPE ftype)
+    protected boolean downloadBigfile( OutputStream os ,String objid)
     {
-        return  new ArrayList<>();
+        while (true)
+        {
+            //mclient.downloadFile()
+            try {
+                os.write(new byte[100]);
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
+ /*   public List<?> queryFileList(FTYPE ftype,int start,int except)
+    {
+        try {
+            QueryFResult ret=mclient.queryFileList(token, ftype,start,except);
+            if (ret.getResult().getRet()==Errcode.SUCCESS)
+                return ret.getFiles();
+
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }*/
+
+
+    //limited return
+
+
+
+    public List<FileInfo> queryFileList(FTYPE ftype,int begin,int epnum)
+    {
+        try {
+            QueryFResult ret=mclient.queryFileList(token, ftype,begin,epnum);
+            if (ret.getResult().getRet()==Errcode.SUCCESS)
+                return ret.getFiles();
+
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
+
+    public boolean delObj(List<?> list)
+    {
+
+        try {
+             mclient.send_allocobj(token, FTYPE.DFlOW, "objid");
+//            if (ret.getResult().getRet()==Errcode.SUCCESS)
+//                return ret.getFiles();
+
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+        return  true;
+    }
     private String  AllocObj(FTYPE ftype,String fname) throws TException
     {
 
@@ -212,11 +338,14 @@ public class TClient {
 
         return  null;
     }
+    private void CommitObj(String objid,Map<String,String> desc) throws TException {
+
+            mclient.commitObj(token,objid,desc);
+
+    }
 
     private void  AppendObj(String objid,ByteBuffer bins) throws Exception
     {
-
-
         RetHead ret=mclient.appendObj(token,objid,bins);
         if (ret.getRet()!= Errcode.SUCCESS)
         {
@@ -238,15 +367,25 @@ public class TClient {
                 throw new Exception("alloc stroge obj fail");
         }
 
-        public void   Append(byte[] bytes) throws Exception {
+        public boolean  Append(byte[] bytes) throws Exception {
+            /*imcompleted*/
             bin= ByteBuffer.wrap(bytes);
             AppendObj(obj, bin);
             bin.clear();
+            return  true;
         }
 
-
-
+        public void Close(Map<String,String> desc)  throws Exception
+        {
+            CommitObj(obj,desc);
+            //File path = Environment.getDataDirectory();
+        }
 
     }
 
+
+    static  void main(String[] args)
+    {
+
+    }
 }
