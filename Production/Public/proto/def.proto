@@ -38,7 +38,8 @@ enum Errcode
     INVAILD_IDENTIFY		= 4;// token 验证错误
     EXCEED_SESSION_LIMIT	= 5;// 并发限制 
     TRY_LATER		        = 6;
-    ERR_OCCURED			= 7;// 未知异常错误     	
+    ERR_OCCURED			= 7;// 未知异常错误    
+    FILE_EXIST			= 8;// 文件已经存在
 }
 
 enum FTYPE{
@@ -82,11 +83,16 @@ struct FileInfo{
 
 
 // rpc return 	data
-struct QueryFResult {
+struct QueryFListResult {
   1: RetHead result;
   2: optional FilesMatchList files;
   /* 剩余的记录条数 */
   3: optional i32 spare ;
+}
+
+struct QueryFResult {
+  1: RetHead result;
+  2: optional FileInfo finfo;
 }
 
 // login result
@@ -192,8 +198,9 @@ service CloudHardDiskService {
     UploaddResult uploadFile(1:Token token ,2:UploadParam uploadparam);
 
     //queryResult queryFileList(1:i64 userid); // param3 is offset , parma4 is expect return numbers 
-    QueryFResult queryFileList(1:Token token ,2:FTYPE type,3:i32 start,4:i32 excpet_num);
+    QueryFListResult queryFileList(1:Token token ,2:FTYPE type,3:i32 start,4:i32 excpet_num);
 
+    QueryFResult QueryFile(1:Token token ,2:FTYPE type,3:string fname);
 
     QueryAttributeResult queryAttribute(1:Token token,2: string attribute,3: OBJID  objid);
     
@@ -207,6 +214,9 @@ service CloudHardDiskService {
    /*
     申请新的存储obj
    */
+   
+    
+    
     AllocObjResult  allocobj(1:Token token ,2:FTYPE type,3:string tagname);	
 
     RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin );// 分块写入文件
