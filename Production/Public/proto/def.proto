@@ -229,7 +229,7 @@ service CloudHardDiskService {
     
     DownloadResult downloadFile(1:Token token ,2:DownloadParam param); 
     
-    
+    RetHead  renameObj(1:Token token,2:OBJID oid,3:string  newname);
 
 }
 
