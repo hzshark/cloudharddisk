@@ -165,7 +165,11 @@ struct QueryAttributeResult {
     3: string attribute_value;
 }
 
-
+struct CreateShareResult {
+    1: RetHead result; 	
+    2: Token token;
+    3: optional string url;
+}
 
 
 /**
@@ -230,6 +234,8 @@ service CloudHardDiskService {
     DownloadResult downloadFile(1:Token token ,2:DownloadParam param); 
     
     RetHead  renameObj(1:Token token,2:OBJID oid,3:string  newname);
+    
+    CreateShareResult CreateShare(1:Token token,2:OBJID oid); //需要 有一个默认分享到期时间,由服务端控制
 
 }
 
