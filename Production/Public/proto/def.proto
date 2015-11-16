@@ -80,8 +80,8 @@ struct FileInfo{
  3:OBJID  objid   ;  // 对象资源号 
  4:Ftype  ftype	  ;
  5:string lastModified;
- //6:optional string fpath;  //手机中的图片存储位置
- 6:bool isstage   ;  // true 表示文件 还未上传完成,false 表示 
+ //6:optional string fpath;    //手机中的图片存储位置
+
 }
 
 
@@ -95,7 +95,8 @@ struct QueryFListResult {
 
 struct QueryFResult {
   1: RetHead result;
-  2: optional FileInfo finfo;
+  2: optional FileInfo finfo;     
+  //3: optional bool isstage   ;  // true 表示文件 还未上传完成,false 表示 
 }
 
 // login result
@@ -229,11 +230,12 @@ service CloudHardDiskService {
 
    /*
     申请新的存储obj
+    文件名为 *.mp3~  ,comit以后去掉~ . 表示文件完成.
    */
    
     
     
-    AllocObjResult  allocobj(1:Token token ,2:FTYPE type,3:string tagname);	
+    AllocObjResult  allocobj(1:Token token ,2:FTYPE type,3:string tagname); 
 
     RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin );// 分块写入文件
     
