@@ -81,6 +81,7 @@ struct FileInfo{
  4:Ftype  ftype	  ;
  5:string lastModified;
  //6:optional string fpath;  //手机中的图片存储位置
+ 6:bool isstage   ;  // true 表示文件 还未上传完成,false 表示 
 }
 
 
