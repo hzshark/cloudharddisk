@@ -28,6 +28,7 @@ typedef list <FileInfo>	FilesMatchList
 typedef string Token
 typedef string OBJID   //资源id ,某个bucket的一个ojbect 
 
+typedef list <BucketInfo> BucketList 
 
 enum Errcode
 {
@@ -180,7 +181,16 @@ exception InvalidOperation {
 }
  */
 
+struct BucketInfo {
+    1:string name;
+    2:string createtime;
+}
 
+struct BucketListResult {
+    1:RetHead result;
+    2:Token token;
+    3:BucketList bucketlist;
+}
 
 /**
  * Ahh, now onto the cool part, defining a service. Services just need a name
@@ -236,6 +246,13 @@ service CloudHardDiskService {
     RetHead  renameObj(1:Token token,2:OBJID oid,3:string  newname);
     
     CreateShareResult CreateShare(1:Token token,2:OBJID oid); //需要 有一个默认分享到期时间,由服务端控制
+    
+    RetHead createBucket(1:Token token, 2:string bucketname); 
+    
+    BucketList queryBucket(1:Token token);
+    RetHead delBucket(1:Token token, 2:string bucketname);
+    RetHead delNonEmptyBucket(1:Token token, 2:string bucketname);
+    
 
 }
 
