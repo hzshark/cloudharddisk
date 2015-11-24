@@ -78,7 +78,7 @@ struct FileInfo{
  1:string filename;
  2:i32    filesize;  //单位k
  3:OBJID  objid   ;  // 对象资源号 
- 4:Ftype  ftype	  ;
+ 4:FTYPE  ftype	  ;
  5:string lastModified;
  //6:optional string fpath;    //手机中的图片存储位置
 

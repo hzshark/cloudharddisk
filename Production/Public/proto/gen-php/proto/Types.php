@@ -305,13 +305,13 @@ class FileInfo {
    */
   public $objid = null;
   /**
-   * @var string
+   * @var int
    */
-  public $lastModified = null;
+  public $ftype = null;
   /**
    * @var string
    */
-  public $fpath = null;
+  public $lastModified = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -329,11 +329,11 @@ class FileInfo {
           'type' => TType::STRING,
           ),
         4 => array(
-          'var' => 'lastModified',
-          'type' => TType::STRING,
+          'var' => 'ftype',
+          'type' => TType::I32,
           ),
         5 => array(
-          'var' => 'fpath',
+          'var' => 'lastModified',
           'type' => TType::STRING,
           ),
         );
@@ -348,11 +348,11 @@ class FileInfo {
       if (isset($vals['objid'])) {
         $this->objid = $vals['objid'];
       }
+      if (isset($vals['ftype'])) {
+        $this->ftype = $vals['ftype'];
+      }
       if (isset($vals['lastModified'])) {
         $this->lastModified = $vals['lastModified'];
-      }
-      if (isset($vals['fpath'])) {
-        $this->fpath = $vals['fpath'];
       }
     }
   }
@@ -398,15 +398,15 @@ class FileInfo {
           }
           break;
         case 4:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->lastModified);
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->ftype);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 5:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->fpath);
+            $xfer += $input->readString($this->lastModified);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -439,14 +439,14 @@ class FileInfo {
       $xfer += $output->writeString($this->objid);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->lastModified !== null) {
-      $xfer += $output->writeFieldBegin('lastModified', TType::STRING, 4);
-      $xfer += $output->writeString($this->lastModified);
+    if ($this->ftype !== null) {
+      $xfer += $output->writeFieldBegin('ftype', TType::I32, 4);
+      $xfer += $output->writeI32($this->ftype);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->fpath !== null) {
-      $xfer += $output->writeFieldBegin('fpath', TType::STRING, 5);
-      $xfer += $output->writeString($this->fpath);
+    if ($this->lastModified !== null) {
+      $xfer += $output->writeFieldBegin('lastModified', TType::STRING, 5);
+      $xfer += $output->writeString($this->lastModified);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
