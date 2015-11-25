@@ -150,6 +150,18 @@ struct UsageResult
   3:i32 usage;
 }
 
+
+struct AppInfo
+{
+  1:string AppName;
+  2:string AppVersion;
+  3:string PackageName;
+  4:i64 size;
+  5:string url;
+}
+
+
+
 /**
 **
 * upload parameter
@@ -173,6 +185,11 @@ struct CreateShareResult {
     1: RetHead result; 	
     2: Token token;
     3: optional string url;
+}
+
+struct QueryAppResult {
+    1: RetHead result; 	
+    2: AppInfo  info;
 }
 
 
@@ -256,6 +273,8 @@ service CloudHardDiskService {
     BucketList queryBucket(1:Token token);
     RetHead delBucket(1:Token token, 2:string bucketname);
     RetHead delNonEmptyBucket(1:Token token, 2:string bucketname);
+    
+    QueryAppResult queryApps();
     
 
 }
