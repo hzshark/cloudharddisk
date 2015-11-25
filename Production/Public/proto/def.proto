@@ -76,7 +76,7 @@ struct RetHead{
 
 struct FileInfo{ 
  1:string filename;
- 2:i32    filesize;  //单位k
+ 2:i64    filesize;  //单位byte
  3:OBJID  objid   ;  // 对象资源号 
  4:FTYPE  ftype	  ;
  5:string lastModified;
