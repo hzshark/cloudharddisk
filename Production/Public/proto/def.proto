@@ -157,7 +157,8 @@ struct AppInfo
   2:string AppVersion;
   3:string PackageName;
   4:i64 size;
-  5:string url;
+  5:string url;// 下载地址
+  6:string ico_url; //app图标
 }
 
 
@@ -189,7 +190,7 @@ struct CreateShareResult {
 
 struct QueryAppResult {
     1: RetHead result; 	
-    2: AppInfo  info;
+    2: list<AppInfo>  info;
 }
 
 
