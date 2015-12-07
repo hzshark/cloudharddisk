@@ -309,7 +309,7 @@ class FileInfo {
    */
   public $ftype = null;
   /**
-   * @var string
+   * @var int
    */
   public $lastModified = null;
 
@@ -322,7 +322,7 @@ class FileInfo {
           ),
         2 => array(
           'var' => 'filesize',
-          'type' => TType::I32,
+          'type' => TType::I64,
           ),
         3 => array(
           'var' => 'objid',
@@ -334,7 +334,7 @@ class FileInfo {
           ),
         5 => array(
           'var' => 'lastModified',
-          'type' => TType::STRING,
+          'type' => TType::I64,
           ),
         );
     }
@@ -384,8 +384,8 @@ class FileInfo {
           }
           break;
         case 2:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->filesize);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->filesize);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -405,8 +405,8 @@ class FileInfo {
           }
           break;
         case 5:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->lastModified);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->lastModified);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -430,8 +430,8 @@ class FileInfo {
       $xfer += $output->writeFieldEnd();
     }
     if ($this->filesize !== null) {
-      $xfer += $output->writeFieldBegin('filesize', TType::I32, 2);
-      $xfer += $output->writeI32($this->filesize);
+      $xfer += $output->writeFieldBegin('filesize', TType::I64, 2);
+      $xfer += $output->writeI64($this->filesize);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->objid !== null) {
@@ -445,8 +445,8 @@ class FileInfo {
       $xfer += $output->writeFieldEnd();
     }
     if ($this->lastModified !== null) {
-      $xfer += $output->writeFieldBegin('lastModified', TType::STRING, 5);
-      $xfer += $output->writeString($this->lastModified);
+      $xfer += $output->writeFieldBegin('lastModified', TType::I64, 5);
+      $xfer += $output->writeI64($this->lastModified);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -1496,6 +1496,196 @@ class UsageResult {
 
 }
 
+class AppInfo {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $AppName = null;
+  /**
+   * @var string
+   */
+  public $AppVersion = null;
+  /**
+   * @var string
+   */
+  public $PackageName = null;
+  /**
+   * @var int
+   */
+  public $size = null;
+  /**
+   * @var string
+   */
+  public $url = null;
+  /**
+   * @var string
+   */
+  public $ico_url = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'AppName',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'AppVersion',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'PackageName',
+          'type' => TType::STRING,
+          ),
+        4 => array(
+          'var' => 'size',
+          'type' => TType::I64,
+          ),
+        5 => array(
+          'var' => 'url',
+          'type' => TType::STRING,
+          ),
+        6 => array(
+          'var' => 'ico_url',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['AppName'])) {
+        $this->AppName = $vals['AppName'];
+      }
+      if (isset($vals['AppVersion'])) {
+        $this->AppVersion = $vals['AppVersion'];
+      }
+      if (isset($vals['PackageName'])) {
+        $this->PackageName = $vals['PackageName'];
+      }
+      if (isset($vals['size'])) {
+        $this->size = $vals['size'];
+      }
+      if (isset($vals['url'])) {
+        $this->url = $vals['url'];
+      }
+      if (isset($vals['ico_url'])) {
+        $this->ico_url = $vals['ico_url'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'AppInfo';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->AppName);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->AppVersion);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->PackageName);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->size);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 5:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->url);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 6:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->ico_url);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('AppInfo');
+    if ($this->AppName !== null) {
+      $xfer += $output->writeFieldBegin('AppName', TType::STRING, 1);
+      $xfer += $output->writeString($this->AppName);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->AppVersion !== null) {
+      $xfer += $output->writeFieldBegin('AppVersion', TType::STRING, 2);
+      $xfer += $output->writeString($this->AppVersion);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->PackageName !== null) {
+      $xfer += $output->writeFieldBegin('PackageName', TType::STRING, 3);
+      $xfer += $output->writeString($this->PackageName);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->size !== null) {
+      $xfer += $output->writeFieldBegin('size', TType::I64, 4);
+      $xfer += $output->writeI64($this->size);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->url !== null) {
+      $xfer += $output->writeFieldBegin('url', TType::STRING, 5);
+      $xfer += $output->writeString($this->url);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ico_url !== null) {
+      $xfer += $output->writeFieldBegin('ico_url', TType::STRING, 6);
+      $xfer += $output->writeString($this->ico_url);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
 /**
  * *
  *  upload parameter
@@ -1876,6 +2066,137 @@ class CreateShareResult {
 
 }
 
+class QueryAppResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var \proto\AppInfo[]
+   */
+  public $info = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'info',
+          'type' => TType::LST,
+          'etype' => TType::STRUCT,
+          'elem' => array(
+            'type' => TType::STRUCT,
+            'class' => '\proto\AppInfo',
+            ),
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['info'])) {
+        $this->info = $vals['info'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'QueryAppResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::LST) {
+            $this->info = array();
+            $_size7 = 0;
+            $_etype10 = 0;
+            $xfer += $input->readListBegin($_etype10, $_size7);
+            for ($_i11 = 0; $_i11 < $_size7; ++$_i11)
+            {
+              $elem12 = null;
+              $elem12 = new \proto\AppInfo();
+              $xfer += $elem12->read($input);
+              $this->info []= $elem12;
+            }
+            $xfer += $input->readListEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('QueryAppResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->info !== null) {
+      if (!is_array($this->info)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('info', TType::LST, 2);
+      {
+        $output->writeListBegin(TType::STRUCT, count($this->info));
+        {
+          foreach ($this->info as $iter13)
+          {
+            $xfer += $iter13->write($output);
+          }
+        }
+        $output->writeListEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
 /**
  *  * Structs can also be exceptions, if they are nasty
  * exception InvalidOperation {
@@ -2070,15 +2391,15 @@ class BucketListResult {
         case 3:
           if ($ftype == TType::LST) {
             $this->bucketlist = array();
-            $_size7 = 0;
-            $_etype10 = 0;
-            $xfer += $input->readListBegin($_etype10, $_size7);
-            for ($_i11 = 0; $_i11 < $_size7; ++$_i11)
+            $_size14 = 0;
+            $_etype17 = 0;
+            $xfer += $input->readListBegin($_etype17, $_size14);
+            for ($_i18 = 0; $_i18 < $_size14; ++$_i18)
             {
-              $elem12 = null;
-              $elem12 = new \proto\BucketInfo();
-              $xfer += $elem12->read($input);
-              $this->bucketlist []= $elem12;
+              $elem19 = null;
+              $elem19 = new \proto\BucketInfo();
+              $xfer += $elem19->read($input);
+              $this->bucketlist []= $elem19;
             }
             $xfer += $input->readListEnd();
           } else {
@@ -2119,9 +2440,9 @@ class BucketListResult {
       {
         $output->writeListBegin(TType::STRUCT, count($this->bucketlist));
         {
-          foreach ($this->bucketlist as $iter13)
+          foreach ($this->bucketlist as $iter20)
           {
-            $xfer += $iter13->write($output);
+            $xfer += $iter20->write($output);
           }
         }
         $output->writeListEnd();
