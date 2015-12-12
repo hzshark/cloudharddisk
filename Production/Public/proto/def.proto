@@ -75,11 +75,11 @@ struct RetHead{
 }
 
 struct FileInfo{ 
- 1:string filename;
+ //1:string filename;
+ 1:OBJID  objid   ;  // 对象资源号 filename
  2:i64    filesize;  //单位byte
- 3:OBJID  objid   ;  // 对象资源号 
- 4:FTYPE  ftype	  ;
- 5:i64 lastModified; // 文件时间
+ 3:FTYPE  ftype	  ;
+ 4:i64 lastModified; // 文件时间
  //6:i32    StID;    //手机中的图片存储id
 
 }
