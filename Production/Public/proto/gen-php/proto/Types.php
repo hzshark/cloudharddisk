@@ -295,15 +295,11 @@ class FileInfo {
   /**
    * @var string
    */
-  public $filename = null;
+  public $objid = null;
   /**
    * @var int
    */
   public $filesize = null;
-  /**
-   * @var string
-   */
-  public $objid = null;
   /**
    * @var int
    */
@@ -317,7 +313,7 @@ class FileInfo {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'filename',
+          'var' => 'objid',
           'type' => TType::STRING,
           ),
         2 => array(
@@ -325,28 +321,21 @@ class FileInfo {
           'type' => TType::I64,
           ),
         3 => array(
-          'var' => 'objid',
-          'type' => TType::STRING,
-          ),
-        4 => array(
           'var' => 'ftype',
           'type' => TType::I32,
           ),
-        5 => array(
+        4 => array(
           'var' => 'lastModified',
           'type' => TType::I64,
           ),
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['filename'])) {
-        $this->filename = $vals['filename'];
+      if (isset($vals['objid'])) {
+        $this->objid = $vals['objid'];
       }
       if (isset($vals['filesize'])) {
         $this->filesize = $vals['filesize'];
-      }
-      if (isset($vals['objid'])) {
-        $this->objid = $vals['objid'];
       }
       if (isset($vals['ftype'])) {
         $this->ftype = $vals['ftype'];
@@ -378,7 +367,7 @@ class FileInfo {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->filename);
+            $xfer += $input->readString($this->objid);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -391,20 +380,13 @@ class FileInfo {
           }
           break;
         case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->objid);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
           if ($ftype == TType::I32) {
             $xfer += $input->readI32($this->ftype);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
-        case 5:
+        case 4:
           if ($ftype == TType::I64) {
             $xfer += $input->readI64($this->lastModified);
           } else {
@@ -424,9 +406,9 @@ class FileInfo {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('FileInfo');
-    if ($this->filename !== null) {
-      $xfer += $output->writeFieldBegin('filename', TType::STRING, 1);
-      $xfer += $output->writeString($this->filename);
+    if ($this->objid !== null) {
+      $xfer += $output->writeFieldBegin('objid', TType::STRING, 1);
+      $xfer += $output->writeString($this->objid);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->filesize !== null) {
@@ -434,18 +416,13 @@ class FileInfo {
       $xfer += $output->writeI64($this->filesize);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->objid !== null) {
-      $xfer += $output->writeFieldBegin('objid', TType::STRING, 3);
-      $xfer += $output->writeString($this->objid);
-      $xfer += $output->writeFieldEnd();
-    }
     if ($this->ftype !== null) {
-      $xfer += $output->writeFieldBegin('ftype', TType::I32, 4);
+      $xfer += $output->writeFieldBegin('ftype', TType::I32, 3);
       $xfer += $output->writeI32($this->ftype);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->lastModified !== null) {
-      $xfer += $output->writeFieldBegin('lastModified', TType::I64, 5);
+      $xfer += $output->writeFieldBegin('lastModified', TType::I64, 4);
       $xfer += $output->writeI64($this->lastModified);
       $xfer += $output->writeFieldEnd();
     }
