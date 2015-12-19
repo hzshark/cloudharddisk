@@ -255,9 +255,9 @@ service CloudHardDiskService {
     // 需要查询 服务器端是否有同名的 未传完的 文件,如果存在应返回在result里面!!!!
     AllocObjResult  allocobj(1:Token token ,2:FTYPE type,3:string tagname); 
 
-    RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin );// 分块写入文件
+    RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin,4:string uploadid);// 分块写入文件
     
-    RetHead   commitObj(1:Token token,2:OBJID oid,3:ObjDescrp odescr );// param3 object 的描述  存放sms 通信表述信息
+    RetHead   commitObj(1:Token token,2:OBJID oid,3:ObjDescrp odescr,4:string uploadid );// param3 object 的描述  存放sms 通信表述信息
     
     RetHead  delObj(1:Token token,2:list<OBJID> oids);
 

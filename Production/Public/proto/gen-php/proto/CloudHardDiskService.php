@@ -82,16 +82,18 @@ interface CloudHardDiskServiceIf {
    * @param string $token
    * @param string $oid
    * @param string $bin
+   * @param string $uploadid
    * @return \proto\RetHead
    */
-  public function appendObj($token, $oid, $bin);
+  public function appendObj($token, $oid, $bin, $uploadid);
   /**
    * @param string $token
    * @param string $oid
    * @param array $odescr
+   * @param string $uploadid
    * @return \proto\RetHead
    */
-  public function commitObj($token, $oid, $odescr);
+  public function commitObj($token, $oid, $odescr, $uploadid);
   /**
    * @param string $token
    * @param string[] $oids
@@ -565,18 +567,19 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("allocobj failed: unknown result");
   }
 
-  public function appendObj($token, $oid, $bin)
+  public function appendObj($token, $oid, $bin, $uploadid)
   {
-    $this->send_appendObj($token, $oid, $bin);
+    $this->send_appendObj($token, $oid, $bin, $uploadid);
     return $this->recv_appendObj();
   }
 
-  public function send_appendObj($token, $oid, $bin)
+  public function send_appendObj($token, $oid, $bin, $uploadid)
   {
     $args = new \proto\CloudHardDiskService_appendObj_args();
     $args->token = $token;
     $args->oid = $oid;
     $args->bin = $bin;
+    $args->uploadid = $uploadid;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -618,18 +621,19 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("appendObj failed: unknown result");
   }
 
-  public function commitObj($token, $oid, $odescr)
+  public function commitObj($token, $oid, $odescr, $uploadid)
   {
-    $this->send_commitObj($token, $oid, $odescr);
+    $this->send_commitObj($token, $oid, $odescr, $uploadid);
     return $this->recv_commitObj();
   }
 
-  public function send_commitObj($token, $oid, $odescr)
+  public function send_commitObj($token, $oid, $odescr, $uploadid)
   {
     $args = new \proto\CloudHardDiskService_commitObj_args();
     $args->token = $token;
     $args->oid = $oid;
     $args->odescr = $odescr;
+    $args->uploadid = $uploadid;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -2637,6 +2641,10 @@ class CloudHardDiskService_appendObj_args {
    * @var string
    */
   public $bin = null;
+  /**
+   * @var string
+   */
+  public $uploadid = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -2653,6 +2661,10 @@ class CloudHardDiskService_appendObj_args {
           'var' => 'bin',
           'type' => TType::STRING,
           ),
+        4 => array(
+          'var' => 'uploadid',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -2664,6 +2676,9 @@ class CloudHardDiskService_appendObj_args {
       }
       if (isset($vals['bin'])) {
         $this->bin = $vals['bin'];
+      }
+      if (isset($vals['uploadid'])) {
+        $this->uploadid = $vals['uploadid'];
       }
     }
   }
@@ -2708,6 +2723,13 @@ class CloudHardDiskService_appendObj_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->uploadid);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -2734,6 +2756,11 @@ class CloudHardDiskService_appendObj_args {
     if ($this->bin !== null) {
       $xfer += $output->writeFieldBegin('bin', TType::STRING, 3);
       $xfer += $output->writeString($this->bin);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->uploadid !== null) {
+      $xfer += $output->writeFieldBegin('uploadid', TType::STRING, 4);
+      $xfer += $output->writeString($this->uploadid);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -2838,6 +2865,10 @@ class CloudHardDiskService_commitObj_args {
    * @var array
    */
   public $odescr = null;
+  /**
+   * @var string
+   */
+  public $uploadid = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -2862,6 +2893,10 @@ class CloudHardDiskService_commitObj_args {
             'type' => TType::STRING,
             ),
           ),
+        4 => array(
+          'var' => 'uploadid',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -2873,6 +2908,9 @@ class CloudHardDiskService_commitObj_args {
       }
       if (isset($vals['odescr'])) {
         $this->odescr = $vals['odescr'];
+      }
+      if (isset($vals['uploadid'])) {
+        $this->uploadid = $vals['uploadid'];
       }
     }
   }
@@ -2930,6 +2968,13 @@ class CloudHardDiskService_commitObj_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->uploadid);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -2969,6 +3014,11 @@ class CloudHardDiskService_commitObj_args {
         }
         $output->writeMapEnd();
       }
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->uploadid !== null) {
+      $xfer += $output->writeFieldBegin('uploadid', TType::STRING, 4);
+      $xfer += $output->writeString($this->uploadid);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -4316,7 +4366,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_appendObj_result();
-    $result->success = $this->handler_->appendObj($args->token, $args->oid, $args->bin);
+    $result->success = $this->handler_->appendObj($args->token, $args->oid, $args->bin, $args->uploadid);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -4335,7 +4385,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_commitObj_result();
-    $result->success = $this->handler_->commitObj($args->token, $args->oid, $args->odescr);
+    $result->success = $this->handler_->commitObj($args->token, $args->oid, $args->odescr, $args->uploadid);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
