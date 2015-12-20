@@ -326,7 +326,7 @@ class FileInfo {
           ),
         4 => array(
           'var' => 'lastModified',
-          'type' => TType::I64,
+          'type' => TType::I32,
           ),
         );
     }
@@ -387,8 +387,8 @@ class FileInfo {
           }
           break;
         case 4:
-          if ($ftype == TType::I64) {
-            $xfer += $input->readI64($this->lastModified);
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->lastModified);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -422,8 +422,8 @@ class FileInfo {
       $xfer += $output->writeFieldEnd();
     }
     if ($this->lastModified !== null) {
-      $xfer += $output->writeFieldBegin('lastModified', TType::I64, 4);
-      $xfer += $output->writeI64($this->lastModified);
+      $xfer += $output->writeFieldBegin('lastModified', TType::I32, 4);
+      $xfer += $output->writeI32($this->lastModified);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

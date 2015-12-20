@@ -41,7 +41,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
   private static final org.apache.thrift.protocol.TField OBJID_FIELD_DESC = new org.apache.thrift.protocol.TField("objid", org.apache.thrift.protocol.TType.STRING, (short)1);
   private static final org.apache.thrift.protocol.TField FILESIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("filesize", org.apache.thrift.protocol.TType.I64, (short)2);
   private static final org.apache.thrift.protocol.TField FTYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("ftype", org.apache.thrift.protocol.TType.I32, (short)3);
-  private static final org.apache.thrift.protocol.TField LAST_MODIFIED_FIELD_DESC = new org.apache.thrift.protocol.TField("lastModified", org.apache.thrift.protocol.TType.I64, (short)4);
+  private static final org.apache.thrift.protocol.TField LAST_MODIFIED_FIELD_DESC = new org.apache.thrift.protocol.TField("lastModified", org.apache.thrift.protocol.TType.I32, (short)4);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -56,7 +56,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
    * @see FTYPE
    */
   public FTYPE ftype; // required
-  public long lastModified; // required
+  public int lastModified; // required
 
   @Override
   public void writeToParcel(android.os.Parcel out, int flags) {
@@ -66,7 +66,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
     out.writeString(objid);
     out.writeLong(filesize);
     out.writeInt(ftype.getValue());
-    out.writeLong(lastModified);
+    out.writeInt(lastModified);
   }
 
   @Override
@@ -81,7 +81,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
     this.objid= in.readString();
     this.filesize = in.readLong();
     this.ftype = FTYPE.findByValue(in.readInt());
-    this.lastModified = in.readLong();
+    this.lastModified = in.readInt();
   }
 
   public static final android.os.Parcelable.Creator<FileInfo> CREATOR = new android.os.Parcelable.Creator<FileInfo>() {
@@ -181,7 +181,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
     tmpMap.put(_Fields.FTYPE, new org.apache.thrift.meta_data.FieldMetaData("ftype", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, FTYPE.class)));
     tmpMap.put(_Fields.LAST_MODIFIED, new org.apache.thrift.meta_data.FieldMetaData("lastModified", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(FileInfo.class, metaDataMap);
   }
@@ -193,7 +193,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
     String objid,
     long filesize,
     FTYPE ftype,
-    long lastModified)
+    int lastModified)
   {
     this();
     this.objid = objid;
@@ -312,11 +312,11 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
     }
   }
 
-  public long getLastModified() {
+  public int getLastModified() {
     return this.lastModified;
   }
 
-  public FileInfo setLastModified(long lastModified) {
+  public FileInfo setLastModified(int lastModified) {
     this.lastModified = lastModified;
     setLastModifiedIsSet(true);
     return this;
@@ -365,7 +365,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
       if (value == null) {
         unsetLastModified();
       } else {
-        setLastModified((Long)value);
+        setLastModified((Integer)value);
       }
       break;
 
@@ -649,8 +649,8 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
             }
             break;
           case 4: // LAST_MODIFIED
-            if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
-              struct.lastModified = iprot.readI64();
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.lastModified = iprot.readI32();
               struct.setLastModifiedIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -685,7 +685,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
         oprot.writeFieldEnd();
       }
       oprot.writeFieldBegin(LAST_MODIFIED_FIELD_DESC);
-      oprot.writeI64(struct.lastModified);
+      oprot.writeI32(struct.lastModified);
       oprot.writeFieldEnd();
       oprot.writeFieldStop();
       oprot.writeStructEnd();
@@ -728,7 +728,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
         oprot.writeI32(struct.ftype.getValue());
       }
       if (struct.isSetLastModified()) {
-        oprot.writeI64(struct.lastModified);
+        oprot.writeI32(struct.lastModified);
       }
     }
 
@@ -749,7 +749,7 @@ public class FileInfo implements org.apache.thrift.TBase<FileInfo, FileInfo._Fie
         struct.setFtypeIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.lastModified = iprot.readI64();
+        struct.lastModified = iprot.readI32();
         struct.setLastModifiedIsSet(true);
       }
     }
