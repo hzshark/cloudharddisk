@@ -285,7 +285,7 @@ service CloudHardDiskService {
     
     CreateShareResult CreateShare(1:Token token,2:OBJID oid); //需要 有一个默认分享到期时间,由服务端控制
     
-    RetHead CheckVer(); // msg 里面放版本
+    String GetVer(); // msg 里面放版本
     
     QueryAppResult queryApps();
     
