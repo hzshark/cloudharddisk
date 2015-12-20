@@ -201,7 +201,7 @@ class RetHead {
   /**
    * @var string
    */
-  public $errmsg = null;
+  public $msg = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -211,7 +211,7 @@ class RetHead {
           'type' => TType::I32,
           ),
         2 => array(
-          'var' => 'errmsg',
+          'var' => 'msg',
           'type' => TType::STRING,
           ),
         );
@@ -220,8 +220,8 @@ class RetHead {
       if (isset($vals['ret'])) {
         $this->ret = $vals['ret'];
       }
-      if (isset($vals['errmsg'])) {
-        $this->errmsg = $vals['errmsg'];
+      if (isset($vals['msg'])) {
+        $this->msg = $vals['msg'];
       }
     }
   }
@@ -254,7 +254,7 @@ class RetHead {
           break;
         case 2:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->errmsg);
+            $xfer += $input->readString($this->msg);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -277,9 +277,9 @@ class RetHead {
       $xfer += $output->writeI32($this->ret);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->errmsg !== null) {
-      $xfer += $output->writeFieldBegin('errmsg', TType::STRING, 2);
-      $xfer += $output->writeString($this->errmsg);
+    if ($this->msg !== null) {
+      $xfer += $output->writeFieldBegin('msg', TType::STRING, 2);
+      $xfer += $output->writeString($this->msg);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -1663,6 +1663,150 @@ class AppInfo {
 
 }
 
+class FeeInfo {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $PrdName = null;
+  /**
+   * @var string
+   */
+  public $Spnumber = null;
+  /**
+   * @var string
+   */
+  public $Cost = null;
+  /**
+   * @var string
+   */
+  public $Description = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'PrdName',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'Spnumber',
+          'type' => TType::STRING,
+          ),
+        3 => array(
+          'var' => 'Cost',
+          'type' => TType::STRING,
+          ),
+        4 => array(
+          'var' => 'Description',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['PrdName'])) {
+        $this->PrdName = $vals['PrdName'];
+      }
+      if (isset($vals['Spnumber'])) {
+        $this->Spnumber = $vals['Spnumber'];
+      }
+      if (isset($vals['Cost'])) {
+        $this->Cost = $vals['Cost'];
+      }
+      if (isset($vals['Description'])) {
+        $this->Description = $vals['Description'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'FeeInfo';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->PrdName);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->Spnumber);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->Cost);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->Description);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('FeeInfo');
+    if ($this->PrdName !== null) {
+      $xfer += $output->writeFieldBegin('PrdName', TType::STRING, 1);
+      $xfer += $output->writeString($this->PrdName);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->Spnumber !== null) {
+      $xfer += $output->writeFieldBegin('Spnumber', TType::STRING, 2);
+      $xfer += $output->writeString($this->Spnumber);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->Cost !== null) {
+      $xfer += $output->writeFieldBegin('Cost', TType::STRING, 3);
+      $xfer += $output->writeString($this->Cost);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->Description !== null) {
+      $xfer += $output->writeFieldBegin('Description', TType::STRING, 4);
+      $xfer += $output->writeString($this->Description);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
 /**
  * *
  *  upload parameter
@@ -2053,7 +2197,7 @@ class QueryAppResult {
   /**
    * @var \proto\AppInfo[]
    */
-  public $info = null;
+  public $msg = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -2064,7 +2208,7 @@ class QueryAppResult {
           'class' => '\proto\RetHead',
           ),
         2 => array(
-          'var' => 'info',
+          'var' => 'msg',
           'type' => TType::LST,
           'etype' => TType::STRUCT,
           'elem' => array(
@@ -2078,8 +2222,8 @@ class QueryAppResult {
       if (isset($vals['result'])) {
         $this->result = $vals['result'];
       }
-      if (isset($vals['info'])) {
-        $this->info = $vals['info'];
+      if (isset($vals['msg'])) {
+        $this->msg = $vals['msg'];
       }
     }
   }
@@ -2113,7 +2257,7 @@ class QueryAppResult {
           break;
         case 2:
           if ($ftype == TType::LST) {
-            $this->info = array();
+            $this->msg = array();
             $_size7 = 0;
             $_etype10 = 0;
             $xfer += $input->readListBegin($_etype10, $_size7);
@@ -2122,7 +2266,7 @@ class QueryAppResult {
               $elem12 = null;
               $elem12 = new \proto\AppInfo();
               $xfer += $elem12->read($input);
-              $this->info []= $elem12;
+              $this->msg []= $elem12;
             }
             $xfer += $input->readListEnd();
           } else {
@@ -2150,17 +2294,277 @@ class QueryAppResult {
       $xfer += $this->result->write($output);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->info !== null) {
-      if (!is_array($this->info)) {
+    if ($this->msg !== null) {
+      if (!is_array($this->msg)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
       }
-      $xfer += $output->writeFieldBegin('info', TType::LST, 2);
+      $xfer += $output->writeFieldBegin('msg', TType::LST, 2);
       {
-        $output->writeListBegin(TType::STRUCT, count($this->info));
+        $output->writeListBegin(TType::STRUCT, count($this->msg));
         {
-          foreach ($this->info as $iter13)
+          foreach ($this->msg as $iter13)
           {
             $xfer += $iter13->write($output);
+          }
+        }
+        $output->writeListEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class QueryFeeResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var \proto\FeeInfo[]
+   */
+  public $msg = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'msg',
+          'type' => TType::LST,
+          'etype' => TType::STRUCT,
+          'elem' => array(
+            'type' => TType::STRUCT,
+            'class' => '\proto\FeeInfo',
+            ),
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['msg'])) {
+        $this->msg = $vals['msg'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'QueryFeeResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::LST) {
+            $this->msg = array();
+            $_size14 = 0;
+            $_etype17 = 0;
+            $xfer += $input->readListBegin($_etype17, $_size14);
+            for ($_i18 = 0; $_i18 < $_size14; ++$_i18)
+            {
+              $elem19 = null;
+              $elem19 = new \proto\FeeInfo();
+              $xfer += $elem19->read($input);
+              $this->msg []= $elem19;
+            }
+            $xfer += $input->readListEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('QueryFeeResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->msg !== null) {
+      if (!is_array($this->msg)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('msg', TType::LST, 2);
+      {
+        $output->writeListBegin(TType::STRUCT, count($this->msg));
+        {
+          foreach ($this->msg as $iter20)
+          {
+            $xfer += $iter20->write($output);
+          }
+        }
+        $output->writeListEnd();
+      }
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class QueryHelpResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var string[]
+   */
+  public $msg = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'msg',
+          'type' => TType::LST,
+          'etype' => TType::STRING,
+          'elem' => array(
+            'type' => TType::STRING,
+            ),
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['msg'])) {
+        $this->msg = $vals['msg'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'QueryHelpResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::LST) {
+            $this->msg = array();
+            $_size21 = 0;
+            $_etype24 = 0;
+            $xfer += $input->readListBegin($_etype24, $_size21);
+            for ($_i25 = 0; $_i25 < $_size21; ++$_i25)
+            {
+              $elem26 = null;
+              $xfer += $input->readString($elem26);
+              $this->msg []= $elem26;
+            }
+            $xfer += $input->readListEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('QueryHelpResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->msg !== null) {
+      if (!is_array($this->msg)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('msg', TType::LST, 2);
+      {
+        $output->writeListBegin(TType::STRING, count($this->msg));
+        {
+          foreach ($this->msg as $iter27)
+          {
+            $xfer += $output->writeString($iter27);
           }
         }
         $output->writeListEnd();
@@ -2368,15 +2772,15 @@ class BucketListResult {
         case 3:
           if ($ftype == TType::LST) {
             $this->bucketlist = array();
-            $_size14 = 0;
-            $_etype17 = 0;
-            $xfer += $input->readListBegin($_etype17, $_size14);
-            for ($_i18 = 0; $_i18 < $_size14; ++$_i18)
+            $_size28 = 0;
+            $_etype31 = 0;
+            $xfer += $input->readListBegin($_etype31, $_size28);
+            for ($_i32 = 0; $_i32 < $_size28; ++$_i32)
             {
-              $elem19 = null;
-              $elem19 = new \proto\BucketInfo();
-              $xfer += $elem19->read($input);
-              $this->bucketlist []= $elem19;
+              $elem33 = null;
+              $elem33 = new \proto\BucketInfo();
+              $xfer += $elem33->read($input);
+              $this->bucketlist []= $elem33;
             }
             $xfer += $input->readListEnd();
           } else {
@@ -2417,9 +2821,9 @@ class BucketListResult {
       {
         $output->writeListBegin(TType::STRUCT, count($this->bucketlist));
         {
-          foreach ($this->bucketlist as $iter20)
+          foreach ($this->bucketlist as $iter34)
           {
-            $xfer += $iter20->write($output);
+            $xfer += $iter34->write($output);
           }
         }
         $output->writeListEnd();

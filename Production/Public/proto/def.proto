@@ -208,7 +208,7 @@ struct QueryFeeResult {
 
 struct QueryHelpResult {
     1: RetHead result; 	
-    2: list<String>  msg;
+    2: list<string>  msg;
 }
 /**
  * Structs can also be exceptions, if they are nasty
