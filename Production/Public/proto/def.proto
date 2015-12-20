@@ -79,7 +79,7 @@ struct FileInfo{
  1:OBJID  objid   ;  // 对象资源号 filename
  2:i64    filesize;  //单位byte
  3:FTYPE  ftype	  ;
- 4:i64 lastModified; // 文件时间
+ 4:i32 lastModified; // 文件时间 seconds since 1970
  //6:i32    StID;    //手机中的图片存储id
 
 }
