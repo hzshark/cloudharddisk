@@ -291,7 +291,7 @@ service CloudHardDiskService {
     
     QueryHelpResult queryHelp();
     
-    QueryFeeResult querFee();
+    QueryFeeResult queryFee();
     
 
 }
