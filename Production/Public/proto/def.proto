@@ -71,7 +71,7 @@ typedef map<string,string> ObjDescrp
 
 struct RetHead{ 
  1: Errcode ret;
- 2: optional string errmsg;  
+ 2: optional string msg;  
 }
 
 struct FileInfo{ 
@@ -161,6 +161,14 @@ struct AppInfo
   6:string ico_url; //app图标
 }
 
+struct FeeInfo
+{
+  1:string PrdName;
+  2:string Spnumber;
+  3:string Cost;   //
+  4:string Description; //描述
+}
+
 
 
 /**
@@ -190,10 +198,18 @@ struct CreateShareResult {
 
 struct QueryAppResult {
     1: RetHead result; 	
-    2: list<AppInfo>  info;
+    2: list<AppInfo>  msg;
 }
 
+struct QueryFeeResult {
+    1: RetHead result; 	
+    2: list<FeeInfo>  msg;
+}
 
+struct QueryHelpResult {
+    1: RetHead result; 	
+    2: list<String>  msg;
+}
 /**
  * Structs can also be exceptions, if they are nasty
 exception InvalidOperation {
@@ -269,7 +285,13 @@ service CloudHardDiskService {
     
     CreateShareResult CreateShare(1:Token token,2:OBJID oid); //需要 有一个默认分享到期时间,由服务端控制
     
+    RetHead CheckVer(); // msg 里面放版本
+    
     QueryAppResult queryApps();
+    
+    QueryHelpResult queryHelp();
+    
+    QueryFeeResult querFee();
     
 
 }
