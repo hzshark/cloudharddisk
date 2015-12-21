@@ -63,7 +63,7 @@ public class CloudHardDiskService {
 
     public RetHead commitObj(String token, String oid, Map<String,String> odescr, FTYPE type) throws org.apache.thrift.TException;
 
-    public RetHead delObj(String token, List<String> oids, FTYPE type) throws org.apache.thrift.TException;
+    public RetHead delObj(String token, String oid, FTYPE type) throws org.apache.thrift.TException;
 
     public UsageResult querusage(String token, FTYPE type) throws org.apache.thrift.TException;
 
@@ -105,7 +105,7 @@ public class CloudHardDiskService {
 
     public void commitObj(String token, String oid, Map<String,String> odescr, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void delObj(String token, List<String> oids, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void delObj(String token, String oid, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void querusage(String token, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -399,17 +399,17 @@ public class CloudHardDiskService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "commitObj failed: unknown result");
     }
 
-    public RetHead delObj(String token, List<String> oids, FTYPE type) throws org.apache.thrift.TException
+    public RetHead delObj(String token, String oid, FTYPE type) throws org.apache.thrift.TException
     {
-      send_delObj(token, oids, type);
+      send_delObj(token, oid, type);
       return recv_delObj();
     }
 
-    public void send_delObj(String token, List<String> oids, FTYPE type) throws org.apache.thrift.TException
+    public void send_delObj(String token, String oid, FTYPE type) throws org.apache.thrift.TException
     {
       delObj_args args = new delObj_args();
       args.setToken(token);
-      args.setOids(oids);
+      args.setOid(oid);
       args.setType(type);
       sendBase("delObj", args);
     }
@@ -1022,21 +1022,21 @@ public class CloudHardDiskService {
       }
     }
 
-    public void delObj(String token, List<String> oids, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void delObj(String token, String oid, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      delObj_call method_call = new delObj_call(token, oids, type, resultHandler, this, ___protocolFactory, ___transport);
+      delObj_call method_call = new delObj_call(token, oid, type, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class delObj_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String token;
-      private List<String> oids;
+      private String oid;
       private FTYPE type;
-      public delObj_call(String token, List<String> oids, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public delObj_call(String token, String oid, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.token = token;
-        this.oids = oids;
+        this.oid = oid;
         this.type = type;
       }
 
@@ -1044,7 +1044,7 @@ public class CloudHardDiskService {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("delObj", org.apache.thrift.protocol.TMessageType.CALL, 0));
         delObj_args args = new delObj_args();
         args.setToken(token);
-        args.setOids(oids);
+        args.setOid(oid);
         args.setType(type);
         args.write(prot);
         prot.writeMessageEnd();
@@ -1578,7 +1578,7 @@ public class CloudHardDiskService {
 
       public delObj_result getResult(I iface, delObj_args args) throws org.apache.thrift.TException {
         delObj_result result = new delObj_result();
-        result.success = iface.delObj(args.token, args.oids, args.type);
+        result.success = iface.delObj(args.token, args.oid, args.type);
         return result;
       }
     }
@@ -2335,7 +2335,7 @@ public class CloudHardDiskService {
       }
 
       public void start(I iface, delObj_args args, org.apache.thrift.async.AsyncMethodCallback<RetHead> resultHandler) throws TException {
-        iface.delObj(args.token, args.oids, args.type,resultHandler);
+        iface.delObj(args.token, args.oid, args.type,resultHandler);
       }
     }
 
@@ -12691,7 +12691,7 @@ public class CloudHardDiskService {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("delObj_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField OIDS_FIELD_DESC = new org.apache.thrift.protocol.TField("oids", org.apache.thrift.protocol.TType.LIST, (short)2);
+    private static final org.apache.thrift.protocol.TField OID_FIELD_DESC = new org.apache.thrift.protocol.TField("oid", org.apache.thrift.protocol.TType.STRING, (short)2);
     private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
@@ -12701,7 +12701,7 @@ public class CloudHardDiskService {
     }
 
     public String token; // required
-    public List<String> oids; // required
+    public String oid; // required
     /**
      * 
      * @see FTYPE
@@ -12711,7 +12711,7 @@ public class CloudHardDiskService {
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       TOKEN((short)1, "token"),
-      OIDS((short)2, "oids"),
+      OID((short)2, "oid"),
       /**
        * 
        * @see FTYPE
@@ -12733,8 +12733,8 @@ public class CloudHardDiskService {
         switch(fieldId) {
           case 1: // TOKEN
             return TOKEN;
-          case 2: // OIDS
-            return OIDS;
+          case 2: // OID
+            return OID;
           case 3: // TYPE
             return TYPE;
           default:
@@ -12782,9 +12782,8 @@ public class CloudHardDiskService {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "Token")));
-      tmpMap.put(_Fields.OIDS, new org.apache.thrift.meta_data.FieldMetaData("oids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING              , "OBJID"))));
+      tmpMap.put(_Fields.OID, new org.apache.thrift.meta_data.FieldMetaData("oid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "OBJID")));
       tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, FTYPE.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -12796,12 +12795,12 @@ public class CloudHardDiskService {
 
     public delObj_args(
       String token,
-      List<String> oids,
+      String oid,
       FTYPE type)
     {
       this();
       this.token = token;
-      this.oids = oids;
+      this.oid = oid;
       this.type = type;
     }
 
@@ -12812,12 +12811,8 @@ public class CloudHardDiskService {
       if (other.isSetToken()) {
         this.token = other.token;
       }
-      if (other.isSetOids()) {
-        List<String> __this__oids = new ArrayList<String>(other.oids.size());
-        for (String other_element : other.oids) {
-          __this__oids.add(other_element);
-        }
-        this.oids = __this__oids;
+      if (other.isSetOid()) {
+        this.oid = other.oid;
       }
       if (other.isSetType()) {
         this.type = other.type;
@@ -12831,7 +12826,7 @@ public class CloudHardDiskService {
     @Override
     public void clear() {
       this.token = null;
-      this.oids = null;
+      this.oid = null;
       this.type = null;
     }
 
@@ -12859,42 +12854,27 @@ public class CloudHardDiskService {
       }
     }
 
-    public int getOidsSize() {
-      return (this.oids == null) ? 0 : this.oids.size();
+    public String getOid() {
+      return this.oid;
     }
 
-    public java.util.Iterator<String> getOidsIterator() {
-      return (this.oids == null) ? null : this.oids.iterator();
-    }
-
-    public void addToOids(String elem) {
-      if (this.oids == null) {
-        this.oids = new ArrayList<String>();
-      }
-      this.oids.add(elem);
-    }
-
-    public List<String> getOids() {
-      return this.oids;
-    }
-
-    public delObj_args setOids(List<String> oids) {
-      this.oids = oids;
+    public delObj_args setOid(String oid) {
+      this.oid = oid;
       return this;
     }
 
-    public void unsetOids() {
-      this.oids = null;
+    public void unsetOid() {
+      this.oid = null;
     }
 
-    /** Returns true if field oids is set (has been assigned a value) and false otherwise */
-    public boolean isSetOids() {
-      return this.oids != null;
+    /** Returns true if field oid is set (has been assigned a value) and false otherwise */
+    public boolean isSetOid() {
+      return this.oid != null;
     }
 
-    public void setOidsIsSet(boolean value) {
+    public void setOidIsSet(boolean value) {
       if (!value) {
-        this.oids = null;
+        this.oid = null;
       }
     }
 
@@ -12940,11 +12920,11 @@ public class CloudHardDiskService {
         }
         break;
 
-      case OIDS:
+      case OID:
         if (value == null) {
-          unsetOids();
+          unsetOid();
         } else {
-          setOids((List<String>)value);
+          setOid((String)value);
         }
         break;
 
@@ -12964,8 +12944,8 @@ public class CloudHardDiskService {
       case TOKEN:
         return getToken();
 
-      case OIDS:
-        return getOids();
+      case OID:
+        return getOid();
 
       case TYPE:
         return getType();
@@ -12983,8 +12963,8 @@ public class CloudHardDiskService {
       switch (field) {
       case TOKEN:
         return isSetToken();
-      case OIDS:
-        return isSetOids();
+      case OID:
+        return isSetOid();
       case TYPE:
         return isSetType();
       }
@@ -13013,12 +12993,12 @@ public class CloudHardDiskService {
           return false;
       }
 
-      boolean this_present_oids = true && this.isSetOids();
-      boolean that_present_oids = true && that.isSetOids();
-      if (this_present_oids || that_present_oids) {
-        if (!(this_present_oids && that_present_oids))
+      boolean this_present_oid = true && this.isSetOid();
+      boolean that_present_oid = true && that.isSetOid();
+      if (this_present_oid || that_present_oid) {
+        if (!(this_present_oid && that_present_oid))
           return false;
-        if (!this.oids.equals(that.oids))
+        if (!this.oid.equals(that.oid))
           return false;
       }
 
@@ -13043,10 +13023,10 @@ public class CloudHardDiskService {
       if (present_token)
         list.add(token);
 
-      boolean present_oids = true && (isSetOids());
-      list.add(present_oids);
-      if (present_oids)
-        list.add(oids);
+      boolean present_oid = true && (isSetOid());
+      list.add(present_oid);
+      if (present_oid)
+        list.add(oid);
 
       boolean present_type = true && (isSetType());
       list.add(present_type);
@@ -13074,12 +13054,12 @@ public class CloudHardDiskService {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetOids()).compareTo(other.isSetOids());
+      lastComparison = Boolean.valueOf(isSetOid()).compareTo(other.isSetOid());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetOids()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.oids, other.oids);
+      if (isSetOid()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.oid, other.oid);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -13122,11 +13102,11 @@ public class CloudHardDiskService {
       }
       first = false;
       if (!first) sb.append(", ");
-      sb.append("oids:");
-      if (this.oids == null) {
+      sb.append("oid:");
+      if (this.oid == null) {
         sb.append("null");
       } else {
-        sb.append(this.oids);
+        sb.append(this.oid);
       }
       first = false;
       if (!first) sb.append(", ");
@@ -13188,20 +13168,10 @@ public class CloudHardDiskService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // OIDS
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list50 = iprot.readListBegin();
-                  struct.oids = new ArrayList<String>(_list50.size);
-                  String _elem51;
-                  for (int _i52 = 0; _i52 < _list50.size; ++_i52)
-                  {
-                    _elem51 = iprot.readString();
-                    struct.oids.add(_elem51);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setOidsIsSet(true);
+            case 2: // OID
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.oid = iprot.readString();
+                struct.setOidIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -13234,16 +13204,9 @@ public class CloudHardDiskService {
           oprot.writeString(struct.token);
           oprot.writeFieldEnd();
         }
-        if (struct.oids != null) {
-          oprot.writeFieldBegin(OIDS_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.oids.size()));
-            for (String _iter53 : struct.oids)
-            {
-              oprot.writeString(_iter53);
-            }
-            oprot.writeListEnd();
-          }
+        if (struct.oid != null) {
+          oprot.writeFieldBegin(OID_FIELD_DESC);
+          oprot.writeString(struct.oid);
           oprot.writeFieldEnd();
         }
         if (struct.type != null) {
@@ -13272,7 +13235,7 @@ public class CloudHardDiskService {
         if (struct.isSetToken()) {
           optionals.set(0);
         }
-        if (struct.isSetOids()) {
+        if (struct.isSetOid()) {
           optionals.set(1);
         }
         if (struct.isSetType()) {
@@ -13282,14 +13245,8 @@ public class CloudHardDiskService {
         if (struct.isSetToken()) {
           oprot.writeString(struct.token);
         }
-        if (struct.isSetOids()) {
-          {
-            oprot.writeI32(struct.oids.size());
-            for (String _iter54 : struct.oids)
-            {
-              oprot.writeString(_iter54);
-            }
-          }
+        if (struct.isSetOid()) {
+          oprot.writeString(struct.oid);
         }
         if (struct.isSetType()) {
           oprot.writeI32(struct.type.getValue());
@@ -13305,17 +13262,8 @@ public class CloudHardDiskService {
           struct.setTokenIsSet(true);
         }
         if (incoming.get(1)) {
-          {
-            org.apache.thrift.protocol.TList _list55 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.oids = new ArrayList<String>(_list55.size);
-            String _elem56;
-            for (int _i57 = 0; _i57 < _list55.size; ++_i57)
-            {
-              _elem56 = iprot.readString();
-              struct.oids.add(_elem56);
-            }
-          }
-          struct.setOidsIsSet(true);
+          struct.oid = iprot.readString();
+          struct.setOidIsSet(true);
         }
         if (incoming.get(2)) {
           struct.type = proto.FTYPE.findByValue(iprot.readI32());

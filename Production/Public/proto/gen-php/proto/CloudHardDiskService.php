@@ -97,11 +97,11 @@ interface CloudHardDiskServiceIf {
   public function commitObj($token, $oid, $odescr, $type);
   /**
    * @param string $token
-   * @param string[] $oids
+   * @param string $oid
    * @param int $type
    * @return \proto\RetHead
    */
-  public function delObj($token, array $oids, $type);
+  public function delObj($token, $oid, $type);
   /**
    * @param string $token
    * @param int $type
@@ -693,17 +693,17 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("commitObj failed: unknown result");
   }
 
-  public function delObj($token, array $oids, $type)
+  public function delObj($token, $oid, $type)
   {
-    $this->send_delObj($token, $oids, $type);
+    $this->send_delObj($token, $oid, $type);
     return $this->recv_delObj();
   }
 
-  public function send_delObj($token, array $oids, $type)
+  public function send_delObj($token, $oid, $type)
   {
     $args = new \proto\CloudHardDiskService_delObj_args();
     $args->token = $token;
-    $args->oids = $oids;
+    $args->oid = $oid;
     $args->type = $type;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -3311,9 +3311,9 @@ class CloudHardDiskService_delObj_args {
    */
   public $token = null;
   /**
-   * @var string[]
+   * @var string
    */
-  public $oids = null;
+  public $oid = null;
   /**
    * @var int
    */
@@ -3327,12 +3327,8 @@ class CloudHardDiskService_delObj_args {
           'type' => TType::STRING,
           ),
         2 => array(
-          'var' => 'oids',
-          'type' => TType::LST,
-          'etype' => TType::STRING,
-          'elem' => array(
-            'type' => TType::STRING,
-            ),
+          'var' => 'oid',
+          'type' => TType::STRING,
           ),
         3 => array(
           'var' => 'type',
@@ -3344,8 +3340,8 @@ class CloudHardDiskService_delObj_args {
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
       }
-      if (isset($vals['oids'])) {
-        $this->oids = $vals['oids'];
+      if (isset($vals['oid'])) {
+        $this->oid = $vals['oid'];
       }
       if (isset($vals['type'])) {
         $this->type = $vals['type'];
@@ -3380,18 +3376,8 @@ class CloudHardDiskService_delObj_args {
           }
           break;
         case 2:
-          if ($ftype == TType::LST) {
-            $this->oids = array();
-            $_size44 = 0;
-            $_etype47 = 0;
-            $xfer += $input->readListBegin($_etype47, $_size44);
-            for ($_i48 = 0; $_i48 < $_size44; ++$_i48)
-            {
-              $elem49 = null;
-              $xfer += $input->readString($elem49);
-              $this->oids []= $elem49;
-            }
-            $xfer += $input->readListEnd();
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->oid);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -3421,21 +3407,9 @@ class CloudHardDiskService_delObj_args {
       $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->oids !== null) {
-      if (!is_array($this->oids)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('oids', TType::LST, 2);
-      {
-        $output->writeListBegin(TType::STRING, count($this->oids));
-        {
-          foreach ($this->oids as $iter50)
-          {
-            $xfer += $output->writeString($iter50);
-          }
-        }
-        $output->writeListEnd();
-      }
+    if ($this->oid !== null) {
+      $xfer += $output->writeFieldBegin('oid', TType::STRING, 2);
+      $xfer += $output->writeString($this->oid);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->type !== null) {
@@ -5078,7 +5052,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_delObj_result();
-    $result->success = $this->handler_->delObj($args->token, $args->oids, $args->type);
+    $result->success = $this->handler_->delObj($args->token, $args->oid, $args->type);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
