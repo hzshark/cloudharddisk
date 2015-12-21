@@ -165,9 +165,10 @@ struct AppInfo
 struct FeeInfo
 {
   1:string PrdName;
-  2:string Spnumber;
-  3:string Cost;   //
-  4:string Description; //描述
+  2:string Spnumber;//目标号码
+  3:string Cost;   //花费
+  4:string Smscmd; //发送的内容
+  5:string Description; //描述
 }
 
 
