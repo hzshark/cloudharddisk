@@ -1058,6 +1058,10 @@ class DownloadParam {
    * @var int
    */
   public $reqlen = 1024;
+  /**
+   * @var int
+   */
+  public $type = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -1074,6 +1078,10 @@ class DownloadParam {
           'var' => 'reqlen',
           'type' => TType::I32,
           ),
+        4 => array(
+          'var' => 'type',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -1085,6 +1093,9 @@ class DownloadParam {
       }
       if (isset($vals['reqlen'])) {
         $this->reqlen = $vals['reqlen'];
+      }
+      if (isset($vals['type'])) {
+        $this->type = $vals['type'];
       }
     }
   }
@@ -1129,6 +1140,13 @@ class DownloadParam {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->type);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -1155,6 +1173,11 @@ class DownloadParam {
     if ($this->reqlen !== null) {
       $xfer += $output->writeFieldBegin('reqlen', TType::I32, 3);
       $xfer += $output->writeI32($this->reqlen);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->type !== null) {
+      $xfer += $output->writeFieldBegin('type', TType::I32, 4);
+      $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -1829,6 +1852,10 @@ class UploadParam {
    * @var string
    */
   public $bin = null;
+  /**
+   * @var int
+   */
+  public $type = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -1845,6 +1872,10 @@ class UploadParam {
           'var' => 'bin',
           'type' => TType::STRING,
           ),
+        4 => array(
+          'var' => 'type',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -1856,6 +1887,9 @@ class UploadParam {
       }
       if (isset($vals['bin'])) {
         $this->bin = $vals['bin'];
+      }
+      if (isset($vals['type'])) {
+        $this->type = $vals['type'];
       }
     }
   }
@@ -1900,6 +1934,13 @@ class UploadParam {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->type);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -1926,6 +1967,11 @@ class UploadParam {
     if ($this->bin !== null) {
       $xfer += $output->writeFieldBegin('bin', TType::STRING, 3);
       $xfer += $output->writeString($this->bin);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->type !== null) {
+      $xfer += $output->writeFieldBegin('type', TType::I32, 4);
+      $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

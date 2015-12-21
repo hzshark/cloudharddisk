@@ -2749,7 +2749,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class loginAuthApp_args implements org.apache.thrift.TBase<loginAuthApp_args, loginAuthApp_args._Fields>, java.io.Serializable, Cloneable, Comparable<loginAuthApp_args>, android.os.Parcelable   {
+  public static class loginAuthApp_args implements org.apache.thrift.TBase<loginAuthApp_args, loginAuthApp_args._Fields>, java.io.Serializable, Cloneable, Comparable<loginAuthApp_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("loginAuthApp_args");
 
     private static final org.apache.thrift.protocol.TField IMIE_FIELD_DESC = new org.apache.thrift.protocol.TField("imie", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -2767,44 +2767,6 @@ public class CloudHardDiskService {
     public String username; // required
     public String password; // required
     public int salt; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      //primitive bitfield of type: byte
-      out.writeByte(__isset_bitfield);
-
-      out.writeString(imie);
-      out.writeString(username);
-      out.writeString(password);
-      out.writeInt(salt);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public loginAuthApp_args(android.os.Parcel in) {
-      //primitive bitfield of type: byte
-      __isset_bitfield = in.readByte();
-
-      this.imie= in.readString();
-      this.username= in.readString();
-      this.password= in.readString();
-      this.salt = in.readInt();
-    }
-
-    public static final android.os.Parcelable.Creator<loginAuthApp_args> CREATOR = new android.os.Parcelable.Creator<loginAuthApp_args>() {
-      @Override
-      public loginAuthApp_args[] newArray(int size) {
-        return new loginAuthApp_args[size];
-      }
-
-      @Override
-      public loginAuthApp_args createFromParcel(android.os.Parcel in) {
-        return new loginAuthApp_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -3461,7 +3423,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class loginAuthApp_result implements org.apache.thrift.TBase<loginAuthApp_result, loginAuthApp_result._Fields>, java.io.Serializable, Cloneable, Comparable<loginAuthApp_result>, android.os.Parcelable   {
+  public static class loginAuthApp_result implements org.apache.thrift.TBase<loginAuthApp_result, loginAuthApp_result._Fields>, java.io.Serializable, Cloneable, Comparable<loginAuthApp_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("loginAuthApp_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -3473,32 +3435,6 @@ public class CloudHardDiskService {
     }
 
     public LoginResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public loginAuthApp_result(android.os.Parcel in) {
-      this.success= in.readParcelable(loginAuthApp_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<loginAuthApp_result> CREATOR = new android.os.Parcelable.Creator<loginAuthApp_result>() {
-      @Override
-      public loginAuthApp_result[] newArray(int size) {
-        return new loginAuthApp_result[size];
-      }
-
-      @Override
-      public loginAuthApp_result createFromParcel(android.os.Parcel in) {
-        return new loginAuthApp_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -3853,7 +3789,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class loginAuth_args implements org.apache.thrift.TBase<loginAuth_args, loginAuth_args._Fields>, java.io.Serializable, Cloneable, Comparable<loginAuth_args>, android.os.Parcelable   {
+  public static class loginAuth_args implements org.apache.thrift.TBase<loginAuth_args, loginAuth_args._Fields>, java.io.Serializable, Cloneable, Comparable<loginAuth_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("loginAuth_args");
 
     private static final org.apache.thrift.protocol.TField USERNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("username", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -3869,42 +3805,6 @@ public class CloudHardDiskService {
     public String username; // required
     public String password; // required
     public int salt; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      //primitive bitfield of type: byte
-      out.writeByte(__isset_bitfield);
-
-      out.writeString(username);
-      out.writeString(password);
-      out.writeInt(salt);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public loginAuth_args(android.os.Parcel in) {
-      //primitive bitfield of type: byte
-      __isset_bitfield = in.readByte();
-
-      this.username= in.readString();
-      this.password= in.readString();
-      this.salt = in.readInt();
-    }
-
-    public static final android.os.Parcelable.Creator<loginAuth_args> CREATOR = new android.os.Parcelable.Creator<loginAuth_args>() {
-      @Override
-      public loginAuth_args[] newArray(int size) {
-        return new loginAuth_args[size];
-      }
-
-      @Override
-      public loginAuth_args createFromParcel(android.os.Parcel in) {
-        return new loginAuth_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -4458,7 +4358,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class loginAuth_result implements org.apache.thrift.TBase<loginAuth_result, loginAuth_result._Fields>, java.io.Serializable, Cloneable, Comparable<loginAuth_result>, android.os.Parcelable   {
+  public static class loginAuth_result implements org.apache.thrift.TBase<loginAuth_result, loginAuth_result._Fields>, java.io.Serializable, Cloneable, Comparable<loginAuth_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("loginAuth_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -4470,32 +4370,6 @@ public class CloudHardDiskService {
     }
 
     public LoginResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public loginAuth_result(android.os.Parcel in) {
-      this.success= in.readParcelable(loginAuth_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<loginAuth_result> CREATOR = new android.os.Parcelable.Creator<loginAuth_result>() {
-      @Override
-      public loginAuth_result[] newArray(int size) {
-        return new loginAuth_result[size];
-      }
-
-      @Override
-      public loginAuth_result createFromParcel(android.os.Parcel in) {
-        return new loginAuth_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -4850,7 +4724,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class verificationLoginAuth_args implements org.apache.thrift.TBase<verificationLoginAuth_args, verificationLoginAuth_args._Fields>, java.io.Serializable, Cloneable, Comparable<verificationLoginAuth_args>, android.os.Parcelable   {
+  public static class verificationLoginAuth_args implements org.apache.thrift.TBase<verificationLoginAuth_args, verificationLoginAuth_args._Fields>, java.io.Serializable, Cloneable, Comparable<verificationLoginAuth_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("verificationLoginAuth_args");
 
     private static final org.apache.thrift.protocol.TField USERNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("username", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -4866,36 +4740,6 @@ public class CloudHardDiskService {
     public String username; // required
     public String password; // required
     public String authcode; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(username);
-      out.writeString(password);
-      out.writeString(authcode);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public verificationLoginAuth_args(android.os.Parcel in) {
-      this.username= in.readString();
-      this.password= in.readString();
-      this.authcode= in.readString();
-    }
-
-    public static final android.os.Parcelable.Creator<verificationLoginAuth_args> CREATOR = new android.os.Parcelable.Creator<verificationLoginAuth_args>() {
-      @Override
-      public verificationLoginAuth_args[] newArray(int size) {
-        return new verificationLoginAuth_args[size];
-      }
-
-      @Override
-      public verificationLoginAuth_args createFromParcel(android.os.Parcel in) {
-        return new verificationLoginAuth_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -5451,7 +5295,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class verificationLoginAuth_result implements org.apache.thrift.TBase<verificationLoginAuth_result, verificationLoginAuth_result._Fields>, java.io.Serializable, Cloneable, Comparable<verificationLoginAuth_result>, android.os.Parcelable   {
+  public static class verificationLoginAuth_result implements org.apache.thrift.TBase<verificationLoginAuth_result, verificationLoginAuth_result._Fields>, java.io.Serializable, Cloneable, Comparable<verificationLoginAuth_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("verificationLoginAuth_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -5463,32 +5307,6 @@ public class CloudHardDiskService {
     }
 
     public LoginResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public verificationLoginAuth_result(android.os.Parcel in) {
-      this.success= in.readParcelable(verificationLoginAuth_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<verificationLoginAuth_result> CREATOR = new android.os.Parcelable.Creator<verificationLoginAuth_result>() {
-      @Override
-      public verificationLoginAuth_result[] newArray(int size) {
-        return new verificationLoginAuth_result[size];
-      }
-
-      @Override
-      public verificationLoginAuth_result createFromParcel(android.os.Parcel in) {
-        return new verificationLoginAuth_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -5843,7 +5661,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class uploadFile_args implements org.apache.thrift.TBase<uploadFile_args, uploadFile_args._Fields>, java.io.Serializable, Cloneable, Comparable<uploadFile_args>, android.os.Parcelable   {
+  public static class uploadFile_args implements org.apache.thrift.TBase<uploadFile_args, uploadFile_args._Fields>, java.io.Serializable, Cloneable, Comparable<uploadFile_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("uploadFile_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -5857,34 +5675,6 @@ public class CloudHardDiskService {
 
     public String token; // required
     public UploadParam uploadparam; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeParcelable(uploadparam, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public uploadFile_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.uploadparam= in.readParcelable(uploadFile_args.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<uploadFile_args> CREATOR = new android.os.Parcelable.Creator<uploadFile_args>() {
-      @Override
-      public uploadFile_args[] newArray(int size) {
-        return new uploadFile_args[size];
-      }
-
-      @Override
-      public uploadFile_args createFromParcel(android.os.Parcel in) {
-        return new uploadFile_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -6342,7 +6132,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class uploadFile_result implements org.apache.thrift.TBase<uploadFile_result, uploadFile_result._Fields>, java.io.Serializable, Cloneable, Comparable<uploadFile_result>, android.os.Parcelable   {
+  public static class uploadFile_result implements org.apache.thrift.TBase<uploadFile_result, uploadFile_result._Fields>, java.io.Serializable, Cloneable, Comparable<uploadFile_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("uploadFile_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -6354,32 +6144,6 @@ public class CloudHardDiskService {
     }
 
     public UploaddResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public uploadFile_result(android.os.Parcel in) {
-      this.success= in.readParcelable(uploadFile_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<uploadFile_result> CREATOR = new android.os.Parcelable.Creator<uploadFile_result>() {
-      @Override
-      public uploadFile_result[] newArray(int size) {
-        return new uploadFile_result[size];
-      }
-
-      @Override
-      public uploadFile_result createFromParcel(android.os.Parcel in) {
-        return new uploadFile_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -6734,7 +6498,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryFileList_args implements org.apache.thrift.TBase<queryFileList_args, queryFileList_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryFileList_args>, android.os.Parcelable   {
+  public static class queryFileList_args implements org.apache.thrift.TBase<queryFileList_args, queryFileList_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryFileList_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryFileList_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -6756,44 +6520,6 @@ public class CloudHardDiskService {
     public FTYPE type; // required
     public int start; // required
     public int excpet_num; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      //primitive bitfield of type: byte
-      out.writeByte(__isset_bitfield);
-
-      out.writeString(token);
-      out.writeInt(type.getValue());
-      out.writeInt(start);
-      out.writeInt(excpet_num);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryFileList_args(android.os.Parcel in) {
-      //primitive bitfield of type: byte
-      __isset_bitfield = in.readByte();
-
-      this.token= in.readString();
-      this.type = FTYPE.findByValue(in.readInt());
-      this.start = in.readInt();
-      this.excpet_num = in.readInt();
-    }
-
-    public static final android.os.Parcelable.Creator<queryFileList_args> CREATOR = new android.os.Parcelable.Creator<queryFileList_args>() {
-      @Override
-      public queryFileList_args[] newArray(int size) {
-        return new queryFileList_args[size];
-      }
-
-      @Override
-      public queryFileList_args createFromParcel(android.os.Parcel in) {
-        return new queryFileList_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -7456,7 +7182,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryFileList_result implements org.apache.thrift.TBase<queryFileList_result, queryFileList_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryFileList_result>, android.os.Parcelable   {
+  public static class queryFileList_result implements org.apache.thrift.TBase<queryFileList_result, queryFileList_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryFileList_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryFileList_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -7468,32 +7194,6 @@ public class CloudHardDiskService {
     }
 
     public QueryFListResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryFileList_result(android.os.Parcel in) {
-      this.success= in.readParcelable(queryFileList_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<queryFileList_result> CREATOR = new android.os.Parcelable.Creator<queryFileList_result>() {
-      @Override
-      public queryFileList_result[] newArray(int size) {
-        return new queryFileList_result[size];
-      }
-
-      @Override
-      public queryFileList_result createFromParcel(android.os.Parcel in) {
-        return new queryFileList_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -7848,7 +7548,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class QueryFile_args implements org.apache.thrift.TBase<QueryFile_args, QueryFile_args._Fields>, java.io.Serializable, Cloneable, Comparable<QueryFile_args>, android.os.Parcelable   {
+  public static class QueryFile_args implements org.apache.thrift.TBase<QueryFile_args, QueryFile_args._Fields>, java.io.Serializable, Cloneable, Comparable<QueryFile_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("QueryFile_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -7868,36 +7568,6 @@ public class CloudHardDiskService {
      */
     public FTYPE type; // required
     public String fname; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeInt(type.getValue());
-      out.writeString(fname);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public QueryFile_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.type = FTYPE.findByValue(in.readInt());
-      this.fname= in.readString();
-    }
-
-    public static final android.os.Parcelable.Creator<QueryFile_args> CREATOR = new android.os.Parcelable.Creator<QueryFile_args>() {
-      @Override
-      public QueryFile_args[] newArray(int size) {
-        return new QueryFile_args[size];
-      }
-
-      @Override
-      public QueryFile_args createFromParcel(android.os.Parcel in) {
-        return new QueryFile_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -8465,7 +8135,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class QueryFile_result implements org.apache.thrift.TBase<QueryFile_result, QueryFile_result._Fields>, java.io.Serializable, Cloneable, Comparable<QueryFile_result>, android.os.Parcelable   {
+  public static class QueryFile_result implements org.apache.thrift.TBase<QueryFile_result, QueryFile_result._Fields>, java.io.Serializable, Cloneable, Comparable<QueryFile_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("QueryFile_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -8477,32 +8147,6 @@ public class CloudHardDiskService {
     }
 
     public QueryFResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public QueryFile_result(android.os.Parcel in) {
-      this.success= in.readParcelable(QueryFile_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<QueryFile_result> CREATOR = new android.os.Parcelable.Creator<QueryFile_result>() {
-      @Override
-      public QueryFile_result[] newArray(int size) {
-        return new QueryFile_result[size];
-      }
-
-      @Override
-      public QueryFile_result createFromParcel(android.os.Parcel in) {
-        return new QueryFile_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -8857,7 +8501,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryAttribute_args implements org.apache.thrift.TBase<queryAttribute_args, queryAttribute_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryAttribute_args>, android.os.Parcelable   {
+  public static class queryAttribute_args implements org.apache.thrift.TBase<queryAttribute_args, queryAttribute_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryAttribute_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryAttribute_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -8879,38 +8523,6 @@ public class CloudHardDiskService {
      * @see FTYPE
      */
     public FTYPE type; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeString(attribute);
-      out.writeString(objid);
-      out.writeInt(type.getValue());
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryAttribute_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.attribute= in.readString();
-      this.objid= in.readString();
-      this.type = FTYPE.findByValue(in.readInt());
-    }
-
-    public static final android.os.Parcelable.Creator<queryAttribute_args> CREATOR = new android.os.Parcelable.Creator<queryAttribute_args>() {
-      @Override
-      public queryAttribute_args[] newArray(int size) {
-        return new queryAttribute_args[size];
-      }
-
-      @Override
-      public queryAttribute_args createFromParcel(android.os.Parcel in) {
-        return new queryAttribute_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -9581,7 +9193,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryAttribute_result implements org.apache.thrift.TBase<queryAttribute_result, queryAttribute_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryAttribute_result>, android.os.Parcelable   {
+  public static class queryAttribute_result implements org.apache.thrift.TBase<queryAttribute_result, queryAttribute_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryAttribute_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryAttribute_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -9593,32 +9205,6 @@ public class CloudHardDiskService {
     }
 
     public QueryAttributeResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryAttribute_result(android.os.Parcel in) {
-      this.success= in.readParcelable(queryAttribute_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<queryAttribute_result> CREATOR = new android.os.Parcelable.Creator<queryAttribute_result>() {
-      @Override
-      public queryAttribute_result[] newArray(int size) {
-        return new queryAttribute_result[size];
-      }
-
-      @Override
-      public queryAttribute_result createFromParcel(android.os.Parcel in) {
-        return new queryAttribute_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -9973,7 +9559,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class allocobj_args implements org.apache.thrift.TBase<allocobj_args, allocobj_args._Fields>, java.io.Serializable, Cloneable, Comparable<allocobj_args>, android.os.Parcelable   {
+  public static class allocobj_args implements org.apache.thrift.TBase<allocobj_args, allocobj_args._Fields>, java.io.Serializable, Cloneable, Comparable<allocobj_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("allocobj_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -9993,36 +9579,6 @@ public class CloudHardDiskService {
      */
     public FTYPE type; // required
     public String tagname; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeInt(type.getValue());
-      out.writeString(tagname);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public allocobj_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.type = FTYPE.findByValue(in.readInt());
-      this.tagname= in.readString();
-    }
-
-    public static final android.os.Parcelable.Creator<allocobj_args> CREATOR = new android.os.Parcelable.Creator<allocobj_args>() {
-      @Override
-      public allocobj_args[] newArray(int size) {
-        return new allocobj_args[size];
-      }
-
-      @Override
-      public allocobj_args createFromParcel(android.os.Parcel in) {
-        return new allocobj_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -10590,7 +10146,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class allocobj_result implements org.apache.thrift.TBase<allocobj_result, allocobj_result._Fields>, java.io.Serializable, Cloneable, Comparable<allocobj_result>, android.os.Parcelable   {
+  public static class allocobj_result implements org.apache.thrift.TBase<allocobj_result, allocobj_result._Fields>, java.io.Serializable, Cloneable, Comparable<allocobj_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("allocobj_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -10602,32 +10158,6 @@ public class CloudHardDiskService {
     }
 
     public AllocObjResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public allocobj_result(android.os.Parcel in) {
-      this.success= in.readParcelable(allocobj_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<allocobj_result> CREATOR = new android.os.Parcelable.Creator<allocobj_result>() {
-      @Override
-      public allocobj_result[] newArray(int size) {
-        return new allocobj_result[size];
-      }
-
-      @Override
-      public allocobj_result createFromParcel(android.os.Parcel in) {
-        return new allocobj_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -10982,7 +10512,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class appendObj_args implements org.apache.thrift.TBase<appendObj_args, appendObj_args._Fields>, java.io.Serializable, Cloneable, Comparable<appendObj_args>, android.os.Parcelable   {
+  public static class appendObj_args implements org.apache.thrift.TBase<appendObj_args, appendObj_args._Fields>, java.io.Serializable, Cloneable, Comparable<appendObj_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("appendObj_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -11004,43 +10534,6 @@ public class CloudHardDiskService {
      * @see FTYPE
      */
     public FTYPE type; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeString(oid);
-      out.writeInt(bin!=null ? 1 : 0);
-      if(bin != null) { 
-        out.writeByteArray(bin.array(), bin.position() + bin.arrayOffset(), bin.limit() - bin.position() );
-      }
-      out.writeInt(type.getValue());
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public appendObj_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.oid= in.readString();
-      if(in.readInt()==1) {
-        this.bin = ByteBuffer.wrap(in.createByteArray());
-      }
-      this.type = FTYPE.findByValue(in.readInt());
-    }
-
-    public static final android.os.Parcelable.Creator<appendObj_args> CREATOR = new android.os.Parcelable.Creator<appendObj_args>() {
-      @Override
-      public appendObj_args[] newArray(int size) {
-        return new appendObj_args[size];
-      }
-
-      @Override
-      public appendObj_args createFromParcel(android.os.Parcel in) {
-        return new appendObj_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -11721,7 +11214,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class appendObj_result implements org.apache.thrift.TBase<appendObj_result, appendObj_result._Fields>, java.io.Serializable, Cloneable, Comparable<appendObj_result>, android.os.Parcelable   {
+  public static class appendObj_result implements org.apache.thrift.TBase<appendObj_result, appendObj_result._Fields>, java.io.Serializable, Cloneable, Comparable<appendObj_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("appendObj_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -11733,32 +11226,6 @@ public class CloudHardDiskService {
     }
 
     public RetHead success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public appendObj_result(android.os.Parcel in) {
-      this.success= in.readParcelable(appendObj_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<appendObj_result> CREATOR = new android.os.Parcelable.Creator<appendObj_result>() {
-      @Override
-      public appendObj_result[] newArray(int size) {
-        return new appendObj_result[size];
-      }
-
-      @Override
-      public appendObj_result createFromParcel(android.os.Parcel in) {
-        return new appendObj_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -12113,7 +11580,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class commitObj_args implements org.apache.thrift.TBase<commitObj_args, commitObj_args._Fields>, java.io.Serializable, Cloneable, Comparable<commitObj_args>, android.os.Parcelable   {
+  public static class commitObj_args implements org.apache.thrift.TBase<commitObj_args, commitObj_args._Fields>, java.io.Serializable, Cloneable, Comparable<commitObj_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("commitObj_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -12135,39 +11602,6 @@ public class CloudHardDiskService {
      * @see FTYPE
      */
     public FTYPE type; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeString(oid);
-      out.writeMap(odescr);
-      out.writeInt(type.getValue());
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public commitObj_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.oid= in.readString();
-      this.odescr = new HashMap<String,String>();
-       in.readMap(this.odescr, commitObj_args.class.getClassLoader());
-      this.type = FTYPE.findByValue(in.readInt());
-    }
-
-    public static final android.os.Parcelable.Creator<commitObj_args> CREATOR = new android.os.Parcelable.Creator<commitObj_args>() {
-      @Override
-      public commitObj_args[] newArray(int size) {
-        return new commitObj_args[size];
-      }
-
-      @Override
-      public commitObj_args createFromParcel(android.os.Parcel in) {
-        return new commitObj_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -12887,7 +12321,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class commitObj_result implements org.apache.thrift.TBase<commitObj_result, commitObj_result._Fields>, java.io.Serializable, Cloneable, Comparable<commitObj_result>, android.os.Parcelable   {
+  public static class commitObj_result implements org.apache.thrift.TBase<commitObj_result, commitObj_result._Fields>, java.io.Serializable, Cloneable, Comparable<commitObj_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("commitObj_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -12899,32 +12333,6 @@ public class CloudHardDiskService {
     }
 
     public RetHead success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public commitObj_result(android.os.Parcel in) {
-      this.success= in.readParcelable(commitObj_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<commitObj_result> CREATOR = new android.os.Parcelable.Creator<commitObj_result>() {
-      @Override
-      public commitObj_result[] newArray(int size) {
-        return new commitObj_result[size];
-      }
-
-      @Override
-      public commitObj_result createFromParcel(android.os.Parcel in) {
-        return new commitObj_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -13279,7 +12687,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class delObj_args implements org.apache.thrift.TBase<delObj_args, delObj_args._Fields>, java.io.Serializable, Cloneable, Comparable<delObj_args>, android.os.Parcelable   {
+  public static class delObj_args implements org.apache.thrift.TBase<delObj_args, delObj_args._Fields>, java.io.Serializable, Cloneable, Comparable<delObj_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("delObj_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -13299,37 +12707,6 @@ public class CloudHardDiskService {
      * @see FTYPE
      */
     public FTYPE type; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeList(oids);
-      out.writeInt(type.getValue());
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public delObj_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.oids = new ArrayList<String>();
-      in.readList(this.oids, delObj_args.class.getClassLoader());
-      this.type = FTYPE.findByValue(in.readInt());
-    }
-
-    public static final android.os.Parcelable.Creator<delObj_args> CREATOR = new android.os.Parcelable.Creator<delObj_args>() {
-      @Override
-      public delObj_args[] newArray(int size) {
-        return new delObj_args[size];
-      }
-
-      @Override
-      public delObj_args createFromParcel(android.os.Parcel in) {
-        return new delObj_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -13949,7 +13326,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class delObj_result implements org.apache.thrift.TBase<delObj_result, delObj_result._Fields>, java.io.Serializable, Cloneable, Comparable<delObj_result>, android.os.Parcelable   {
+  public static class delObj_result implements org.apache.thrift.TBase<delObj_result, delObj_result._Fields>, java.io.Serializable, Cloneable, Comparable<delObj_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("delObj_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -13961,32 +13338,6 @@ public class CloudHardDiskService {
     }
 
     public RetHead success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public delObj_result(android.os.Parcel in) {
-      this.success= in.readParcelable(delObj_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<delObj_result> CREATOR = new android.os.Parcelable.Creator<delObj_result>() {
-      @Override
-      public delObj_result[] newArray(int size) {
-        return new delObj_result[size];
-      }
-
-      @Override
-      public delObj_result createFromParcel(android.os.Parcel in) {
-        return new delObj_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -14341,7 +13692,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class querusage_args implements org.apache.thrift.TBase<querusage_args, querusage_args._Fields>, java.io.Serializable, Cloneable, Comparable<querusage_args>, android.os.Parcelable   {
+  public static class querusage_args implements org.apache.thrift.TBase<querusage_args, querusage_args._Fields>, java.io.Serializable, Cloneable, Comparable<querusage_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("querusage_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -14359,34 +13710,6 @@ public class CloudHardDiskService {
      * @see FTYPE
      */
     public FTYPE type; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeInt(type.getValue());
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public querusage_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.type = FTYPE.findByValue(in.readInt());
-    }
-
-    public static final android.os.Parcelable.Creator<querusage_args> CREATOR = new android.os.Parcelable.Creator<querusage_args>() {
-      @Override
-      public querusage_args[] newArray(int size) {
-        return new querusage_args[size];
-      }
-
-      @Override
-      public querusage_args createFromParcel(android.os.Parcel in) {
-        return new querusage_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -14851,7 +14174,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class querusage_result implements org.apache.thrift.TBase<querusage_result, querusage_result._Fields>, java.io.Serializable, Cloneable, Comparable<querusage_result>, android.os.Parcelable   {
+  public static class querusage_result implements org.apache.thrift.TBase<querusage_result, querusage_result._Fields>, java.io.Serializable, Cloneable, Comparable<querusage_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("querusage_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -14863,32 +14186,6 @@ public class CloudHardDiskService {
     }
 
     public UsageResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public querusage_result(android.os.Parcel in) {
-      this.success= in.readParcelable(querusage_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<querusage_result> CREATOR = new android.os.Parcelable.Creator<querusage_result>() {
-      @Override
-      public querusage_result[] newArray(int size) {
-        return new querusage_result[size];
-      }
-
-      @Override
-      public querusage_result createFromParcel(android.os.Parcel in) {
-        return new querusage_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -15243,7 +14540,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class downloadFile_args implements org.apache.thrift.TBase<downloadFile_args, downloadFile_args._Fields>, java.io.Serializable, Cloneable, Comparable<downloadFile_args>, android.os.Parcelable   {
+  public static class downloadFile_args implements org.apache.thrift.TBase<downloadFile_args, downloadFile_args._Fields>, java.io.Serializable, Cloneable, Comparable<downloadFile_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("downloadFile_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -15257,34 +14554,6 @@ public class CloudHardDiskService {
 
     public String token; // required
     public DownloadParam param; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeParcelable(param, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public downloadFile_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.param= in.readParcelable(downloadFile_args.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<downloadFile_args> CREATOR = new android.os.Parcelable.Creator<downloadFile_args>() {
-      @Override
-      public downloadFile_args[] newArray(int size) {
-        return new downloadFile_args[size];
-      }
-
-      @Override
-      public downloadFile_args createFromParcel(android.os.Parcel in) {
-        return new downloadFile_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -15742,7 +15011,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class downloadFile_result implements org.apache.thrift.TBase<downloadFile_result, downloadFile_result._Fields>, java.io.Serializable, Cloneable, Comparable<downloadFile_result>, android.os.Parcelable   {
+  public static class downloadFile_result implements org.apache.thrift.TBase<downloadFile_result, downloadFile_result._Fields>, java.io.Serializable, Cloneable, Comparable<downloadFile_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("downloadFile_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -15754,32 +15023,6 @@ public class CloudHardDiskService {
     }
 
     public DownloadResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public downloadFile_result(android.os.Parcel in) {
-      this.success= in.readParcelable(downloadFile_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<downloadFile_result> CREATOR = new android.os.Parcelable.Creator<downloadFile_result>() {
-      @Override
-      public downloadFile_result[] newArray(int size) {
-        return new downloadFile_result[size];
-      }
-
-      @Override
-      public downloadFile_result createFromParcel(android.os.Parcel in) {
-        return new downloadFile_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -16134,7 +15377,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class renameObj_args implements org.apache.thrift.TBase<renameObj_args, renameObj_args._Fields>, java.io.Serializable, Cloneable, Comparable<renameObj_args>, android.os.Parcelable   {
+  public static class renameObj_args implements org.apache.thrift.TBase<renameObj_args, renameObj_args._Fields>, java.io.Serializable, Cloneable, Comparable<renameObj_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("renameObj_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -16156,38 +15399,6 @@ public class CloudHardDiskService {
      * @see FTYPE
      */
     public FTYPE type; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeString(oid);
-      out.writeString(newname);
-      out.writeInt(type.getValue());
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public renameObj_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.oid= in.readString();
-      this.newname= in.readString();
-      this.type = FTYPE.findByValue(in.readInt());
-    }
-
-    public static final android.os.Parcelable.Creator<renameObj_args> CREATOR = new android.os.Parcelable.Creator<renameObj_args>() {
-      @Override
-      public renameObj_args[] newArray(int size) {
-        return new renameObj_args[size];
-      }
-
-      @Override
-      public renameObj_args createFromParcel(android.os.Parcel in) {
-        return new renameObj_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -16858,7 +16069,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class renameObj_result implements org.apache.thrift.TBase<renameObj_result, renameObj_result._Fields>, java.io.Serializable, Cloneable, Comparable<renameObj_result>, android.os.Parcelable   {
+  public static class renameObj_result implements org.apache.thrift.TBase<renameObj_result, renameObj_result._Fields>, java.io.Serializable, Cloneable, Comparable<renameObj_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("renameObj_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -16870,32 +16081,6 @@ public class CloudHardDiskService {
     }
 
     public RetHead success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public renameObj_result(android.os.Parcel in) {
-      this.success= in.readParcelable(renameObj_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<renameObj_result> CREATOR = new android.os.Parcelable.Creator<renameObj_result>() {
-      @Override
-      public renameObj_result[] newArray(int size) {
-        return new renameObj_result[size];
-      }
-
-      @Override
-      public renameObj_result createFromParcel(android.os.Parcel in) {
-        return new renameObj_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -17250,7 +16435,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class CreateShare_args implements org.apache.thrift.TBase<CreateShare_args, CreateShare_args._Fields>, java.io.Serializable, Cloneable, Comparable<CreateShare_args>, android.os.Parcelable   {
+  public static class CreateShare_args implements org.apache.thrift.TBase<CreateShare_args, CreateShare_args._Fields>, java.io.Serializable, Cloneable, Comparable<CreateShare_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CreateShare_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -17270,36 +16455,6 @@ public class CloudHardDiskService {
      * @see FTYPE
      */
     public FTYPE type; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-      out.writeString(oid);
-      out.writeInt(type.getValue());
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public CreateShare_args(android.os.Parcel in) {
-      this.token= in.readString();
-      this.oid= in.readString();
-      this.type = FTYPE.findByValue(in.readInt());
-    }
-
-    public static final android.os.Parcelable.Creator<CreateShare_args> CREATOR = new android.os.Parcelable.Creator<CreateShare_args>() {
-      @Override
-      public CreateShare_args[] newArray(int size) {
-        return new CreateShare_args[size];
-      }
-
-      @Override
-      public CreateShare_args createFromParcel(android.os.Parcel in) {
-        return new CreateShare_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -17867,7 +17022,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class CreateShare_result implements org.apache.thrift.TBase<CreateShare_result, CreateShare_result._Fields>, java.io.Serializable, Cloneable, Comparable<CreateShare_result>, android.os.Parcelable   {
+  public static class CreateShare_result implements org.apache.thrift.TBase<CreateShare_result, CreateShare_result._Fields>, java.io.Serializable, Cloneable, Comparable<CreateShare_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("CreateShare_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -17879,32 +17034,6 @@ public class CloudHardDiskService {
     }
 
     public CreateShareResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public CreateShare_result(android.os.Parcel in) {
-      this.success= in.readParcelable(CreateShare_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<CreateShare_result> CREATOR = new android.os.Parcelable.Creator<CreateShare_result>() {
-      @Override
-      public CreateShare_result[] newArray(int size) {
-        return new CreateShare_result[size];
-      }
-
-      @Override
-      public CreateShare_result createFromParcel(android.os.Parcel in) {
-        return new CreateShare_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -18259,7 +17388,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class GetVer_args implements org.apache.thrift.TBase<GetVer_args, GetVer_args._Fields>, java.io.Serializable, Cloneable, Comparable<GetVer_args>, android.os.Parcelable   {
+  public static class GetVer_args implements org.apache.thrift.TBase<GetVer_args, GetVer_args._Fields>, java.io.Serializable, Cloneable, Comparable<GetVer_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetVer_args");
 
 
@@ -18269,30 +17398,6 @@ public class CloudHardDiskService {
       schemes.put(TupleScheme.class, new GetVer_argsTupleSchemeFactory());
     }
 
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public GetVer_args(android.os.Parcel in) {
-    }
-
-    public static final android.os.Parcelable.Creator<GetVer_args> CREATOR = new android.os.Parcelable.Creator<GetVer_args>() {
-      @Override
-      public GetVer_args[] newArray(int size) {
-        return new GetVer_args[size];
-      }
-
-      @Override
-      public GetVer_args createFromParcel(android.os.Parcel in) {
-        return new GetVer_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -18531,7 +17636,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class GetVer_result implements org.apache.thrift.TBase<GetVer_result, GetVer_result._Fields>, java.io.Serializable, Cloneable, Comparable<GetVer_result>, android.os.Parcelable   {
+  public static class GetVer_result implements org.apache.thrift.TBase<GetVer_result, GetVer_result._Fields>, java.io.Serializable, Cloneable, Comparable<GetVer_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetVer_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRING, (short)0);
@@ -18543,32 +17648,6 @@ public class CloudHardDiskService {
     }
 
     public String success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(success);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public GetVer_result(android.os.Parcel in) {
-      this.success= in.readString();
-    }
-
-    public static final android.os.Parcelable.Creator<GetVer_result> CREATOR = new android.os.Parcelable.Creator<GetVer_result>() {
-      @Override
-      public GetVer_result[] newArray(int size) {
-        return new GetVer_result[size];
-      }
-
-      @Override
-      public GetVer_result createFromParcel(android.os.Parcel in) {
-        return new GetVer_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -18918,7 +17997,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryApps_args implements org.apache.thrift.TBase<queryApps_args, queryApps_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryApps_args>, android.os.Parcelable   {
+  public static class queryApps_args implements org.apache.thrift.TBase<queryApps_args, queryApps_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryApps_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryApps_args");
 
 
@@ -18928,30 +18007,6 @@ public class CloudHardDiskService {
       schemes.put(TupleScheme.class, new queryApps_argsTupleSchemeFactory());
     }
 
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryApps_args(android.os.Parcel in) {
-    }
-
-    public static final android.os.Parcelable.Creator<queryApps_args> CREATOR = new android.os.Parcelable.Creator<queryApps_args>() {
-      @Override
-      public queryApps_args[] newArray(int size) {
-        return new queryApps_args[size];
-      }
-
-      @Override
-      public queryApps_args createFromParcel(android.os.Parcel in) {
-        return new queryApps_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -19190,7 +18245,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryApps_result implements org.apache.thrift.TBase<queryApps_result, queryApps_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryApps_result>, android.os.Parcelable   {
+  public static class queryApps_result implements org.apache.thrift.TBase<queryApps_result, queryApps_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryApps_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryApps_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -19202,32 +18257,6 @@ public class CloudHardDiskService {
     }
 
     public QueryAppResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryApps_result(android.os.Parcel in) {
-      this.success= in.readParcelable(queryApps_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<queryApps_result> CREATOR = new android.os.Parcelable.Creator<queryApps_result>() {
-      @Override
-      public queryApps_result[] newArray(int size) {
-        return new queryApps_result[size];
-      }
-
-      @Override
-      public queryApps_result createFromParcel(android.os.Parcel in) {
-        return new queryApps_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -19582,7 +18611,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryHelp_args implements org.apache.thrift.TBase<queryHelp_args, queryHelp_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryHelp_args>, android.os.Parcelable   {
+  public static class queryHelp_args implements org.apache.thrift.TBase<queryHelp_args, queryHelp_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryHelp_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryHelp_args");
 
 
@@ -19592,30 +18621,6 @@ public class CloudHardDiskService {
       schemes.put(TupleScheme.class, new queryHelp_argsTupleSchemeFactory());
     }
 
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryHelp_args(android.os.Parcel in) {
-    }
-
-    public static final android.os.Parcelable.Creator<queryHelp_args> CREATOR = new android.os.Parcelable.Creator<queryHelp_args>() {
-      @Override
-      public queryHelp_args[] newArray(int size) {
-        return new queryHelp_args[size];
-      }
-
-      @Override
-      public queryHelp_args createFromParcel(android.os.Parcel in) {
-        return new queryHelp_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -19854,7 +18859,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryHelp_result implements org.apache.thrift.TBase<queryHelp_result, queryHelp_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryHelp_result>, android.os.Parcelable   {
+  public static class queryHelp_result implements org.apache.thrift.TBase<queryHelp_result, queryHelp_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryHelp_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryHelp_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -19866,32 +18871,6 @@ public class CloudHardDiskService {
     }
 
     public QueryHelpResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryHelp_result(android.os.Parcel in) {
-      this.success= in.readParcelable(queryHelp_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<queryHelp_result> CREATOR = new android.os.Parcelable.Creator<queryHelp_result>() {
-      @Override
-      public queryHelp_result[] newArray(int size) {
-        return new queryHelp_result[size];
-      }
-
-      @Override
-      public queryHelp_result createFromParcel(android.os.Parcel in) {
-        return new queryHelp_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -20246,7 +19225,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryFee_args implements org.apache.thrift.TBase<queryFee_args, queryFee_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryFee_args>, android.os.Parcelable   {
+  public static class queryFee_args implements org.apache.thrift.TBase<queryFee_args, queryFee_args._Fields>, java.io.Serializable, Cloneable, Comparable<queryFee_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryFee_args");
 
     private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
@@ -20258,32 +19237,6 @@ public class CloudHardDiskService {
     }
 
     public String token; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeString(token);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryFee_args(android.os.Parcel in) {
-      this.token= in.readString();
-    }
-
-    public static final android.os.Parcelable.Creator<queryFee_args> CREATOR = new android.os.Parcelable.Creator<queryFee_args>() {
-      @Override
-      public queryFee_args[] newArray(int size) {
-        return new queryFee_args[size];
-      }
-
-      @Override
-      public queryFee_args createFromParcel(android.os.Parcel in) {
-        return new queryFee_args(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -20633,7 +19586,7 @@ public class CloudHardDiskService {
 
   }
 
-  public static class queryFee_result implements org.apache.thrift.TBase<queryFee_result, queryFee_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryFee_result>, android.os.Parcelable   {
+  public static class queryFee_result implements org.apache.thrift.TBase<queryFee_result, queryFee_result._Fields>, java.io.Serializable, Cloneable, Comparable<queryFee_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("queryFee_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
@@ -20645,32 +19598,6 @@ public class CloudHardDiskService {
     }
 
     public QueryFeeResult success; // required
-
-    @Override
-    public void writeToParcel(android.os.Parcel out, int flags) {
-      out.writeParcelable(success, flags);
-    }
-
-    @Override
-    public int describeContents() {
-      return 0;
-    }
-
-    public queryFee_result(android.os.Parcel in) {
-      this.success= in.readParcelable(queryFee_result.class.getClassLoader());
-    }
-
-    public static final android.os.Parcelable.Creator<queryFee_result> CREATOR = new android.os.Parcelable.Creator<queryFee_result>() {
-      @Override
-      public queryFee_result[] newArray(int size) {
-        return new queryFee_result[size];
-      }
-
-      @Override
-      public queryFee_result createFromParcel(android.os.Parcel in) {
-        return new queryFee_result(in);
-      }
-    };
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {

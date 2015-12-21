@@ -128,6 +128,7 @@ struct DownloadParam {
    1: OBJID objid;	
    2: i64 offerset=0;  
    3: i32 reqlen=1024; //默认每次请求1k字节的数据
+   4: FTYPE type;
 }
 
 
@@ -182,6 +183,7 @@ struct UploadParam {
    1: string filename;
    2: i64 offerstar=0;
    3: binary bin;
+   4: FTYPE type;
 }
 
 struct QueryAttributeResult {
@@ -253,7 +255,7 @@ service CloudHardDiskService {
 
     QueryFResult QueryFile(1:Token token ,2:FTYPE type,3:string fname);
 
-    QueryAttributeResult queryAttribute(1:Token token,2: string attribute,3: OBJID  objid);
+    QueryAttributeResult queryAttribute(1:Token token,2: string attribute,3: OBJID  objid,4: FTYPE type);
     
     //RetHead     sysncnotepad(1:SYNCTYPE , 2:List notes);//完善中
  
@@ -271,21 +273,21 @@ service CloudHardDiskService {
     // 需要查询 服务器端是否有同名的 未传完的 文件,如果存在应返回在result里面!!!!
     AllocObjResult  allocobj(1:Token token ,2:FTYPE type,3:string tagname); 
 
-    RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin,4:string uploadid);// 分块写入文件
+    RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin,4:FTYPE type);// 分块写入文件
     
-    RetHead   commitObj(1:Token token,2:OBJID oid,3:ObjDescrp odescr,4:string uploadid );// param3 object 的描述  存放sms 通信表述信息
+    RetHead   commitObj(1:Token token,2:OBJID oid,3:ObjDescrp odescr,4:FTYPE type );// param3 object 的描述  存放sms 通信表述信息
     
-    RetHead  delObj(1:Token token,2:list<OBJID> oids);
+    RetHead  delObj(1:Token token,2:list<OBJID> oids,3: FTYPE type);
 
     UsageResult querusage(1:Token token,2:FTYPE type)		   
     
     DownloadResult downloadFile(1:Token token ,2:DownloadParam param); 
     
-    RetHead  renameObj(1:Token token,2:OBJID oid,3:string  newname);
+    RetHead  renameObj(1:Token token,2:OBJID oid,3:string  newname,4: FTYPE type);
     
-    CreateShareResult CreateShare(1:Token token,2:OBJID oid); //需要 有一个默认分享到期时间,由服务端控制
+    CreateShareResult CreateShare(1:Token token,2:OBJID oid,3: FTYPE type); //需要 有一个默认分享到期时间,由服务端控制
     
-    String GetVer(); //
+    string GetVer(); //
     
     QueryAppResult queryApps();
     

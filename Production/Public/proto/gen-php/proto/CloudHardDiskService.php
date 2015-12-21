@@ -68,9 +68,10 @@ interface CloudHardDiskServiceIf {
    * @param string $token
    * @param string $attribute
    * @param string $objid
+   * @param int $type
    * @return \proto\QueryAttributeResult
    */
-  public function queryAttribute($token, $attribute, $objid);
+  public function queryAttribute($token, $attribute, $objid, $type);
   /**
    * @param string $token
    * @param int $type
@@ -82,24 +83,25 @@ interface CloudHardDiskServiceIf {
    * @param string $token
    * @param string $oid
    * @param string $bin
-   * @param string $uploadid
+   * @param int $type
    * @return \proto\RetHead
    */
-  public function appendObj($token, $oid, $bin, $uploadid);
+  public function appendObj($token, $oid, $bin, $type);
   /**
    * @param string $token
    * @param string $oid
    * @param array $odescr
-   * @param string $uploadid
+   * @param int $type
    * @return \proto\RetHead
    */
-  public function commitObj($token, $oid, $odescr, $uploadid);
+  public function commitObj($token, $oid, $odescr, $type);
   /**
    * @param string $token
    * @param string[] $oids
+   * @param int $type
    * @return \proto\RetHead
    */
-  public function delObj($token, array $oids);
+  public function delObj($token, array $oids, $type);
   /**
    * @param string $token
    * @param int $type
@@ -116,19 +118,21 @@ interface CloudHardDiskServiceIf {
    * @param string $token
    * @param string $oid
    * @param string $newname
+   * @param int $type
    * @return \proto\RetHead
    */
-  public function renameObj($token, $oid, $newname);
+  public function renameObj($token, $oid, $newname, $type);
   /**
    * @param string $token
    * @param string $oid
+   * @param int $type
    * @return \proto\CreateShareResult
    */
-  public function CreateShare($token, $oid);
+  public function CreateShare($token, $oid, $type);
   /**
-   * @return \proto\RetHead
+   * @return string
    */
-  public function CheckVer();
+  public function GetVer();
   /**
    * @return \proto\QueryAppResult
    */
@@ -138,9 +142,10 @@ interface CloudHardDiskServiceIf {
    */
   public function queryHelp();
   /**
+   * @param string $token
    * @return \proto\QueryFeeResult
    */
-  public function querFee();
+  public function queryFee($token);
 }
 
 class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
@@ -473,18 +478,19 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("QueryFile failed: unknown result");
   }
 
-  public function queryAttribute($token, $attribute, $objid)
+  public function queryAttribute($token, $attribute, $objid, $type)
   {
-    $this->send_queryAttribute($token, $attribute, $objid);
+    $this->send_queryAttribute($token, $attribute, $objid, $type);
     return $this->recv_queryAttribute();
   }
 
-  public function send_queryAttribute($token, $attribute, $objid)
+  public function send_queryAttribute($token, $attribute, $objid, $type)
   {
     $args = new \proto\CloudHardDiskService_queryAttribute_args();
     $args->token = $token;
     $args->attribute = $attribute;
     $args->objid = $objid;
+    $args->type = $type;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -579,19 +585,19 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("allocobj failed: unknown result");
   }
 
-  public function appendObj($token, $oid, $bin, $uploadid)
+  public function appendObj($token, $oid, $bin, $type)
   {
-    $this->send_appendObj($token, $oid, $bin, $uploadid);
+    $this->send_appendObj($token, $oid, $bin, $type);
     return $this->recv_appendObj();
   }
 
-  public function send_appendObj($token, $oid, $bin, $uploadid)
+  public function send_appendObj($token, $oid, $bin, $type)
   {
     $args = new \proto\CloudHardDiskService_appendObj_args();
     $args->token = $token;
     $args->oid = $oid;
     $args->bin = $bin;
-    $args->uploadid = $uploadid;
+    $args->type = $type;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -633,19 +639,19 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("appendObj failed: unknown result");
   }
 
-  public function commitObj($token, $oid, $odescr, $uploadid)
+  public function commitObj($token, $oid, $odescr, $type)
   {
-    $this->send_commitObj($token, $oid, $odescr, $uploadid);
+    $this->send_commitObj($token, $oid, $odescr, $type);
     return $this->recv_commitObj();
   }
 
-  public function send_commitObj($token, $oid, $odescr, $uploadid)
+  public function send_commitObj($token, $oid, $odescr, $type)
   {
     $args = new \proto\CloudHardDiskService_commitObj_args();
     $args->token = $token;
     $args->oid = $oid;
     $args->odescr = $odescr;
-    $args->uploadid = $uploadid;
+    $args->type = $type;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -687,17 +693,18 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("commitObj failed: unknown result");
   }
 
-  public function delObj($token, array $oids)
+  public function delObj($token, array $oids, $type)
   {
-    $this->send_delObj($token, $oids);
+    $this->send_delObj($token, $oids, $type);
     return $this->recv_delObj();
   }
 
-  public function send_delObj($token, array $oids)
+  public function send_delObj($token, array $oids, $type)
   {
     $args = new \proto\CloudHardDiskService_delObj_args();
     $args->token = $token;
     $args->oids = $oids;
+    $args->type = $type;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -843,18 +850,19 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("downloadFile failed: unknown result");
   }
 
-  public function renameObj($token, $oid, $newname)
+  public function renameObj($token, $oid, $newname, $type)
   {
-    $this->send_renameObj($token, $oid, $newname);
+    $this->send_renameObj($token, $oid, $newname, $type);
     return $this->recv_renameObj();
   }
 
-  public function send_renameObj($token, $oid, $newname)
+  public function send_renameObj($token, $oid, $newname, $type)
   {
     $args = new \proto\CloudHardDiskService_renameObj_args();
     $args->token = $token;
     $args->oid = $oid;
     $args->newname = $newname;
+    $args->type = $type;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -896,17 +904,18 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("renameObj failed: unknown result");
   }
 
-  public function CreateShare($token, $oid)
+  public function CreateShare($token, $oid, $type)
   {
-    $this->send_CreateShare($token, $oid);
+    $this->send_CreateShare($token, $oid, $type);
     return $this->recv_CreateShare();
   }
 
-  public function send_CreateShare($token, $oid)
+  public function send_CreateShare($token, $oid, $type)
   {
     $args = new \proto\CloudHardDiskService_CreateShare_args();
     $args->token = $token;
     $args->oid = $oid;
+    $args->type = $type;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -948,33 +957,33 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("CreateShare failed: unknown result");
   }
 
-  public function CheckVer()
+  public function GetVer()
   {
-    $this->send_CheckVer();
-    return $this->recv_CheckVer();
+    $this->send_GetVer();
+    return $this->recv_GetVer();
   }
 
-  public function send_CheckVer()
+  public function send_GetVer()
   {
-    $args = new \proto\CloudHardDiskService_CheckVer_args();
+    $args = new \proto\CloudHardDiskService_GetVer_args();
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'CheckVer', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'GetVer', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('CheckVer', TMessageType::CALL, $this->seqid_);
+      $this->output_->writeMessageBegin('GetVer', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
 
-  public function recv_CheckVer()
+  public function recv_GetVer()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_CheckVer_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_GetVer_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -988,14 +997,14 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \proto\CloudHardDiskService_CheckVer_result();
+      $result = new \proto\CloudHardDiskService_GetVer_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
     if ($result->success !== null) {
       return $result->success;
     }
-    throw new \Exception("CheckVer failed: unknown result");
+    throw new \Exception("GetVer failed: unknown result");
   }
 
   public function queryApps()
@@ -1098,33 +1107,34 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("queryHelp failed: unknown result");
   }
 
-  public function querFee()
+  public function queryFee($token)
   {
-    $this->send_querFee();
-    return $this->recv_querFee();
+    $this->send_queryFee($token);
+    return $this->recv_queryFee();
   }
 
-  public function send_querFee()
+  public function send_queryFee($token)
   {
-    $args = new \proto\CloudHardDiskService_querFee_args();
+    $args = new \proto\CloudHardDiskService_queryFee_args();
+    $args->token = $token;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'querFee', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'queryFee', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('querFee', TMessageType::CALL, $this->seqid_);
+      $this->output_->writeMessageBegin('queryFee', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
 
-  public function recv_querFee()
+  public function recv_queryFee()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_querFee_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_queryFee_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1138,14 +1148,14 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \proto\CloudHardDiskService_querFee_result();
+      $result = new \proto\CloudHardDiskService_queryFee_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
     if ($result->success !== null) {
       return $result->success;
     }
-    throw new \Exception("querFee failed: unknown result");
+    throw new \Exception("queryFee failed: unknown result");
   }
 
 }
@@ -2401,6 +2411,10 @@ class CloudHardDiskService_queryAttribute_args {
    * @var string
    */
   public $objid = null;
+  /**
+   * @var int
+   */
+  public $type = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -2417,6 +2431,10 @@ class CloudHardDiskService_queryAttribute_args {
           'var' => 'objid',
           'type' => TType::STRING,
           ),
+        4 => array(
+          'var' => 'type',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -2428,6 +2446,9 @@ class CloudHardDiskService_queryAttribute_args {
       }
       if (isset($vals['objid'])) {
         $this->objid = $vals['objid'];
+      }
+      if (isset($vals['type'])) {
+        $this->type = $vals['type'];
       }
     }
   }
@@ -2472,6 +2493,13 @@ class CloudHardDiskService_queryAttribute_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->type);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -2498,6 +2526,11 @@ class CloudHardDiskService_queryAttribute_args {
     if ($this->objid !== null) {
       $xfer += $output->writeFieldBegin('objid', TType::STRING, 3);
       $xfer += $output->writeString($this->objid);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->type !== null) {
+      $xfer += $output->writeFieldBegin('type', TType::I32, 4);
+      $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -2804,9 +2837,9 @@ class CloudHardDiskService_appendObj_args {
    */
   public $bin = null;
   /**
-   * @var string
+   * @var int
    */
-  public $uploadid = null;
+  public $type = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -2824,8 +2857,8 @@ class CloudHardDiskService_appendObj_args {
           'type' => TType::STRING,
           ),
         4 => array(
-          'var' => 'uploadid',
-          'type' => TType::STRING,
+          'var' => 'type',
+          'type' => TType::I32,
           ),
         );
     }
@@ -2839,8 +2872,8 @@ class CloudHardDiskService_appendObj_args {
       if (isset($vals['bin'])) {
         $this->bin = $vals['bin'];
       }
-      if (isset($vals['uploadid'])) {
-        $this->uploadid = $vals['uploadid'];
+      if (isset($vals['type'])) {
+        $this->type = $vals['type'];
       }
     }
   }
@@ -2886,8 +2919,8 @@ class CloudHardDiskService_appendObj_args {
           }
           break;
         case 4:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->uploadid);
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->type);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -2920,9 +2953,9 @@ class CloudHardDiskService_appendObj_args {
       $xfer += $output->writeString($this->bin);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->uploadid !== null) {
-      $xfer += $output->writeFieldBegin('uploadid', TType::STRING, 4);
-      $xfer += $output->writeString($this->uploadid);
+    if ($this->type !== null) {
+      $xfer += $output->writeFieldBegin('type', TType::I32, 4);
+      $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -3028,9 +3061,9 @@ class CloudHardDiskService_commitObj_args {
    */
   public $odescr = null;
   /**
-   * @var string
+   * @var int
    */
-  public $uploadid = null;
+  public $type = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3056,8 +3089,8 @@ class CloudHardDiskService_commitObj_args {
             ),
           ),
         4 => array(
-          'var' => 'uploadid',
-          'type' => TType::STRING,
+          'var' => 'type',
+          'type' => TType::I32,
           ),
         );
     }
@@ -3071,8 +3104,8 @@ class CloudHardDiskService_commitObj_args {
       if (isset($vals['odescr'])) {
         $this->odescr = $vals['odescr'];
       }
-      if (isset($vals['uploadid'])) {
-        $this->uploadid = $vals['uploadid'];
+      if (isset($vals['type'])) {
+        $this->type = $vals['type'];
       }
     }
   }
@@ -3131,8 +3164,8 @@ class CloudHardDiskService_commitObj_args {
           }
           break;
         case 4:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->uploadid);
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->type);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -3178,9 +3211,9 @@ class CloudHardDiskService_commitObj_args {
       }
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->uploadid !== null) {
-      $xfer += $output->writeFieldBegin('uploadid', TType::STRING, 4);
-      $xfer += $output->writeString($this->uploadid);
+    if ($this->type !== null) {
+      $xfer += $output->writeFieldBegin('type', TType::I32, 4);
+      $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -3281,6 +3314,10 @@ class CloudHardDiskService_delObj_args {
    * @var string[]
    */
   public $oids = null;
+  /**
+   * @var int
+   */
+  public $type = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3297,6 +3334,10 @@ class CloudHardDiskService_delObj_args {
             'type' => TType::STRING,
             ),
           ),
+        3 => array(
+          'var' => 'type',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -3305,6 +3346,9 @@ class CloudHardDiskService_delObj_args {
       }
       if (isset($vals['oids'])) {
         $this->oids = $vals['oids'];
+      }
+      if (isset($vals['type'])) {
+        $this->type = $vals['type'];
       }
     }
   }
@@ -3352,6 +3396,13 @@ class CloudHardDiskService_delObj_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 3:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->type);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -3385,6 +3436,11 @@ class CloudHardDiskService_delObj_args {
         }
         $output->writeListEnd();
       }
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->type !== null) {
+      $xfer += $output->writeFieldBegin('type', TType::I32, 3);
+      $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -3850,6 +3906,10 @@ class CloudHardDiskService_renameObj_args {
    * @var string
    */
   public $newname = null;
+  /**
+   * @var int
+   */
+  public $type = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3866,6 +3926,10 @@ class CloudHardDiskService_renameObj_args {
           'var' => 'newname',
           'type' => TType::STRING,
           ),
+        4 => array(
+          'var' => 'type',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -3877,6 +3941,9 @@ class CloudHardDiskService_renameObj_args {
       }
       if (isset($vals['newname'])) {
         $this->newname = $vals['newname'];
+      }
+      if (isset($vals['type'])) {
+        $this->type = $vals['type'];
       }
     }
   }
@@ -3921,6 +3988,13 @@ class CloudHardDiskService_renameObj_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->type);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -3947,6 +4021,11 @@ class CloudHardDiskService_renameObj_args {
     if ($this->newname !== null) {
       $xfer += $output->writeFieldBegin('newname', TType::STRING, 3);
       $xfer += $output->writeString($this->newname);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->type !== null) {
+      $xfer += $output->writeFieldBegin('type', TType::I32, 4);
+      $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -4047,6 +4126,10 @@ class CloudHardDiskService_CreateShare_args {
    * @var string
    */
   public $oid = null;
+  /**
+   * @var int
+   */
+  public $type = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -4059,6 +4142,10 @@ class CloudHardDiskService_CreateShare_args {
           'var' => 'oid',
           'type' => TType::STRING,
           ),
+        3 => array(
+          'var' => 'type',
+          'type' => TType::I32,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -4067,6 +4154,9 @@ class CloudHardDiskService_CreateShare_args {
       }
       if (isset($vals['oid'])) {
         $this->oid = $vals['oid'];
+      }
+      if (isset($vals['type'])) {
+        $this->type = $vals['type'];
       }
     }
   }
@@ -4104,6 +4194,13 @@ class CloudHardDiskService_CreateShare_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 3:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->type);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -4125,6 +4222,11 @@ class CloudHardDiskService_CreateShare_args {
     if ($this->oid !== null) {
       $xfer += $output->writeFieldBegin('oid', TType::STRING, 2);
       $xfer += $output->writeString($this->oid);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->type !== null) {
+      $xfer += $output->writeFieldBegin('type', TType::I32, 3);
+      $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -4214,7 +4316,7 @@ class CloudHardDiskService_CreateShare_result {
 
 }
 
-class CloudHardDiskService_CheckVer_args {
+class CloudHardDiskService_GetVer_args {
   static $_TSPEC;
 
 
@@ -4226,7 +4328,7 @@ class CloudHardDiskService_CheckVer_args {
   }
 
   public function getName() {
-    return 'CloudHardDiskService_CheckVer_args';
+    return 'CloudHardDiskService_GetVer_args';
   }
 
   public function read($input)
@@ -4256,7 +4358,7 @@ class CloudHardDiskService_CheckVer_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_CheckVer_args');
+    $xfer += $output->writeStructBegin('CloudHardDiskService_GetVer_args');
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -4264,11 +4366,11 @@ class CloudHardDiskService_CheckVer_args {
 
 }
 
-class CloudHardDiskService_CheckVer_result {
+class CloudHardDiskService_GetVer_result {
   static $_TSPEC;
 
   /**
-   * @var \proto\RetHead
+   * @var string
    */
   public $success = null;
 
@@ -4277,8 +4379,7 @@ class CloudHardDiskService_CheckVer_result {
       self::$_TSPEC = array(
         0 => array(
           'var' => 'success',
-          'type' => TType::STRUCT,
-          'class' => '\proto\RetHead',
+          'type' => TType::STRING,
           ),
         );
     }
@@ -4290,7 +4391,7 @@ class CloudHardDiskService_CheckVer_result {
   }
 
   public function getName() {
-    return 'CloudHardDiskService_CheckVer_result';
+    return 'CloudHardDiskService_GetVer_result';
   }
 
   public function read($input)
@@ -4309,9 +4410,8 @@ class CloudHardDiskService_CheckVer_result {
       switch ($fid)
       {
         case 0:
-          if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\RetHead();
-            $xfer += $this->success->read($input);
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->success);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -4328,13 +4428,10 @@ class CloudHardDiskService_CheckVer_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_CheckVer_result');
+    $xfer += $output->writeStructBegin('CloudHardDiskService_GetVer_result');
     if ($this->success !== null) {
-      if (!is_object($this->success)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('success', TType::STRUCT, 0);
-      $xfer += $this->success->write($output);
+      $xfer += $output->writeFieldBegin('success', TType::STRING, 0);
+      $xfer += $output->writeString($this->success);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -4604,19 +4701,32 @@ class CloudHardDiskService_queryHelp_result {
 
 }
 
-class CloudHardDiskService_querFee_args {
+class CloudHardDiskService_queryFee_args {
   static $_TSPEC;
 
+  /**
+   * @var string
+   */
+  public $token = null;
 
-  public function __construct() {
+  public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
+        1 => array(
+          'var' => 'token',
+          'type' => TType::STRING,
+          ),
         );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
     }
   }
 
   public function getName() {
-    return 'CloudHardDiskService_querFee_args';
+    return 'CloudHardDiskService_queryFee_args';
   }
 
   public function read($input)
@@ -4634,6 +4744,13 @@ class CloudHardDiskService_querFee_args {
       }
       switch ($fid)
       {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->token);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -4646,7 +4763,12 @@ class CloudHardDiskService_querFee_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_querFee_args');
+    $xfer += $output->writeStructBegin('CloudHardDiskService_queryFee_args');
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeString($this->token);
+      $xfer += $output->writeFieldEnd();
+    }
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -4654,7 +4776,7 @@ class CloudHardDiskService_querFee_args {
 
 }
 
-class CloudHardDiskService_querFee_result {
+class CloudHardDiskService_queryFee_result {
   static $_TSPEC;
 
   /**
@@ -4680,7 +4802,7 @@ class CloudHardDiskService_querFee_result {
   }
 
   public function getName() {
-    return 'CloudHardDiskService_querFee_result';
+    return 'CloudHardDiskService_queryFee_result';
   }
 
   public function read($input)
@@ -4718,7 +4840,7 @@ class CloudHardDiskService_querFee_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_querFee_result');
+    $xfer += $output->writeStructBegin('CloudHardDiskService_queryFee_result');
     if ($this->success !== null) {
       if (!is_object($this->success)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
@@ -4880,7 +5002,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_queryAttribute_result();
-    $result->success = $this->handler_->queryAttribute($args->token, $args->attribute, $args->objid);
+    $result->success = $this->handler_->queryAttribute($args->token, $args->attribute, $args->objid, $args->type);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -4918,7 +5040,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_appendObj_result();
-    $result->success = $this->handler_->appendObj($args->token, $args->oid, $args->bin, $args->uploadid);
+    $result->success = $this->handler_->appendObj($args->token, $args->oid, $args->bin, $args->type);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -4937,7 +5059,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_commitObj_result();
-    $result->success = $this->handler_->commitObj($args->token, $args->oid, $args->odescr, $args->uploadid);
+    $result->success = $this->handler_->commitObj($args->token, $args->oid, $args->odescr, $args->type);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -4956,7 +5078,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_delObj_result();
-    $result->success = $this->handler_->delObj($args->token, $args->oids);
+    $result->success = $this->handler_->delObj($args->token, $args->oids, $args->type);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -5013,7 +5135,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_renameObj_result();
-    $result->success = $this->handler_->renameObj($args->token, $args->oid, $args->newname);
+    $result->success = $this->handler_->renameObj($args->token, $args->oid, $args->newname, $args->type);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -5032,7 +5154,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_CreateShare_result();
-    $result->success = $this->handler_->CreateShare($args->token, $args->oid);
+    $result->success = $this->handler_->CreateShare($args->token, $args->oid, $args->type);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -5046,20 +5168,20 @@ class CloudHardDiskServiceProcessor {
       $output->getTransport()->flush();
     }
   }
-  protected function process_CheckVer($seqid, $input, $output) {
-    $args = new \proto\CloudHardDiskService_CheckVer_args();
+  protected function process_GetVer($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_GetVer_args();
     $args->read($input);
     $input->readMessageEnd();
-    $result = new \proto\CloudHardDiskService_CheckVer_result();
-    $result->success = $this->handler_->CheckVer();
+    $result = new \proto\CloudHardDiskService_GetVer_result();
+    $result->success = $this->handler_->GetVer();
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($output, 'CheckVer', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+      thrift_protocol_write_binary($output, 'GetVer', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
     }
     else
     {
-      $output->writeMessageBegin('CheckVer', TMessageType::REPLY, $seqid);
+      $output->writeMessageBegin('GetVer', TMessageType::REPLY, $seqid);
       $result->write($output);
       $output->writeMessageEnd();
       $output->getTransport()->flush();
@@ -5103,20 +5225,20 @@ class CloudHardDiskServiceProcessor {
       $output->getTransport()->flush();
     }
   }
-  protected function process_querFee($seqid, $input, $output) {
-    $args = new \proto\CloudHardDiskService_querFee_args();
+  protected function process_queryFee($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_queryFee_args();
     $args->read($input);
     $input->readMessageEnd();
-    $result = new \proto\CloudHardDiskService_querFee_result();
-    $result->success = $this->handler_->querFee();
+    $result = new \proto\CloudHardDiskService_queryFee_result();
+    $result->success = $this->handler_->queryFee($args->token);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($output, 'querFee', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+      thrift_protocol_write_binary($output, 'queryFee', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
     }
     else
     {
-      $output->writeMessageBegin('querFee', TMessageType::REPLY, $seqid);
+      $output->writeMessageBegin('queryFee', TMessageType::REPLY, $seqid);
       $result->write($output);
       $output->writeMessageEnd();
       $output->getTransport()->flush();
