@@ -171,8 +171,15 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $username = isset($username) ? $username : '';
       $password = isset($password) ? $password : '';
       $salt = isset($salt) ? $salt : 0;
-      $user = new UserService();
-      $status = $user->loginAuth($username, $password, $salt);
+      $token = null;
+      $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'login auth error'));
+      $ret_arr = array('result'=>$ret_h,
+          'token'=>$token,'space'=>0,'uspace'=>0,'aliasname'=>'',
+          'userid'=>0,'flow'=>0,'uflow'=>0);
+      $ret = new loginResult($ret_arr);
+
+        $user = new UserService();
+        $status = $user->loginAuth($username, $password, $salt);
       if ($status){
           $userspace = $user->querySpace(session("userid"));
           $user_flow = $user->queryFlow(session("userid"));
@@ -183,16 +190,11 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           $ret_arr = array('result'=>$ret_h,'token'=>$token,
               'space'=>$userspace['space'],'uspace'=>$userspace['uspace'],'aliasname'=>session("alias"),
               'userid'=>session("userid"), 'flow'=>$user_flow['flow'],'uflow'=>$user_flow['uflow']);
-          session('user_upload_path') = DEFAULT_CACHE_PATH.DIRECTORY_SEPARATOR.session('userid');
+          session('user_upload_path',DEFAULT_CACHE_PATH.DIRECTORY_SEPARATOR.session('userid'));
           mkdirs(session('user_upload_path'));
-      }else{
-          $token = null;
-          $ret_h = new \proto\RetHead(array('ret'=>1,'errmsg'=>'login auth error'));
-          $ret_arr = array('result'=>$ret_h,
-              'token'=>$token,'space'=>0,'uspace'=>0,'aliasname'=>'',
-              'userid'=>0,'flow'=>0,'uflow'=>0);
+          $ret = new loginResult($ret_arr);
       }
-      $ret = new loginResult($ret_arr);
+      
       return $ret;
   }
   

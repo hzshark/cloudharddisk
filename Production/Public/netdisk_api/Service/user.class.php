@@ -66,14 +66,13 @@ class UserService
     }
     
     function queryCephAuth($userid){
-        $condition['userid'] = $userid;
+        $condition['user_id'] = $userid;
         $userDao = new UserCephAuthModel();
         $user = $userDao->where($condition)->find();
         if ($user == null || count($user) == 0) {
             session('user_key', $user['key']);
             session('user_secret_key', $user['secret_key']);
         }
-        
     }
     
     function queryFlow($userid){

@@ -3,6 +3,6 @@ use lib\Model;
 
 class UserUploadModel extends Model
 {
-    protected $tableName = 'user';
+    protected $tableName = 'user_upload';
 
 }
