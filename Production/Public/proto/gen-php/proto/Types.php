@@ -1704,6 +1704,10 @@ class FeeInfo {
   /**
    * @var string
    */
+  public $Smscmd = null;
+  /**
+   * @var string
+   */
   public $Description = null;
 
   public function __construct($vals=null) {
@@ -1722,6 +1726,10 @@ class FeeInfo {
           'type' => TType::STRING,
           ),
         4 => array(
+          'var' => 'Smscmd',
+          'type' => TType::STRING,
+          ),
+        5 => array(
           'var' => 'Description',
           'type' => TType::STRING,
           ),
@@ -1736,6 +1744,9 @@ class FeeInfo {
       }
       if (isset($vals['Cost'])) {
         $this->Cost = $vals['Cost'];
+      }
+      if (isset($vals['Smscmd'])) {
+        $this->Smscmd = $vals['Smscmd'];
       }
       if (isset($vals['Description'])) {
         $this->Description = $vals['Description'];
@@ -1785,6 +1796,13 @@ class FeeInfo {
           break;
         case 4:
           if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->Smscmd);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 5:
+          if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->Description);
           } else {
             $xfer += $input->skip($ftype);
@@ -1818,8 +1836,13 @@ class FeeInfo {
       $xfer += $output->writeString($this->Cost);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->Smscmd !== null) {
+      $xfer += $output->writeFieldBegin('Smscmd', TType::STRING, 4);
+      $xfer += $output->writeString($this->Smscmd);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->Description !== null) {
-      $xfer += $output->writeFieldBegin('Description', TType::STRING, 4);
+      $xfer += $output->writeFieldBegin('Description', TType::STRING, 5);
       $xfer += $output->writeString($this->Description);
       $xfer += $output->writeFieldEnd();
     }
