@@ -152,6 +152,15 @@ struct UsageResult
 }
 
 
+//query dflow usage
+struct DFlowUsageResult
+{
+  1:RetHead result;
+  2:string appid;
+  3:string appkey;
+  4:string url;
+}
+
 struct AppInfo
 {
   1:string AppName;
@@ -221,15 +230,10 @@ exception InvalidOperation {
 }
  */
 
-struct BucketInfo {
-    1:string name;
-    2:string createtime;
-}
-
-struct BucketListResult {
+struct VersionResult {
     1:RetHead result;
-    2:Token token;
-    3:BucketList bucketlist;
+    2:string version;
+    3:string url;
 }
 
 /**
@@ -282,13 +286,15 @@ service CloudHardDiskService {
 
     UsageResult querusage(1:Token token,2:FTYPE type)		   
     
+    DFlowUsageResult querydflowusage(1:Token token,2:FTYPE type)		   
+    
     DownloadResult downloadFile(1:Token token ,2:DownloadParam param); 
     
     RetHead  renameObj(1:Token token,2:OBJID oid,3:string  newname,4: FTYPE type);
     
     CreateShareResult CreateShare(1:Token token,2:OBJID oid,3: FTYPE type); //需要 有一个默认分享到期时间,由服务端控制
     
-    string GetVer(); //
+    VersionResult GetVer(); //
     
     QueryAppResult queryApps();
     
