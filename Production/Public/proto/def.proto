@@ -143,6 +143,11 @@ struct AllocObjResult {
   2: OBJID resourceid ;   //资源号, 指向bucket下或某个object资源
 }
 
+struct QueryUpldObjResult {
+  1: RetHead result;
+  2: i64   offset ;   
+}
+
 //query usage
 struct UsageResult
 {
@@ -277,6 +282,8 @@ service CloudHardDiskService {
     
     // 需要查询 服务器端是否有同名的 未传完的 文件,如果存在应返回在result里面!!!!
     AllocObjResult  allocobj(1:Token token ,2:FTYPE type,3:string tagname); 
+    
+    QueryUpldObjResult  queryobj(1:Token token ,2:FTYPE type,3:string objid);
 
     RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin,4:FTYPE type);// 分块写入文件
     
