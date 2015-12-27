@@ -223,6 +223,13 @@ struct QueryFeeResult {
     2: list<FeeInfo>  msg;
 }
 
+
+struct QueryThumbnailResult {
+    1: RetHead result;
+    2: binary bin;
+}
+
+
 struct QueryHelpResult {
     1: RetHead result; 	
     2: list<string>  msg;
@@ -308,6 +315,8 @@ service CloudHardDiskService {
     QueryHelpResult queryHelp();
     
     QueryFeeResult queryFee(1:Token token);
+    
+    QueryThumbnailResult queryThumbnail(1:Token token,2:FTYPE ftype,3:string objid);
     
 
 }
