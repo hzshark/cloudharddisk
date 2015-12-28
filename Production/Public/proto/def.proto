@@ -321,14 +321,16 @@ service CloudHardDiskService {
     
     boolean Resetpwd(1:Token token,2:string pwd)  //重置密码
 
-    boolean changepwd(1:Token token,2:string pwd_org,3:string pwd) //修改密码 让用户输入
+    boolean Changepwd(1:Token token,2:string pwd_org,3:string pwd) //修改密码 让用户输入
     
     /**
     *绑定手机号码 建一个临时表. 将captcha保存, 对umobile 下发该captcha  .用户表中  uid ->umobile
     * 验证码校验 app端完成
     * imie 需要存入 uid->imie
     **/
-    RedHead bindUmobile(1:Token token,2:string captcha,3:string umobile,4:string imie)
+    RedHead BindUmobile(1:Token token,2:string captcha,3:string umobile,4:string imie)
+    
+    RedHead RegistUser(1:string uname ,2:string pwd ,3:string imie);
 
 }
 
