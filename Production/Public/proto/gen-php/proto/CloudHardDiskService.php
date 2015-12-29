@@ -206,11 +206,6 @@ interface CloudHardDiskServiceIf {
   public function RegistUser($uname, $password, $imie);
   /**
    * @param string $token
-   * @return \proto\CaptchaResult
-   */
-  public function GetCaptcha($token);
-  /**
-   * @param string $token
    * @param string $captcha
    * @return \proto\RetHead
    */
@@ -220,7 +215,7 @@ interface CloudHardDiskServiceIf {
    * @param string $business
    * @return \proto\RetHead
    */
-  public function ChangeBusiness($token, $business);
+  public function OrderPlan($token, $business);
   /**
    * @param string $token
    * @param string $ualias
@@ -1615,57 +1610,6 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("RegistUser failed: unknown result");
   }
 
-  public function GetCaptcha($token)
-  {
-    $this->send_GetCaptcha($token);
-    return $this->recv_GetCaptcha();
-  }
-
-  public function send_GetCaptcha($token)
-  {
-    $args = new \proto\CloudHardDiskService_GetCaptcha_args();
-    $args->token = $token;
-    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
-    {
-      thrift_protocol_write_binary($this->output_, 'GetCaptcha', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-    }
-    else
-    {
-      $this->output_->writeMessageBegin('GetCaptcha', TMessageType::CALL, $this->seqid_);
-      $args->write($this->output_);
-      $this->output_->writeMessageEnd();
-      $this->output_->getTransport()->flush();
-    }
-  }
-
-  public function recv_GetCaptcha()
-  {
-    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_GetCaptcha_result', $this->input_->isStrictRead());
-    else
-    {
-      $rseqid = 0;
-      $fname = null;
-      $mtype = 0;
-
-      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-      if ($mtype == TMessageType::EXCEPTION) {
-        $x = new TApplicationException();
-        $x->read($this->input_);
-        $this->input_->readMessageEnd();
-        throw $x;
-      }
-      $result = new \proto\CloudHardDiskService_GetCaptcha_result();
-      $result->read($this->input_);
-      $this->input_->readMessageEnd();
-    }
-    if ($result->success !== null) {
-      return $result->success;
-    }
-    throw new \Exception("GetCaptcha failed: unknown result");
-  }
-
   public function VerifyCathcha($token, $captcha)
   {
     $this->send_VerifyCathcha($token, $captcha);
@@ -1718,35 +1662,35 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("VerifyCathcha failed: unknown result");
   }
 
-  public function ChangeBusiness($token, $business)
+  public function OrderPlan($token, $business)
   {
-    $this->send_ChangeBusiness($token, $business);
-    return $this->recv_ChangeBusiness();
+    $this->send_OrderPlan($token, $business);
+    return $this->recv_OrderPlan();
   }
 
-  public function send_ChangeBusiness($token, $business)
+  public function send_OrderPlan($token, $business)
   {
-    $args = new \proto\CloudHardDiskService_ChangeBusiness_args();
+    $args = new \proto\CloudHardDiskService_OrderPlan_args();
     $args->token = $token;
     $args->business = $business;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'ChangeBusiness', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'OrderPlan', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('ChangeBusiness', TMessageType::CALL, $this->seqid_);
+      $this->output_->writeMessageBegin('OrderPlan', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
 
-  public function recv_ChangeBusiness()
+  public function recv_OrderPlan()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_ChangeBusiness_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_OrderPlan_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -1760,14 +1704,14 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \proto\CloudHardDiskService_ChangeBusiness_result();
+      $result = new \proto\CloudHardDiskService_OrderPlan_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
     if ($result->success !== null) {
       return $result->success;
     }
-    throw new \Exception("ChangeBusiness failed: unknown result");
+    throw new \Exception("OrderPlan failed: unknown result");
   }
 
   public function AddAlias($token, $ualias)
@@ -6935,161 +6879,6 @@ class CloudHardDiskService_RegistUser_result {
 
 }
 
-class CloudHardDiskService_GetCaptcha_args {
-  static $_TSPEC;
-
-  /**
-   * @var string
-   */
-  public $token = null;
-
-  public function __construct($vals=null) {
-    if (!isset(self::$_TSPEC)) {
-      self::$_TSPEC = array(
-        1 => array(
-          'var' => 'token',
-          'type' => TType::STRING,
-          ),
-        );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['token'])) {
-        $this->token = $vals['token'];
-      }
-    }
-  }
-
-  public function getName() {
-    return 'CloudHardDiskService_GetCaptcha_args';
-  }
-
-  public function read($input)
-  {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
-  }
-
-  public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_GetCaptcha_args');
-    if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
-      $xfer += $output->writeString($this->token);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
-  }
-
-}
-
-class CloudHardDiskService_GetCaptcha_result {
-  static $_TSPEC;
-
-  /**
-   * @var \proto\CaptchaResult
-   */
-  public $success = null;
-
-  public function __construct($vals=null) {
-    if (!isset(self::$_TSPEC)) {
-      self::$_TSPEC = array(
-        0 => array(
-          'var' => 'success',
-          'type' => TType::STRUCT,
-          'class' => '\proto\CaptchaResult',
-          ),
-        );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['success'])) {
-        $this->success = $vals['success'];
-      }
-    }
-  }
-
-  public function getName() {
-    return 'CloudHardDiskService_GetCaptcha_result';
-  }
-
-  public function read($input)
-  {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 0:
-          if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\CaptchaResult();
-            $xfer += $this->success->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
-  }
-
-  public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_GetCaptcha_result');
-    if ($this->success !== null) {
-      if (!is_object($this->success)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('success', TType::STRUCT, 0);
-      $xfer += $this->success->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
-  }
-
-}
-
 class CloudHardDiskService_VerifyCathcha_args {
   static $_TSPEC;
 
@@ -7268,7 +7057,7 @@ class CloudHardDiskService_VerifyCathcha_result {
 
 }
 
-class CloudHardDiskService_ChangeBusiness_args {
+class CloudHardDiskService_OrderPlan_args {
   static $_TSPEC;
 
   /**
@@ -7304,7 +7093,7 @@ class CloudHardDiskService_ChangeBusiness_args {
   }
 
   public function getName() {
-    return 'CloudHardDiskService_ChangeBusiness_args';
+    return 'CloudHardDiskService_OrderPlan_args';
   }
 
   public function read($input)
@@ -7348,7 +7137,7 @@ class CloudHardDiskService_ChangeBusiness_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_ChangeBusiness_args');
+    $xfer += $output->writeStructBegin('CloudHardDiskService_OrderPlan_args');
     if ($this->token !== null) {
       $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
       $xfer += $output->writeString($this->token);
@@ -7366,7 +7155,7 @@ class CloudHardDiskService_ChangeBusiness_args {
 
 }
 
-class CloudHardDiskService_ChangeBusiness_result {
+class CloudHardDiskService_OrderPlan_result {
   static $_TSPEC;
 
   /**
@@ -7392,7 +7181,7 @@ class CloudHardDiskService_ChangeBusiness_result {
   }
 
   public function getName() {
-    return 'CloudHardDiskService_ChangeBusiness_result';
+    return 'CloudHardDiskService_OrderPlan_result';
   }
 
   public function read($input)
@@ -7430,7 +7219,7 @@ class CloudHardDiskService_ChangeBusiness_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_ChangeBusiness_result');
+    $xfer += $output->writeStructBegin('CloudHardDiskService_OrderPlan_result');
     if ($this->success !== null) {
       if (!is_object($this->success)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
@@ -8323,25 +8112,6 @@ class CloudHardDiskServiceProcessor {
       $output->getTransport()->flush();
     }
   }
-  protected function process_GetCaptcha($seqid, $input, $output) {
-    $args = new \proto\CloudHardDiskService_GetCaptcha_args();
-    $args->read($input);
-    $input->readMessageEnd();
-    $result = new \proto\CloudHardDiskService_GetCaptcha_result();
-    $result->success = $this->handler_->GetCaptcha($args->token);
-    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
-    {
-      thrift_protocol_write_binary($output, 'GetCaptcha', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
-    }
-    else
-    {
-      $output->writeMessageBegin('GetCaptcha', TMessageType::REPLY, $seqid);
-      $result->write($output);
-      $output->writeMessageEnd();
-      $output->getTransport()->flush();
-    }
-  }
   protected function process_VerifyCathcha($seqid, $input, $output) {
     $args = new \proto\CloudHardDiskService_VerifyCathcha_args();
     $args->read($input);
@@ -8361,20 +8131,20 @@ class CloudHardDiskServiceProcessor {
       $output->getTransport()->flush();
     }
   }
-  protected function process_ChangeBusiness($seqid, $input, $output) {
-    $args = new \proto\CloudHardDiskService_ChangeBusiness_args();
+  protected function process_OrderPlan($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_OrderPlan_args();
     $args->read($input);
     $input->readMessageEnd();
-    $result = new \proto\CloudHardDiskService_ChangeBusiness_result();
-    $result->success = $this->handler_->ChangeBusiness($args->token, $args->business);
+    $result = new \proto\CloudHardDiskService_OrderPlan_result();
+    $result->success = $this->handler_->OrderPlan($args->token, $args->business);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($output, 'ChangeBusiness', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+      thrift_protocol_write_binary($output, 'OrderPlan', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
     }
     else
     {
-      $output->writeMessageBegin('ChangeBusiness', TMessageType::REPLY, $seqid);
+      $output->writeMessageBegin('OrderPlan', TMessageType::REPLY, $seqid);
       $result->write($output);
       $output->writeMessageEnd();
       $output->getTransport()->flush();

@@ -337,9 +337,8 @@ service CloudHardDiskService {
     
     RetHead RegistUser(1:string uname,2:string password; 3:string imie);
      
-    CaptchaResult GetCaptcha(1:Token token);
-    RetHead VerifyCathcha(1:Token token,2:string captcha);
-    RetHead ChangeBusiness(1:Token token,2:string business);
+    RetHead VerifyCathcha(1:Token token,2:string captcha);   
+    RetHead OrderPlan(1:Token token,2:string business);     // use app order plan
     RetHead AddAlias(1:Token token,2:string ualias);
     RetHead DeleteAlias(1:Token token,2:string ualias);
 
