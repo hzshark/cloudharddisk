@@ -229,10 +229,6 @@ struct QueryThumbnailResult {
     2: binary bin;
 }
 
-struct QueryObjDescResult {
-    1: RetHead result;
-    2: string  value;
-}
 
 struct QueryHelpResult {
     1: RetHead result; 	
@@ -281,9 +277,7 @@ service CloudHardDiskService {
 
     QueryFResult QueryFile(1:Token token ,2:FTYPE type,3:string fname);
 
-    // 查询文件描述属性  
-    QueryObjDescResult QueryFileDescription(1:Token token ,2:FTYPE type,3:OBJID objid,4 string key);
-
+    // 查询文件描述属性 
     QueryAttributeResult queryAttribute(1:Token token,2: string attribute,3: OBJID  objid,4: FTYPE type);
     
     //RetHead     sysncnotepad(1:SYNCTYPE , 2:List notes);//完善中
