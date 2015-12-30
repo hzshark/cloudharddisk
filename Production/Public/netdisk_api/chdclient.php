@@ -58,9 +58,9 @@ try {
 //     } else {
 //         $socket = new TSocket('localhost', 9090);
 //     }
-//     $socket = new THttpClient('221.7.13.207', 8080, '/chdserver.php');
+    $socket = new THttpClient('221.7.13.207', 8080, '/chdserver.php');
     
-    $socket = new THttpClient('localhost', 8888, '/chdserver.php');
+//     $socket = new THttpClient('localhost', 8888, '/chdserver.php');
     $transport = new TBufferedTransport($socket, 1024, 1024);
     $protocol = new TBinaryProtocol($transport);
     
@@ -68,13 +68,13 @@ try {
 
     $transport->open();
     echo $client->GetVer();
-    echo "===2===<br />";
-    $auth_ret = $client->loginAuth('hzshark', 'aerohive', 1);
+    echo "===22===<br />";
+    $auth_ret = $client->loginAuth('netdisk', 'aerohive', 1);
     echo "===3===<br />";
     var_dump($auth_ret);
     $token = $auth_ret->token;
     echo "===4===<br />";
-   exit(0);
+   
     $list_ret = $client->queryFileList($token,1, 0, 10);
     var_dump($list_ret);
     echo "====22==<br />";
@@ -82,6 +82,7 @@ try {
     
     var_dump($q_ret);
     echo "====333==<br />";
+   exit(0);
     $download_arr['objid'] =  'hello.txt';
     $download_arr['offerset'] =  0;
     $download_arr['reqlen'] =  1024*1024;
@@ -94,7 +95,9 @@ try {
     $alloc_ret = $client->allocobj($token, 1, 'test2.txt') ;
     var_dump($alloc_ret);
     echo "====5555==<br />";
-    
+    $thum = $client->queryThumbnail($token, $ftype, $objid);
+    var_dump($thum);
+    echo "====66666==\n";
 //     exit(0);
 //     echo "1-----------<br />";
 //     $token = "01b01749295bde67648c687b44ff408c";
@@ -178,6 +181,18 @@ try {
 //     $ret = $client->appendObj('token','appendObj',$appendobj);
 //     var_dump($ret);
 //     print "<br />********************<br />";
+    $ret = $client->queryApps();
+    var_dump($ret);
+    $ret = $client->queryHelp();
+    var_dump($ret);
+    $ret = $client->queryFee($token);
+    var_dump($ret);
+    $ret = $client->querusage($token,5);
+    var_dump($ret);
+    $ret1 = $client->querydflowusage($token, 4);
+    
+    $ret_qur = $client->queryobj($token, $type, $objid);
+    var_dump($ret_qur);
     $transport->close();
 
 } catch (TException $tx) {

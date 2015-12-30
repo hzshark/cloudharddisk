@@ -7,6 +7,7 @@ require __DIR__ .'/../lib/vendor/autoload.php';
 
 use AmazonS3;
 use proto\FileInfo;
+use lib\Model;
 
 class cephService
 {
@@ -30,9 +31,6 @@ class cephService
     }
     
     private function connectionCeph(){
-        $user_AWS_KEY = AWS_KEY;
-        $user_AWS_SECRET_KEY = AWS_SECRET_KEY;
-        
         $credentials = array(
             'key'    => $this->user_aws_key,
             'secret' => $this->user_aws_secret_key,
@@ -61,7 +59,7 @@ class cephService
         return $res->isOK();
     }
     
-    public function listobjects($bucket_name){
+    public function listobjects($bucket_name, $type){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $ObjectsListResponse = $Connection->list_objects($bucket_name);
         $Objects = $ObjectsListResponse->body->Contents;
@@ -70,17 +68,17 @@ class cephService
         if ($ObjectsListResponse->isOK()){
             foreach ($Objects as $Object){
                 $fcontnet = $file->body->Contents;
+                if ("~" == substr($Object->Key,-1)){
+                    continue;
+                }
                 $fileinfo = new FileInfo(
-                    array('filename'=>$Object->Key,
-                      'filesize'=> $Object->Size,
-                      'lastModified'=>$Object->LastModified,
+                    array('filesize'=> $Object->Size,
+                      'lastModified'=>strtotime($Object->LastModified),
                       'objid'=>$Object->Key,
-                      'ftype'=>$Object->Key
+                      'ftype'=>$type
                     ));
                 $list[] = $fileinfo;
             }
-        }else {
-            $errmsg = 'query file list error!';
         }
         $ret = array('status'=>$ObjectsListResponse->isOK(),'list'=>$list);
         return $ret;
@@ -88,91 +86,99 @@ class cephService
     }
     
     public function allocobj($bucket_name, $object_name){
+        
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $status = $Connection->if_object_exists($bucket_name, $object_name);
         $ret = $this->ERR_OCCURED;
         $upload_id = '';
         if ($status){
-            $resourceid = $object_name;
-            $ret = $this->FILE_EXIST;
-        }else {
+            return array('status'=>$this->FILE_EXIST, 'upload_id'=>null);
+        }else{
+            $object_name = $object_name."~";
             $opt = array('acl'=>$this->ACL_PRIVATE);
             $Object = $Connection->create_object($bucket_name, $object_name, $opt);
             if (!$Object->isOK()){
-                $ret = $this->OUT_OF_SERVICE;
-            }else{
-                $res = $Connection->initiate_multipart_upload($bucket_name, $object_name);
-                if ($res->isOK()){
-                    $upload_id = $res->body->UploadId;
-                    if (mkdirs(session('user_upload_path').DIRECTORY_SEPARATOR.$upload_id)){
-                        $ret = $this->SUCCESS;
-                    }else{
-                        $ret = $this->OUT_OF_SERVICE;
-                    }
+                return array('status'=>$this->OUT_OF_SERVICE, 'upload_id'=>null);
+            }
+            $res = $Connection->initiate_multipart_upload($bucket_name, $object_name);
+            if ($res->isOK()){
+                $upload_id = $res->body->UploadId;
+                if (mkdirs(session('user_upload_path').DIRECTORY_SEPARATOR.$object_name)){
+                    $ret = $this->SUCCESS;
                 }else{
-                    $ret = $this->OUT_OF_SERVICE;
+                    $ret = $this->ERR_OCCURED;
                 }
-                
+            }else{
+                $ret = $this->OUT_OF_SERVICE;
             }
         }
         return array('status'=>$ret, 'upload_id'=>$upload_id);
     }
     
-    public function appendObj($bucket_name, $object_name, $fileName, $upload_id, $data){
+    public function appendObj($token, $bucket_name, $object_name, $upload_id, $next_marker, $data){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
-        $CFResponse = $Connection->list_parts($bucket_name, $object_name, $upload_id);
-        if ($CFResponse->isOK()){
-            $next_part_marker = $CFResponse->body->NextPartNumberMarker;
-            $part_file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$upload_id.DIRECTORY_SEPARATOR.$next_part_marker;
-            appendToFile($part_file_path, $data);
-            if (getfilesize($part_file_path) > 5*1024*1024){
-                $opt['fileUpload'] = $part_file_path;
-                $opt['partNumber'] = $next_part_marker;
-                $opt['md5'] = md5_file($part_file_path);
-                $res = $Connection->upload_part($bucket_name, $object_name, $upload_id, $opt);
-                if ($res->isOK()){
-                    removeFile($part_file_path);
-                }
+        
+        $part_file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$object_name.'~'.DIRECTORY_SEPARATOR.''.$next_marker;
+        appendToFile($part_file_path, $data);
+        if (getfilesize($part_file_path) > 5*1024*1024){
+            $opt['fileUpload'] = $part_file_path;
+            $opt['partNumber'] = $next_marker;
+            $opt['md5'] = md5_file($part_file_path);
+            $res = $Connection->upload_part($bucket_name, $object_name.'~', $upload_id, $opt);
+            if ($res->isOK()){
+                removeFile($part_file_path);
+                $user = new UserService();
+                $user->updateUserUploadMarker($token, $object_name, $next_marker+1);
+            }else{
+                return false;
             }
-            return true;
         }
-        return false;
+        return true;
     }
     
-    public function commitObj($bucket_name, $object_name, $fileName, $upload_id, $data){
+    public function commitObj($token, $bucket_name, $object_name, $upload_id, $next_marker, $data){
         $ret_status = 0;
         $err_msg = '';
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
-        $CFResponse = $Connection->list_parts($bucket_name, $object_name, $upload_id);
-        if ($CFResponse->isOK()){
-            $next_part_marker = $CFResponse->body->NextPartNumberMarker;
-            $part_file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$upload_id.DIRECTORY_SEPARATOR.$next_part_marker;
-            appendToFile($part_file_path, $data);
-            
+        $part_file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$object_name.'~'.DIRECTORY_SEPARATOR.''.$next_marker;
+        $user = new UserService();
+        if ($next_marker == 0){
+            $readbin = file_get_contents($part_file_path);
+            if (self::uploadFile($bucket_name, $object_name, $readbin)){
+                $ret_status = 0;
+                $err_msg = 'complete commit object, object less than 5M use uploadfile funciotn.';
+                $Connection->abort_multipart_upload($bucket_name, $object_name.'~', $upload_id);
+                $Connection->delete_object($bucket_name, $object_name.'~');
+                $user->deleteUserUploadMarker($token, $object_name);
+            }else{
+                $ret_status = 2;
+                $err_msg = 'complete commit object, object less than 5M use uploadfile funciotn failed.';
+            }
+        }else{
             $opt['fileUpload'] = $part_file_path;
-            $opt['partNumber'] = $next_part_marker;
+            $opt['partNumber'] = $next_marker;
             $opt['md5'] = md5_file($part_file_path);
-            $res = $Connection->upload_part($bucket_name, $object_name, $upload_id, $opt);
+            $res = $Connection->upload_part($bucket_name, $object_name.'~', $upload_id, $opt);
             if ($res->isOK()){
-                $CFResponse = $Connection->list_parts($bucket_name, $object_name, $upload_id);
-                $res = $Connection->complete_multipart_upload($bucket_name, $object_name, $upload_id, $CFResponse);
+                $CFResponse = $Connection->list_parts($bucket_name, $object_name.'~', $upload_id);
+                $res = $Connection->complete_multipart_upload($bucket_name, $object_name.'~', $upload_id, $CFResponse);
                 if ($res->isOK()){
                     removeFile($part_file_path);
                     $ret_status = 0;
                     $err_msg = 'complete multipart upload successfully!';
+                    $user->deleteUserUploadMarker($token, $object_name);
+                    $src_arr = array('bucket'=>$bucket_name, 'filename'=>$object_name.'~');
+                    $dest_arr = array('bucket'=>$bucket_name, 'filename'=>$object_name);
+                    $Connection->copy_object($src_arr, $dest_arr);
+                    $Connection->delete_object($bucket_name, 'hello_110.txt');
                 }else{
                     $ret_status = 2;
                     $err_msg = 'complete multipart upload filaed!';
                 }
-                
             }else{
                 $ret_status = 2;
-                $err_msg = 'complete multipart upload filaed,reason is get part list failed!!';
+                $err_msg = 'complete multipart upload filaed,reason is upload last part failed!';
             }
-            
-        }else{
-            $ret_status = 2;
-            $err_msg = 'complete multipart upload filaed,reason is get part list failed!';
         }
         return array('status'=>$ret_status, 'msg'=>$err_msg);
     }
@@ -187,7 +193,7 @@ class cephService
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         if ($Connection->if_object_exists($bucket_name, $object_name)){
             $end_offerset = $offerset + $buf_size;
-            $opt['rang'] = $offerset.'-'. $end_offerset;
+            $opt['range'] = $offerset.'-'. $end_offerset;
             $Object = $Connection->get_object($bucket_name, $object_name, $opt);
             if ($Object->isOK()){
                 return $Object->body;
@@ -229,10 +235,75 @@ class cephService
             if (!$Object->isOK()){
                 return array('status'=>2, 'filesize'=>0,'lasttime'=>'','msg'=>'get file object failed');
             }else{
-                return array('status'=>0, 'filesize'=>$Object->header['content-length'],'lasttime'=>$Object->header['last-modified']);
+//                 return array('status'=>0, 'filesize'=>$Object->header['content-length'],
+//                     'lasttime'=>substr($Object->header['last-modified'],0,4));
+                return array('status'=>0, 'filesize'=>$Object->header['content-length'],
+                    'lasttime'=>strtotime($Object->header['last-modified']));
             }
         }else {
             return array('status'=>2, 'filesize'=>0,'lasttime'=>'','msg'=>'no file object ['.$object_name.']');
         }
     }
+    
+    public function deleteObject($bucket_name, $object_name){
+        $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
+        if ($Connection->if_object_exists($bucket_name, $object_name)){
+            $res = $Connection->delete_object($bucket_name, $object_name);
+            if ($res->isOK()){
+                return TRUE;
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
+    public function queryusage() {
+        $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
+        $ListResponse = $Connection->list_buckets();
+        $Buckets = $ListResponse->body->Buckets->Bucket;
+        $usages = 0;
+        foreach ($Buckets as $Bucket) {
+            $bucket_name = $Bucket->Name;
+            $usage = $Connection->get_bucket_filesize($bucket_name);
+            $usages += $usage;
+        }
+        return $usages;
+    }
+    
+    public function queryThumbnail($bucket_name, $object_name) {
+        $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
+        $msg = '';
+        $status = $this->INVAILD_PARAMETER;
+        if ($Connection->if_object_exists($bucket_name, $object_name)){
+            $res = $Connection->get_object($bucket_name, $object_name);
+            if ($res->isOK()){
+                $boby = $res->body;
+                $user_upload_path = session('?user_upload_path')?session('user_upload_path'):'/tmp';
+                $filepath = $user_upload_path.DIRECTORY_SEPARATOR.$object_name;
+                mkdirs($filepath);
+                if (file_put_contents($filepath.DIRECTORY_SEPARATOR.$object_name, $boby)){
+                    $src_img = $filepath.DIRECTORY_SEPARATOR.$object_name;
+                    $dst_img = $filepath.DIRECTORY_SEPARATOR.$object_name.".png";
+                    $stat = img2thumb($src_img, $dst_img, $width = 32, $height = 32, $cut = 0, $proportion = 0);
+                    if ($stat){
+                        $status = $this->SUCCESS;
+                    }else{
+                        $status= $this->ERR_OCCURED;
+                        $msg = "Generate img to thumb failed!";
+                    }
+                }else{
+                    $status = $this->ERR_OCCURED;
+                    $msg = 'get object use generate temporary files failed!';
+                }
+                
+            }else{
+                $status = $this->OUT_OF_SERVICE;
+                $msg = 'get object body failed!';
+            }
+        }else{
+            $msg = 'not found the ['.$object_name.'].' ;
+        }
+        return array('status'=>$status, 'msg'=>$msg);
+    }
 }
+    

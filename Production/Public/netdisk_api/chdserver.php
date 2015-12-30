@@ -51,6 +51,7 @@ require 'lib/functions.php';
 if (is_file("Conf/config.php")) {
     C(include 'Conf/config.php');
 }
+// use tmp test
 
 
 $GLOBALS['_beginTime'] = microtime(true);
@@ -59,11 +60,18 @@ define('MEMORY_LIMIT_ON', function_exists('memory_get_usage'));
 if (MEMORY_LIMIT_ON) {
     $GLOBALS['_startUseMems'] = memory_get_usage();
 }
-
+defined('APP_MODE') or define('APP_MODE', 'common'); // 应用模式 默认为普通模式
 defined('CONF_PARSE') or define('CONF_PARSE', '');
 define('APP_DEBUG', true);
 define('CEPH_HOST', '192.168.150.23');
 define('DEFAULT_CACHE_PATH', __DIR__ .DIRECTORY_SEPARATOR.'RunCache');
+
+if (APP_DEBUG){
+    define('AWS_KEY','2QHC917U91W0Q5KK1X06');
+    define('AWS_SECRET_KEY','l27vtnpZIv4A6QQ2W6URh2YNtDAvuA2POLyMi6BH');
+    define('TEST_USER','hzshark');
+    define('TEST_USERID',1000);
+}
 
 // Check for CURL
 if (!extension_loaded('curl') && !@dl(PHP_SHLIB_SUFFIX == 'so' ? 'curl.so' : 'php_curl.dll')) {
@@ -72,8 +80,12 @@ if (!extension_loaded('curl') && !@dl(PHP_SHLIB_SUFFIX == 'so' ? 'curl.so' : 'ph
 require_once __DIR__.'/Service/cephService.class.php';
 require __DIR__.'/lib/Model.class.php';
 require __DIR__.'/Service/user.class.php';
+require __DIR__.'/Service/app.class.php';
+require __DIR__.'/Service/misc.class.php';
 use Service\UserService;
 use Service\cephService;
+use Service\AppService;
+use Service\MiscService;
 
 use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\TPhpStream;
@@ -97,19 +109,25 @@ use proto\QueryAppResult;
 use proto\QueryHelpResult;
 use proto\FeeInfo;
 use proto\QueryFeeResult;
+use proto\VersionResult;
+use proto\DFlowUsageResult;
+use proto\QueryUpldObjResult;
+use proto\QueryThumbnailResult;
 
 class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
-    
     private function _get_bucket_name_by_ftype($ftype){
+        $username = session('?username')?session('username'):TEST_USER;
+        $userid = session('?userid')?session('userid'):TEST_USERID;
+        
         switch ($ftype) {
             case 1:
-                return session('username').session('userid').'other';
+                return $username.$userid.'other';
             break;
             case 2:
-                return session('username').session('userid').'sms';
+                return $username.$userid.'sms';
             break;
             case 3:
-                return session('username').session('userid').'address';
+                return $username.$userid.'address';
             break;
             case 4:
                 return null;
@@ -118,13 +136,13 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
                 return null;
             break;
             case 6:
-                return session('username').session('userid').'pricture';
+                return $username.$userid.'picture';
             break;
             case 7:
-                return session('username').session('userid').'music';
+                return $username.$userid.'music';
             break;
             default:
-                return session('username').session('userid').'other';
+                return $username.$userid.'other';
             break;
         }
     }
@@ -134,25 +152,26 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $filename = $uploadParam->filename;
       $offer_set = $uploadParam->offerstar;
       $bin = $uploadParam->bin;
-
-      
-      $Bucket_name = self::_get_bucket_name_by_ftype($uploadParam->type);
-      $host = CEPH_HOST;
-      $aws_key = session('user_key');
-      $aws_secret_key = session('user_secret_key');
-      
-      $conn = new cephService($host, $aws_key, $aws_secret_key);
-      
-      if ($conn->uploadFile($Bucket_name, $filename, $bin)){
-          $err_msg = 'uploadFile=>filename['.$filename.']'.'success!]';
-          $ret_h = new \proto\RetHead(array('ret'=>1,'errmsg'=>$err_msg));
-          $upload_ret = new uploaddResult(array('result'=>$ret_h));
-          return $upload_ret;
+      $token_c = new \lib\Token_Core();
+      if ($token_c->is_token($token)){
+          $Bucket_name = self::_get_bucket_name_by_ftype($uploadParam->type);
+          $host = CEPH_HOST;
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $conn = new cephService($host, $aws_key, $aws_secret_key);
+          
+          if ($conn->uploadFile($Bucket_name, $filename, $bin)){
+              $err_msg = 'uploadFile=>filename['.$filename.']'.'success!]';
+              $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>$err_msg));
+              return new uploaddResult(array('result'=>$ret_h));
+          }else{
+              $err_msg = 'uploadFile=>filename['.$filename.']'.'error!]';
+              $ret_h = new \proto\RetHead(array('ret'=>2,'msg'=>$err_msg));
+              return new uploaddResult(array('result'=>$ret_h));
+          }
       }else{
-          $err_msg = 'uploadFile=>filename['.$filename.']'.'error!]';
-          $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>$err_msg));
-          $upload_ret = new uploaddResult(array('result'=>$ret_h));
-          return $upload_ret;
+          $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'upload token timeout'));
+          return new uploaddResult(array('result'=>$ret_h));
       }
       
   }
@@ -171,30 +190,30 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $username = isset($username) ? $username : '';
       $password = isset($password) ? $password : '';
       $salt = isset($salt) ? $salt : 0;
-      $token = null;
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_token();
       $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'login auth error'));
-      $ret_arr = array('result'=>$ret_h,
-          'token'=>$token,'space'=>0,'uspace'=>0,'aliasname'=>'',
-          'userid'=>0,'flow'=>0,'uflow'=>0);
-      $ret = new loginResult($ret_arr);
-
-        $user = new UserService();
-        $status = $user->loginAuth($username, $password, $salt);
+      $ret_arr = array('result'=>$ret_h, 'token'=>$token,'space'=>0,'uspace'=>0,
+          'aliasname'=>'', 'userid'=>0,'flow'=>0,'uflow'=>0);
+      
+      $user = new UserService();
+      $status = $user->loginAuth($username, $password, $salt);
       if ($status){
           $userspace = $user->querySpace(session("userid"));
+          session('space',$userspace['space']);
+          session('uspace',$userspace['uspace']);
           $user_flow = $user->queryFlow(session("userid"));
+          session('flow',$user_flow['flow']);
+          session('uflow',$user_flow['uflow']);
           $user->queryCephAuth(session("userid"));
-          $token_c = new \lib\Token_Core();
-          $token = $token_c->grante_token(session("userid"));
           $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'Login Auth Success'));
           $ret_arr = array('result'=>$ret_h,'token'=>$token,
-              'space'=>$userspace['space'],'uspace'=>$userspace['uspace'],'aliasname'=>session("alias"),
-              'userid'=>session("userid"), 'flow'=>$user_flow['flow'],'uflow'=>$user_flow['uflow']);
+              'space'=>session('space'),'uspace'=>session('uspace'),'aliasname'=>session("alias"),
+              'userid'=>session("userid"), 'flow'=>session('flow'),'uflow'=>session('uflow'));
           session('user_upload_path',DEFAULT_CACHE_PATH.DIRECTORY_SEPARATOR.session('userid'));
           mkdirs(session('user_upload_path'));
-          $ret = new loginResult($ret_arr);
       }
-      
+      $ret = new loginResult($ret_arr);
       return $ret;
   }
   
@@ -210,146 +229,187 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
         
   }
   public function queryFileList($token, $type, $start, $excpet_num){
-      $Bucket_name = self::_get_bucket_name_by_ftype($type);
-      $host = CEPH_HOST;
-      $aws_key = session('user_key');
-      $aws_secret_key = session('user_secret_key');
-      $conn = new cephService($host, $aws_key, $aws_secret_key);
-      $ret = $conn->listobjects($Bucket_name);
-      $errmsg = '';
-      if ($ret['status']){
-          $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>$errmsg));
-      }else{
-          $errmsg = 'query file list error!';
-          $ret_h = new \proto\RetHead(array('ret'=>2,'msg'=>$errmsg));
+      $token_c = new \lib\Token_Core();
+      $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'query file list token timeout!'));
+      if ($token_c->is_token($token)){
+          $Bucket_name = self::_get_bucket_name_by_ftype($type);
+          $host = CEPH_HOST;
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $conn = new cephService($host, $aws_key, $aws_secret_key);
+          $list_ret = $conn->listobjects($Bucket_name, $type);
+          
+          if ($list_ret['status']){
+              $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>''));
+          }else{
+              $ret_h = new \proto\RetHead(array('ret'=>2,'msg'=>'query file list error!'.$aws_key));
+          }
       }
-      
-      $ret_arr = array('result'=>$ret_h,'files'=>$ret['list']);
+      $ret_arr = array('result'=>$ret_h,'files'=>isset($list_ret)?$list_ret['list']:null);
       
       $qret = new QueryFListResult($ret_arr);
       
       return $qret;
   }
   public function allocobj($token, $type, $tagname){
-      $ret = array('ret'=>1,'msg'=>'token timeout!');
+      $ret = array('ret'=>1,'msg'=>'alloc object token timeout!');
       $token_c = new \lib\Token_Core();
-      if ($token_c->is_token(session("userid"), $token)){
+      if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
-          $aws_key = session('user_key');
-          $aws_secret_key = session('user_secret_key');
-          
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $user = new UserService();
           $conn = new cephService($host, $aws_key, $aws_secret_key);
           $alloc_ret = $conn->allocobj($Bucket_name, $tagname);
-          if ($alloc_ret['status'] === 8){
-              $errmsg = 'query file listthe same file name in bucket!'; 
+          if ($alloc_ret['status'] === 0){
+              $errmsg = 'init object successfully!'.$alloc_ret['upload_id'] ;
               $ret['ret'] = $alloc_ret['status'];
               $ret['msg'] = $errmsg;
-          }elseif ($alloc_ret['status'] === 0){
-              $errmsg = 'create new object successfully!';
-              $ret['ret'] = $alloc_ret['status'];
-              $ret['msg'] = $errmsg;
-              session('upload_id_$tagname', $ret['upload_id']);
+              
+              $user->addUserUploadMarker($token, $alloc_ret['upload_id'] , $tagname);
           }elseif ($alloc_ret['status'] === 2){
               $errmsg = 'alloc object failed!';
               $ret['ret'] = $alloc_ret['status'];
               $ret['msg'] = $errmsg;
+          }elseif ($alloc_ret['status'] === 7){
+              $ret['ret'] = $alloc_ret['status'];
+              $ret['msg'] = 'create tpm dir failed';
+          }else {
+              $ret['ret'] = $alloc_ret['status'];
+              $ret['msg'] = 'unkown error';
           }
       }
       $ret_h = new \proto\RetHead($ret);
-      $alloco_ret = new AllocObjResult(array('result'=>$ret_h,'resourceid'=>session('upload_id_$tagname')));
+      $alloco_ret = new AllocObjResult(array('result'=>$ret_h,'resourceid'=>$tagname));
       return $alloco_ret;
   }
   
-  public function commitObj($token, $oid, $data, $type){
-      $Bucket_name = self::_get_bucket_name_by_ftype($type);
+  public function appendObj($token, $oid, $bin, $type){
+      $ret = array('ret'=>1,'msg'=>'append object token timeout!');
       $token_c = new \lib\Token_Core();
-      $ret = array('ret'=>1,'msg'=>'token timeout!');
-      if ($token_c->is_token(session("userid"), $token)){
+      if ($token_c->is_token($token)){
+          $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
-          $aws_key = session('user_key');
-          $aws_secret_key = session('user_secret_key');
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
           $conn = new cephService($host, $aws_key, $aws_secret_key);
-          $commit_ret = $conn->commitObj($Bucket_name,  $oid, session('upload_id_$oid'), $data);
-          $ret['ret'] = $commit_ret['status'];
-          $ret['msg'] = $commit_ret['msg'];
+          $user = new UserService();
+          $upload = $user->queryUserUploadId($token, $oid);
+          if (isset($upload['uploadid'])){
+              $append_ret = $conn->appendObj($token,$Bucket_name,  $oid, $upload['uploadid'], $upload['nextpartmarker'],$bin);
+              if ($append_ret){
+                  $offset = $upload['offset'] + strlen($bin);
+                  $user->updateUserUploadOffset($token, $oid, $offset);
+                  $ret['ret'] = 0;
+                  $ret['msg'] = count($bin).'append object successfully!'.$offset;
+              }else{
+                  $ret['ret'] = 2;
+                  $ret['msg'] = $upload['uploadid'].'append object failed!' ;
+              }
+          }else{
+              $ret['ret'] = 3;
+              $ret['msg'] = 'append object failed,upload id not exist!' ;
+          }
       }
       $ret_h = new \proto\RetHead($ret);
       return $ret_h;
   }
-  public function appendObj($token, $oid, $bin, $type){
-      $ret = array('ret'=>1,'msg'=>'token timeout!');
+
+  public function commitObj($token, $oid, $data, $type){
+      $ret = array('ret'=>1,'msg'=>'append object token timeout!');
       $token_c = new \lib\Token_Core();
-      if ($token_c->is_token(session("userid"), $token)){
+      if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
-          $aws_key = session('user_key');
-          $aws_secret_key = session('user_secret_key');
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
           $conn = new cephService($host, $aws_key, $aws_secret_key);
-          
-          $append_ret = $conn->appendObj($Bucket_name,  $oid, session('upload_id_$oid'), $bin);
-          if ($append_ret){
-              $errmsg = 'append object successfully!';
-              $ret['ret'] = 0;
-              $ret['msg'] = $errmsg;
-          }else{
-              $errmsg = 'append object failed!';
-              $ret['ret'] = 2;
-              $ret['msg'] = $errmsg;
+          $user = new UserService();
+          $upload = $user->queryUserUploadId($token, $oid);
+          if (isset($upload['uploadid'])){
+            $append_ret = $conn->commitObj($token,$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
+            $ret['ret'] = $append_ret['status'];
+            $ret['msg'] = $append_ret['msg'];
+          }else {
+              $ret['ret'] = 3;
+              $ret['msg'] = 'commit object failed,upload id not exist!' ;
           }
       }
-      
       $ret_h = new \proto\RetHead($ret);
       return $ret_h;
   }
   
-  public function querusage($token, $type){
-      $ret = array('ret'=>1,'msg'=>'token timeout!');
+  public  function queryobj($token, $type, $objid)  {
+      $ret = array('ret'=>4,'msg'=>'query object token timeout!');
       $token_c = new \lib\Token_Core();
-      $usage = 0;
-      $capacity = 0;
-      if ($token_c->is_token(session("userid"), $token)){
-          $Bucket_name = self::_get_bucket_name_by_ftype($type);
-          $host = CEPH_HOST;
-          $aws_key = session('user_key');
-          $aws_secret_key = session('user_secret_key');
-          $conn = new cephService($host, $aws_key, $aws_secret_key);
-          
-          $usage = $conn->queryUsageByBucket($Bucket_name);
+      $offset = 0;
+      if ($token_c->is_token($token)){
           $user = new UserService();
-          $userspace = $user->querySpace(session("userid"));
-          $capacity = $userspace['space'];
-          $ret['ret'] = 0;
-          $ret['msg'] = '';
+          $upload = $user->queryUserUploadId($token, $objid);
+          if (isset($upload['uploadid'])){
+              $ret['ret'] = 0;
+              $ret['msg'] = '';
+              $offset = $upload['offset'];
+          }else {
+              $ret['ret'] = 3;
+              $ret['msg'] = 'query object failed,not exist in upload list!' ;
+          }
       }
       $ret_h = new \proto\RetHead($ret);
-      $ret_usahe = new usageResult(array('result'=>$ret_h,'usage'=>$usage,'capacity'=>$capacity));
-      return $ret_usahe;
+      
+      $ret_qur = new QueryUpldObjResult(array('result'=>$ret_h,'offset'=>$offset));
+      return $ret_qur;
+  }
+  public function querusage($token, $type){
+      $ret = array('ret'=>4,'msg'=>'query usage token timeout!');
+      $token_c = new \lib\Token_Core();
+      $usage = 0;
+      if ($token_c->is_token($token)){
+          if ($type == 5){
+              $host = CEPH_HOST;
+              $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+              $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+              $conn = new cephService($host, $aws_key, $aws_secret_key);
+              $usage= $conn->queryusage();
+              $ret = array('ret'=>0,'msg'=>'query usage successfully!');
+              $user = new UserService();
+              $user->updateUserUspace(session("userid"), $usage);
+          }elseif ($type == 4){
+              
+          }else{
+              $ret = array('ret'=>3,'msg'=>'error ftype!');
+          }
+      }
+      $ret_h = new \proto\RetHead($ret);
+      $ret_fee = new \proto\UsageResult(array('result'=>$ret_h,'capacity'=>session('space'),'usage'=>$usage));
+      return $ret_fee;
   }
   
   public function downloadFile($token, \proto\DownloadParam $param){
-      
-      $filename = $param->filepath;
+      $filename = $param->objid;
       $offer_set = $param->offerset;
       $buf_size = $param->reqlen;
-        $Bucket_name = self::_get_bucket_name_by_ftype($param->type);
-      $host = CEPH_HOST;
-      $aws_key = session('user_key');
-      $aws_secret_key = session('user_secret_key');
-      $conn = new cephService($host, $aws_key, $aws_secret_key);
-            
-      $string = $conn->downloadFile($Bucket_name, $filename, $offer_set, $buf_size);
-      if (empty($string)){
-          $ret_h = new \proto\RetHead(array('ret'=>2,'msg'=>'downloadFile failed'));
-      }else{
-          $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'downloadFile successfully'));
+      $token_c = new \lib\Token_Core();
+      $h_ret = array('ret'=>4,'msg'=>'download file ['.$filename.'] token timeout!');
+      if ($token_c->is_token($token)){
+          $Bucket_name = self::_get_bucket_name_by_ftype($param->type);
+          $host = CEPH_HOST;
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $conn = new cephService($host, $aws_key, $aws_secret_key);
+                
+          $string = $conn->downloadFile($Bucket_name, $filename, $offer_set, $buf_size);
+          if (empty($string)){
+              $h_ret = array('ret'=>2,'msg'=>'download File ['.$filename.'] failed');
+          }else{
+              $h_ret = array('ret'=>0,'msg'=>'download File ['.$filename.'] successfully');
+          }
       }
       
-      $token_c = new \lib\Token_Core();
-      $token = $token_c->grante_key();
-//       $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'downloadFile=>'.$token.'|'.filepath));
+      $ret_h = new \proto\RetHead($h_ret);
       
-      $ret_arr = array('result'=>$ret_h,'offerset'=>$offer_set+$buf_size,'token'=>$token,'bin'=>$string);
+      $ret_arr = array('result'=>$ret_h,'bin'=>isset($string)?$string:'');
       
       $ret_d = new DownloadResult($ret_arr);
       return $ret_d;
@@ -362,8 +422,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $token = $param->token;
       $Bucket_name = self::_get_bucket_name_by_ftype($type);
       $host = CEPH_HOST;
-      $aws_key = session('user_key');
-      $aws_secret_key = session('user_secret_key');
+      $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+      $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
       $conn = new cephService($host, $aws_key, $aws_secret_key);
       $ret_url = '';
       $buf_size = 1024*1024;
@@ -382,12 +442,6 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
   }
   
   public function queryAttribute($token, $attribute, $objid, $type){
-      $Bucket_name = self::_get_bucket_name_by_ftype($type);
-      $host = CEPH_HOST;
-      $aws_key = session('user_key');
-      $aws_secret_key = session('user_secret_key');
-      $token_c = new \lib\Token_Core();
-      $token = $token_c->grante_key();
       $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'queryAttribute=>'.$token));
       $ret = array('result'=>$ret_h,'token'=>$token,'attribute_value'=>'attribute_value');
       $QA_ret = new QueryAttributeResult($ret);
@@ -396,104 +450,173 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
   }
   public function QueryFile($token, $type, $fname){
       $token_c = new \lib\Token_Core();
-      $token = $token_c->grante_key();
-      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'QueryFile=>'.$token));
-      
-      $Bucket_name = self::_get_bucket_name_by_ftype($type);
-      $host = CEPH_HOST;
-      $aws_key = session('user_key');
-      $aws_secret_key = session('user_secret_key');
-      $conn = new cephService($host, $aws_key, $aws_secret_key);
-      
-      $ret = $conn->queryFile($Bucket_name, $fname);
-      $arr_ret = array('objid'=>$fname,'filesize'=>'','lastModified'=>'','ftype'=>$type);
-      if ($ret['status']===0){
-          $arr_ret['filesize'] = $ret['filesize'] ;
-          $arr_ret['lastModified'] = $ret['lasttime'] ;
-      }else{
-          $ret_h->ret = $ret['status'];
-          $ret_h->errmsg = $ret['msg'];
+      $ret_h = new \proto\RetHead(array('ret'=>4,'msg'=>'query file ['.$fname.'] token timeout!'));
+      if ($token_c->is_token($token)){
+          $Bucket_name = self::_get_bucket_name_by_ftype($type);
+          $host = CEPH_HOST;
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $conn = new cephService($host, $aws_key, $aws_secret_key);
+          
+          $ret = $conn->queryFile($Bucket_name, $fname);
+          $arr_ret = array('objid'=>$fname,'filesize'=>'','lastModified'=>'','ftype'=>$type);
+          if ($ret['status']===0){
+              $arr_ret['filesize'] = $ret['filesize'] ;
+              $arr_ret['lastModified'] = is_numeric($ret['lasttime'])?(int)$ret['lasttime']:0 ;
+              $ret_h->ret = $ret['status'];
+              $ret_h->msg = '';
+          }else{
+              $ret_h->ret = $ret['status'];
+              $ret_h->msg = $ret['msg'];
+          }
+          $fileinfo = new FileInfo($arr_ret);
       }
-      $fileinfo = new FileInfo($arr_ret);
-      
-      $ret = array('result'=>$ret_h,'finfo'=>$fileinfo);
+      $ret = array('result'=>$ret_h,'finfo'=>isset($fileinfo)?$fileinfo :new FileInfo());
       $QF_ret = new QueryFResult($ret);
       return $QF_ret;
   }
   
-  public function delObj($token, array $oids, $type){
-      $Bucket_name = self::_get_bucket_name_by_ftype($type);
-      $host = CEPH_HOST;
-      $aws_key = session('user_key');
-      $aws_secret_key = session('user_secret_key');
+  public function delObj($token, $oid, $type){
+      $ret = array('ret'=>4,'msg'=>'delete object token invalid!');
       $token_c = new \lib\Token_Core();
-      $token = $token_c->grante_key();
-      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'delObj=>'.$token.'|'.$token));
+      if ($token_c->is_token($token)){
+          $Bucket_name = self::_get_bucket_name_by_ftype($type);
+          $host = CEPH_HOST;
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $conn = new cephService($host, $aws_key, $aws_secret_key);
+          if ($conn->deleteObject($Bucket_name, $oid)){
+              $ret = array('ret'=>0,'msg'=>'');
+          }else{
+              $ret = array('ret'=>2,'msg'=>'delete object failed!');
+          }
       
+      }
+      $ret_h = new \proto\RetHead($ret);
       return $ret_h;
   }
   
   public function renameObj($token, $oid, $newname, $type){
-      $Bucket_name = self::_get_bucket_name_by_ftype($type);
-      $host = CEPH_HOST;
-      $aws_key = session('user_key');
-      $aws_secret_key = session('user_secret_key');
-      $token_c = new \lib\Token_Core();
-      $token = $token_c->grante_key();
-      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'appendObj=>'.$token));
+      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>' rename obj function'));
       return $ret_h;
   }
   
   public function queryApps(){
-      $token_c = new \lib\Token_Core();
-      $token = $token_c->grante_key();
-      
-      $appInfo = new AppInfo(array('AppName'=>'AppName','AppVersion'=>'AppVersion',
-          'PackageName'=>'PackageName','size'=>1024,'url'=>'url','ico_url'=>'ico_url'));
-      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'queryApps=>'.$token));
-      
-      $ret = new QueryAppResult(array('result'=>$ret_h,'info'=>array($appInfo)));
-      
-      return $ret_h;
+      $appSer = new AppService();
+      $apps = $appSer->queryAllApp();
+      $applist = array();
+      foreach ($apps as $app){
+          $appInfo = new AppInfo(array('AppName'=>$app['name'],'AppVersion'=>$app['version'],
+              'PackageName'=>$app['packagename'],'size'=>$app['size'],'url'=>$app['url'],'ico_url'=>$app['ico_url']));
+          $applist [] = $appInfo;
+      }
+      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>''));
+      $ret =  new QueryAppResult(array('result'=>$ret_h,'msg'=>$applist));
+      return $ret;
   }
   
+  public function querydflowusage($token, $type){
+      $ret = array('ret'=>4,'msg'=>'query dflow token timeout!');
+      $token_c = new \lib\Token_Core();
+      if ($token_c->is_token($token)){
+          
+          $ret = array('ret'=>0,'msg'=>'query fee successfully!');
+      }
+      $ret_h = new \proto\RetHead($ret);
+      $ret_dflow = new DFlowUsageResult(array('result'=>$ret_h,
+          'appid'=>C('APP_ID'),'appkey'=>C('APP_KEY'),'url'=>C('NET_URL')));
+      return $ret_dflow;
+  }
+   
   public function GetVer(){
-      return 'current version: 1.0';
+      $misc = new MiscService();
+      $ver = $misc->queryVersionInfo();
+      $verUrl = $misc->queryVersionUrl();
+      
+      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>''));
+      $ret =  new VersionResult(array('result'=>$ret_h,'version'=>$ver['value'],
+          'url'=>$verUrl['value']));
+      return $ret;
   }
   
   public function queryHelp(){
-      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'help: 1.0'));
-      $help_lines = array('help  1', 'help2');
-      $ret_help = new QueryHelpResult(array('result'=>$ret_h, 'msg'=>$help_lines));
-      return $ret_help;
+      $misc = new MiscService();
+      $helps = $misc->queryHelp();
+      $helplist = array();
+      foreach ($helps as $help){
+          $helplist [] = $help['value'];
+      }
+      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>''));
+      $ret =  new QueryHelpResult(array('result'=>$ret_h,'msg'=>$helplist));
+      return $ret;
   }
   
   public function queryFee($token){
-      $ret_h = new \proto\RetHead(array('ret'=>0,'errmsg'=>'FeeInfo'));
-      $fee1 = new FeeInfo(array('PrdName'=>'prdname1', 'Spnumber'=>'Spnumber1',
-          'Cost'=>'Cost1','Description'=> 'Description1'
-      ));
-      $fee2 = new FeeInfo(array('PrdName'=>'prdname2', 'Spnumber'=>'Spnumber2',
-          'Cost'=>'Cost2','Description'=> 'Description2'
-      ));
-      $fee_list = array($fee1,$fee2);
+      $ret = array('ret'=>4,'msg'=>'query fee token timeout!');
+      $token_c = new \lib\Token_Core();
+      if ($token_c->is_token($token)){
+          $misc = new MiscService();
+          $fees = $misc->queryFee();
+          $feelist = array();
+          foreach ($fees as $fee){
+              $feeinfo = new FeeInfo(array('PrdName'=>$fee['prdname'],'Spnumber'=>$fee['spnumber'],
+                  'Cost'=>$fee['cost'],'Smscmd'=>$fee['smscmd'],'Description'=>$fee['desc']));
+              $fee_list [] = $feeinfo;
+          }
+          $ret = array('ret'=>0,'msg'=>'query fee successfully!');
+      }
+      $ret_h = new \proto\RetHead($ret);
       $ret_fee = new QueryFeeResult(array('result'=>$ret_h,'msg'=>$fee_list));
       return $ret_fee;
   }
-  public function quersubsection($token, $type){
-      $Bucket_name = self::_get_bucket_name_by_ftype($type);
-      $host = CEPH_HOST;
-      $aws_key = session('user_key');
-      $aws_secret_key = session('user_secret_key');
-      $conn = new cephService($host, $aws_key, $aws_secret_key);
   
-      $usage = $conn->queryUsageByBucket($Bucket_name);
+public function queryThumbnail($token, $ftype, $objid){
+      $ret = array('ret'=>4,'msg'=>'query thumbnail token invalid!');
+      $token_c = new \lib\Token_Core();
+      $ret_bin = '';
+      if ($token_c->is_token($token)){
+          $Bucket_name = self::_get_bucket_name_by_ftype(6);
+          $host = CEPH_HOST;
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $conn = new cephService($host, $aws_key, $aws_secret_key);
+          $gen_ret = $conn->queryThumbnail($Bucket_name, $objid);
+          if ($gen_ret['status'] == 0){
+              $ret = array('ret'=>$gen_ret['status'],'msg'=>'');
+              $user_upload_path = session('?user_upload_path')?session('user_upload_path'):'/tmp';
+              $filepath =$user_upload_path.DIRECTORY_SEPARATOR.$objid.DIRECTORY_SEPARATOR.$objid.".png";
+              $ret_bin = file_get_contents($filepath);
+              unlink($filepath);
+          }else{
+              $ret = array('ret'=>$gen_ret['status'],'msg'=>$gen_ret['msg']);
+          }
+      }
+      $ret_h = new \proto\RetHead($ret);
+      $ret_fee = new QueryThumbnailResult(array('result'=>$ret_h,'bin'=>$ret_bin));
+      return $ret_fee;
+  }
   
-      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>''));
-      $capacity = 204800;
-      $ret_usahe = new usageResult(array('result'=>$ret_h,'usage'=>$usage,'capacity'=>$capacity));
+  public function BindUmobile($token, $captcha, $umobile, $imie){
+      $ret = array('ret'=>4,'msg'=>'query bind user mobile token invalid!');
+      $token_c = new \lib\Token_Core();
+      $ret_bin = '';
+      if ($token_c->is_token($token)){
+          $user = new UserService();
+          $user->addUserTempleteDate(session('userid'), $umobile, $imie, $captcha);
+          $ret = array('ret'=>0,'msg'=>'');
+      }
+      $ret_h = new \proto\RetHead($ret);
+      return $ret_h;
+  }
   
-      return $ret_usahe;
+  public function RegistUser($uname, $password, $imie){
+      $user = new UserService();
+      $ret = $user->RegistUser($uname, $password, $imie);
+      if ($ret){
+          return true;
+      }
+      $ret_h = new \proto\RetHead($ret);
+      return $ret_h;
   }
   
 }

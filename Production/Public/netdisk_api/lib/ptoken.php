@@ -4,17 +4,18 @@ namespace lib;
  * 表单令牌(防止表单恶意提交)
  */
 class Token_Core{
-    const SESSION_KEY = 'SESSION_KEY';
     /**
      * 生成一个当前的token
      * @param string $form_name
      * @return string
      */
-    public static function grante_token($form_name)
+    public static function grante_token()
     {
         $key = self::grante_key();
-                $_SESSION['SESSION_KEY.$form_name'] = $key;
-        $token = md5(substr(time(), 0, 3).$key.$form_name);
+        $token = md5(substr(time(), 0, 3).$key);
+        $session_opt = array('name'=>$token,'expire'=>999999,'id'=>$token,'use_trans_sid'=>1);
+        session($session_opt);
+        session('token-netdisk', $key);
         return $token;
     }
  
@@ -23,10 +24,12 @@ class Token_Core{
      * @param string $form_name
      * @return string
      */
-    public static function is_token($form_name,$token)
-    {
-        $key = $_SESSION['SESSION_KEY.$form_name'];
-        $old_token = md5(substr(time(), 0, 3).$key.$form_name);
+    public static function is_token($token)
+    {   
+        return true;
+        session(array('id'=>$token));
+        $key = session('token-netdisk');
+        $old_token = md5(substr(time(), 0, 3).$key);
         if($old_token == $token)
         {
             return true;
@@ -40,9 +43,9 @@ class Token_Core{
      * @param string $form_name
      * @return boolean
      */
-    public static function drop_token($form_name)
+    public static function drop_token()
     {
-       unset($_SESSION['SESSION_KEY.$form_name']);
+       session('token-netdisk', null);
        return true;
     }
  
