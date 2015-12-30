@@ -190,20 +190,21 @@ interface CloudHardDiskServiceIf {
    *  imie 需要存入 uid->imie
    *  
    * 
-   * @param string $token
    * @param string $captcha
    * @param string $umobile
    * @param string $imie
    * @return \proto\RetHead
    */
-  public function BindUmobile($token, $captcha, $umobile, $imie);
+  public function BindUmobile($captcha, $umobile, $imie);
   /**
    * @param string $uname
    * @param string $password
-   * @param string $imie
+   * @param string $umobile
+   * @param string $captcha
+   * @param int $ptype
    * @return \proto\RetHead
    */
-  public function RegistUser($uname, $password, $imie);
+  public function RegistUser($uname, $password, $umobile, $captcha, $ptype);
   /**
    * @param string $token
    * @param string $captcha
@@ -212,10 +213,10 @@ interface CloudHardDiskServiceIf {
   public function VerifyCathcha($token, $captcha);
   /**
    * @param string $token
-   * @param string $business
+   * @param int $ptype
    * @return \proto\RetHead
    */
-  public function OrderPlan($token, $business);
+  public function OrderPlan($token, $ptype);
   /**
    * @param string $token
    * @param string $ualias
@@ -1503,16 +1504,15 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("Changepwd failed: unknown result");
   }
 
-  public function BindUmobile($token, $captcha, $umobile, $imie)
+  public function BindUmobile($captcha, $umobile, $imie)
   {
-    $this->send_BindUmobile($token, $captcha, $umobile, $imie);
+    $this->send_BindUmobile($captcha, $umobile, $imie);
     return $this->recv_BindUmobile();
   }
 
-  public function send_BindUmobile($token, $captcha, $umobile, $imie)
+  public function send_BindUmobile($captcha, $umobile, $imie)
   {
     $args = new \proto\CloudHardDiskService_BindUmobile_args();
-    $args->token = $token;
     $args->captcha = $captcha;
     $args->umobile = $umobile;
     $args->imie = $imie;
@@ -1557,18 +1557,20 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("BindUmobile failed: unknown result");
   }
 
-  public function RegistUser($uname, $password, $imie)
+  public function RegistUser($uname, $password, $umobile, $captcha, $ptype)
   {
-    $this->send_RegistUser($uname, $password, $imie);
+    $this->send_RegistUser($uname, $password, $umobile, $captcha, $ptype);
     return $this->recv_RegistUser();
   }
 
-  public function send_RegistUser($uname, $password, $imie)
+  public function send_RegistUser($uname, $password, $umobile, $captcha, $ptype)
   {
     $args = new \proto\CloudHardDiskService_RegistUser_args();
     $args->uname = $uname;
     $args->password = $password;
-    $args->imie = $imie;
+    $args->umobile = $umobile;
+    $args->captcha = $captcha;
+    $args->ptype = $ptype;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -1662,17 +1664,17 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("VerifyCathcha failed: unknown result");
   }
 
-  public function OrderPlan($token, $business)
+  public function OrderPlan($token, $ptype)
   {
-    $this->send_OrderPlan($token, $business);
+    $this->send_OrderPlan($token, $ptype);
     return $this->recv_OrderPlan();
   }
 
-  public function send_OrderPlan($token, $business)
+  public function send_OrderPlan($token, $ptype)
   {
     $args = new \proto\CloudHardDiskService_OrderPlan_args();
     $args->token = $token;
-    $args->business = $business;
+    $args->ptype = $ptype;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -6460,10 +6462,6 @@ class CloudHardDiskService_BindUmobile_args {
   /**
    * @var string
    */
-  public $token = null;
-  /**
-   * @var string
-   */
   public $captcha = null;
   /**
    * @var string
@@ -6477,10 +6475,6 @@ class CloudHardDiskService_BindUmobile_args {
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
-        1 => array(
-          'var' => 'token',
-          'type' => TType::STRING,
-          ),
         2 => array(
           'var' => 'captcha',
           'type' => TType::STRING,
@@ -6496,9 +6490,6 @@ class CloudHardDiskService_BindUmobile_args {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['token'])) {
-        $this->token = $vals['token'];
-      }
       if (isset($vals['captcha'])) {
         $this->captcha = $vals['captcha'];
       }
@@ -6530,13 +6521,6 @@ class CloudHardDiskService_BindUmobile_args {
       }
       switch ($fid)
       {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
         case 2:
           if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->captcha);
@@ -6571,11 +6555,6 @@ class CloudHardDiskService_BindUmobile_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('CloudHardDiskService_BindUmobile_args');
-    if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
-      $xfer += $output->writeString($this->token);
-      $xfer += $output->writeFieldEnd();
-    }
     if ($this->captcha !== null) {
       $xfer += $output->writeFieldBegin('captcha', TType::STRING, 2);
       $xfer += $output->writeString($this->captcha);
@@ -6692,7 +6671,15 @@ class CloudHardDiskService_RegistUser_args {
   /**
    * @var string
    */
-  public $imie = null;
+  public $umobile = null;
+  /**
+   * @var string
+   */
+  public $captcha = null;
+  /**
+   * @var int
+   */
+  public $ptype = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -6706,8 +6693,16 @@ class CloudHardDiskService_RegistUser_args {
           'type' => TType::STRING,
           ),
         3 => array(
-          'var' => 'imie',
+          'var' => 'umobile',
           'type' => TType::STRING,
+          ),
+        4 => array(
+          'var' => 'captcha',
+          'type' => TType::STRING,
+          ),
+        5 => array(
+          'var' => 'ptype',
+          'type' => TType::I32,
           ),
         );
     }
@@ -6718,8 +6713,14 @@ class CloudHardDiskService_RegistUser_args {
       if (isset($vals['password'])) {
         $this->password = $vals['password'];
       }
-      if (isset($vals['imie'])) {
-        $this->imie = $vals['imie'];
+      if (isset($vals['umobile'])) {
+        $this->umobile = $vals['umobile'];
+      }
+      if (isset($vals['captcha'])) {
+        $this->captcha = $vals['captcha'];
+      }
+      if (isset($vals['ptype'])) {
+        $this->ptype = $vals['ptype'];
       }
     }
   }
@@ -6759,7 +6760,21 @@ class CloudHardDiskService_RegistUser_args {
           break;
         case 3:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->imie);
+            $xfer += $input->readString($this->umobile);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->captcha);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 5:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->ptype);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -6787,9 +6802,19 @@ class CloudHardDiskService_RegistUser_args {
       $xfer += $output->writeString($this->password);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->imie !== null) {
-      $xfer += $output->writeFieldBegin('imie', TType::STRING, 3);
-      $xfer += $output->writeString($this->imie);
+    if ($this->umobile !== null) {
+      $xfer += $output->writeFieldBegin('umobile', TType::STRING, 3);
+      $xfer += $output->writeString($this->umobile);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->captcha !== null) {
+      $xfer += $output->writeFieldBegin('captcha', TType::STRING, 4);
+      $xfer += $output->writeString($this->captcha);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->ptype !== null) {
+      $xfer += $output->writeFieldBegin('ptype', TType::I32, 5);
+      $xfer += $output->writeI32($this->ptype);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -7065,9 +7090,9 @@ class CloudHardDiskService_OrderPlan_args {
    */
   public $token = null;
   /**
-   * @var string
+   * @var int
    */
-  public $business = null;
+  public $ptype = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -7077,8 +7102,8 @@ class CloudHardDiskService_OrderPlan_args {
           'type' => TType::STRING,
           ),
         2 => array(
-          'var' => 'business',
-          'type' => TType::STRING,
+          'var' => 'ptype',
+          'type' => TType::I32,
           ),
         );
     }
@@ -7086,8 +7111,8 @@ class CloudHardDiskService_OrderPlan_args {
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
       }
-      if (isset($vals['business'])) {
-        $this->business = $vals['business'];
+      if (isset($vals['ptype'])) {
+        $this->ptype = $vals['ptype'];
       }
     }
   }
@@ -7119,8 +7144,8 @@ class CloudHardDiskService_OrderPlan_args {
           }
           break;
         case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->business);
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->ptype);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -7143,9 +7168,9 @@ class CloudHardDiskService_OrderPlan_args {
       $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->business !== null) {
-      $xfer += $output->writeFieldBegin('business', TType::STRING, 2);
-      $xfer += $output->writeString($this->business);
+    if ($this->ptype !== null) {
+      $xfer += $output->writeFieldBegin('ptype', TType::I32, 2);
+      $xfer += $output->writeI32($this->ptype);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -8079,7 +8104,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_BindUmobile_result();
-    $result->success = $this->handler_->BindUmobile($args->token, $args->captcha, $args->umobile, $args->imie);
+    $result->success = $this->handler_->BindUmobile($args->captcha, $args->umobile, $args->imie);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -8098,7 +8123,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_RegistUser_result();
-    $result->success = $this->handler_->RegistUser($args->uname, $args->password, $args->imie);
+    $result->success = $this->handler_->RegistUser($args->uname, $args->password, $args->umobile, $args->captcha, $args->ptype);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -8136,7 +8161,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_OrderPlan_result();
-    $result->success = $this->handler_->OrderPlan($args->token, $args->business);
+    $result->success = $this->handler_->OrderPlan($args->token, $args->ptype);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {

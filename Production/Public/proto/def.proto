@@ -53,6 +53,15 @@ enum FTYPE{
   MUSIC =7              //音乐
   }
 
+
+
+
+enum PTYPE{
+  FREE = 1,           // 免费套餐
+  NINE = 2,               // 9元套餐
+  FIFTEEN = 3,        // 15元套餐
+  }
+
 enum SYNCTYPE{
   UPDATE = 1,           //改
   DELETE = 2,		//删
@@ -333,12 +342,12 @@ service CloudHardDiskService {
     * 验证码校验 app端完成
     * imie 需要存入 uid->imie
     **/
-    RetHead BindUmobile(1:Token token,2:string captcha,3:string umobile,4:string imie)
-    
-    RetHead RegistUser(1:string uname,2:string password; 3:string imie);
+    RetHead BindUmobile(2:string captcha,3:string umobile,4:string imie)
+    //注册需要参数 1.用户名 2.密码 3.手机号 4.验证码 5.套餐类型
+    RetHead RegistUser(1:string uname,2:string password;3:string umobile, 4:string captcha,5:PTYPE ptype);
      
     RetHead VerifyCathcha(1:Token token,2:string captcha);   
-    RetHead OrderPlan(1:Token token,2:string business);     // use app order plan
+    RetHead OrderPlan(1:Token token,2:PTYPE ptype);     // use app order plan
     RetHead AddAlias(1:Token token,2:string ualias);
     RetHead DeleteAlias(1:Token token,2:string ualias);
 

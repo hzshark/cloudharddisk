@@ -59,6 +59,17 @@ final class FTYPE {
   );
 }
 
+final class PTYPE {
+  const FREE = 1;
+  const NINE = 2;
+  const FIFTEEN = 3;
+  static public $__names = array(
+    1 => 'FREE',
+    2 => 'NINE',
+    3 => 'FIFTEEN',
+  );
+}
+
 final class SYNCTYPE {
   const UPDATE = 1;
   const DELETE = 2;
