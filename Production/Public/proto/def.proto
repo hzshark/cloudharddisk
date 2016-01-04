@@ -165,16 +165,6 @@ struct UsageResult
   3:i32 usage;
 }
 
-
-//query dflow usage
-struct DFlowUsageResult
-{
-  1:RetHead result;
-  2:string appid;
-  3:string appkey;
-  4:string url;
-}
-
 struct AppInfo
 {
   1:string AppName;
@@ -193,8 +183,6 @@ struct FeeInfo
   4:string Smscmd; //发送的内容
   5:string Description; //描述
 }
-
-
 
 /**
 **
@@ -262,6 +250,21 @@ struct CaptchaResult {
     2:string captcha;
 }
 
+
+//get net mobile Access url
+struct NetURLResult
+{
+  1:RetHead result;
+  2:string url;
+}
+
+//get net mobile number
+struct NetMobileNumberResult
+{
+  1:RetHead result;
+  2:string url;
+}
+
 /**
  * Ahh, now onto the cool part, defining a service. Services just need a name
  * and can optionally inherit from another service using the extends keyword.
@@ -313,10 +316,8 @@ service CloudHardDiskService {
     
     RetHead  delObj(1:Token token,2:OBJID oid,3: FTYPE type);
 
-    UsageResult querusage(1:Token token,2:FTYPE type)		   
-    
-    DFlowUsageResult querydflowusage(1:Token token,2:FTYPE type)		   
-    
+    UsageResult querusage(1:Token token,2:FTYPE type)		
+
     DownloadResult downloadFile(1:Token token ,2:DownloadParam param); 
     
     RetHead  renameObj(1:Token token,2:OBJID oid,3:string  newname,4: FTYPE type);
@@ -351,5 +352,9 @@ service CloudHardDiskService {
     RetHead AddAlias(1:Token token,2:string ualias);
     RetHead DeleteAlias(1:Token token,2:string ualias);
 
+    //获取手机访问url地址,url获取以后手机需要get访问以后才能调用获取手机号码接口
+    NetURLResult GetMobileAccessUrl(1:Token token);
+    //获取手机号码
+    NetMobileNumberResult GetMobileNumber(1:Token token);
 }
 
