@@ -27,6 +27,7 @@ namespace php proto
 typedef list <FileInfo>	FilesMatchList
 typedef string Token
 typedef string OBJID   //资源id ,某个bucket的一个ojbect 
+typedef list <string> AliasList
 
 typedef list <BucketInfo> BucketList 
 
@@ -108,16 +109,35 @@ struct QueryFResult {
   //3: optional bool isstage   ;  // true 表示文件 还未上传完成,false 表示 
 }
 
+//用户别名
+struct UserAliasResult {
+  1:RetHead result;
+  2:AliasList aliasname;
+}
+
 // login result
 struct LoginResult {
   1: RetHead result;
   2: Token  token;  //身份牌
   3: i32  space ;   //用户空间单位K
   4: i32  uspace;   //已经使用的用户空间 单位k
-  5: string aliasname;           // 别名
+  5: AliasList aliasname;           // 别名
   6: i32 userid;             // 
   7: optional i32  flow;     // 免费流量
   8: optional i32  uflow;    // 已使用流量
+}
+
+// UserInfo
+struct UserInfoResult {
+  1: RetHead result;
+  2: i32 age;
+  3: i32 sex;    // 1: 男  2: 女
+  4: i32  space ;   //用户空间单位K
+  5: i32  uspace;   //已经使用的用户空间 单位k
+  6: AliasList aliasname;           // 别名
+  7: i32 userid;             // 
+  8: optional i32  flow;     // 免费流量
+  9: optional i32  uflow;    // 已使用流量
 }
 
 // download result
@@ -349,15 +369,20 @@ service CloudHardDiskService {
      
     RetHead VerifyCathcha(1:Token token,2:string captcha);   
     RetHead OrderPlan(1:Token token,2:PTYPE ptype);     // use app order plan
+    //别名修改走删除后添加方式
     RetHead AddAlias(1:Token token,2:string ualias);
     RetHead DeleteAlias(1:Token token,2:string ualias);
-
+    UserAliasResult QueryAlias(1:Token token);
     //获取手机访问url地址,url获取以后手机需要get访问以后才能调用获取手机号码接口
     NetURLResult GetMobileAccessUrl(1:Token token);
     //获取手机号码
     NetMobileNumberResult GetMobileNumber(1:Token token);
     // use changed user info
-    RetHead ChangedUserInfo(1:Token token,2:string age,3:i32 sex);
+    RetHead ChangedUserInfo(1:Token token,2:i32 age,3:i32 sex);
+    // 设置用户信息
+    RetHead SetUserInfo(1:Token token,2:i32 age,3:i32 sex);
+    // 查询用户信息
+    UserInfoResult QueryUserInfo(1:Token token);
     // touxiang wenjian ming: netdiskportrait
 }
 

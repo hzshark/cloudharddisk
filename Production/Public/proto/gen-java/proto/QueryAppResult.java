@@ -445,14 +445,14 @@ public class QueryAppResult implements org.apache.thrift.TBase<QueryAppResult, Q
           case 2: // MSG
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
-                struct.msg = new ArrayList<AppInfo>(_list8.size);
-                AppInfo _elem9;
-                for (int _i10 = 0; _i10 < _list8.size; ++_i10)
+                org.apache.thrift.protocol.TList _list32 = iprot.readListBegin();
+                struct.msg = new ArrayList<AppInfo>(_list32.size);
+                AppInfo _elem33;
+                for (int _i34 = 0; _i34 < _list32.size; ++_i34)
                 {
-                  _elem9 = new AppInfo();
-                  _elem9.read(iprot);
-                  struct.msg.add(_elem9);
+                  _elem33 = new AppInfo();
+                  _elem33.read(iprot);
+                  struct.msg.add(_elem33);
                 }
                 iprot.readListEnd();
               }
@@ -485,9 +485,9 @@ public class QueryAppResult implements org.apache.thrift.TBase<QueryAppResult, Q
         oprot.writeFieldBegin(MSG_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.msg.size()));
-          for (AppInfo _iter11 : struct.msg)
+          for (AppInfo _iter35 : struct.msg)
           {
-            _iter11.write(oprot);
+            _iter35.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -524,9 +524,9 @@ public class QueryAppResult implements org.apache.thrift.TBase<QueryAppResult, Q
       if (struct.isSetMsg()) {
         {
           oprot.writeI32(struct.msg.size());
-          for (AppInfo _iter12 : struct.msg)
+          for (AppInfo _iter36 : struct.msg)
           {
-            _iter12.write(oprot);
+            _iter36.write(oprot);
           }
         }
       }
@@ -543,14 +543,14 @@ public class QueryAppResult implements org.apache.thrift.TBase<QueryAppResult, Q
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.msg = new ArrayList<AppInfo>(_list13.size);
-          AppInfo _elem14;
-          for (int _i15 = 0; _i15 < _list13.size; ++_i15)
+          org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.msg = new ArrayList<AppInfo>(_list37.size);
+          AppInfo _elem38;
+          for (int _i39 = 0; _i39 < _list37.size; ++_i39)
           {
-            _elem14 = new AppInfo();
-            _elem14.read(iprot);
-            struct.msg.add(_elem14);
+            _elem38 = new AppInfo();
+            _elem38.read(iprot);
+            struct.msg.add(_elem38);
           }
         }
         struct.setMsgIsSet(true);
