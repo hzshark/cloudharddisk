@@ -110,9 +110,11 @@ struct QueryFResult {
 }
 
 //用户别名
-struct UserAliasResult {
-  1:RetHead result;
-  2:AliasList aliasname;
+struct UserInfo {
+  1:optional string  aliasname;
+  2:bool    male;  // true male,false female
+  3:optional i32     age;
+  4:optional string mobile;
 }
 
 // login result
@@ -121,7 +123,7 @@ struct LoginResult {
   2: Token  token;  //身份牌
   3: i32  space ;   //用户空间单位K
   4: i32  uspace;   //已经使用的用户空间 单位k
-  5: AliasList aliasname;           // 别名
+  //5: AliasList aliasname;           // 别名
   6: i32 userid;             // 
   7: optional i32  flow;     // 免费流量
   8: optional i32  uflow;    // 已使用流量
@@ -130,22 +132,14 @@ struct LoginResult {
 // UserInfo
 struct UserInfoResult {
   1: RetHead result;
-  2: i32 age;
-  3: i32 sex;    // 1: 男  2: 女
-  4: i32  space ;   //用户空间单位K
-  5: i32  uspace;   //已经使用的用户空间 单位k
-  6: AliasList aliasname;           // 别名
-  7: i32 userid;             // 
-  8: optional i32  flow;     // 免费流量
-  9: optional i32  uflow;    // 已使用流量
+  2: optional UserInfo;
+  3: optional i32 userid;
 }
 
 // download result
-
 struct DownloadResult {
  1: RetHead result;
  2: binary bin;
-// 3: i64  spare ;   //剩余字节数
 }
 
 
@@ -370,19 +364,20 @@ service CloudHardDiskService {
     RetHead VerifyCathcha(1:Token token,2:string captcha);   
     RetHead OrderPlan(1:Token token,2:PTYPE ptype);     // use app order plan
     //别名修改走删除后添加方式
-    RetHead AddAlias(1:Token token,2:string ualias);
-    RetHead DeleteAlias(1:Token token,2:string ualias);
+    RetHead SetAlias(1:Token token,2:string ualias);
+   
+    //查询别名
     UserAliasResult QueryAlias(1:Token token);
+
     //获取手机访问url地址,url获取以后手机需要get访问以后才能调用获取手机号码接口
     NetURLResult GetMobileAccessUrl(1:Token token);
     //获取手机号码
     NetMobileNumberResult GetMobileNumber(1:Token token);
-    // use changed user info
-    RetHead ChangedUserInfo(1:Token token,2:i32 age,3:i32 sex);
+    
     // 设置用户信息
     RetHead SetUserInfo(1:Token token,2:i32 age,3:i32 sex);
     // 查询用户信息
-    UserInfoResult QueryUserInfo(1:Token token);
+    UserInfoResult QueryUserInfo(1:Token token,2:UserInfo uinfo);
     // touxiang wenjian ming: netdiskportrait
 }
 
