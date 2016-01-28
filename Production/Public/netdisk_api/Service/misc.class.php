@@ -27,7 +27,6 @@ class MiscService{
     
     function queryFee(){
         $miscDao = new FeeModel();
-        $condition['status'] = 1;
-        return $miscDao->where($condition)->select();
+        return $miscDao->select();
     }
 }

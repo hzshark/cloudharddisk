@@ -1035,6 +1035,7 @@ abstract class Driver
         $this->model = $options['model'];
         $this->parseBind(!empty($options['bind']) ? $options['bind'] : array());
         $sql    = $this->buildSelectSql($options);
+        //$this->query("set names utf8");
         $result = $this->query($sql, !empty($options['fetch_sql']) ? true : false);
         return $result;
     }

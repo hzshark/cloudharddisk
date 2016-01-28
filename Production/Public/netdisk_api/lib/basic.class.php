@@ -146,10 +146,12 @@ function img2thumb($src_img, $dst_img, $width = 75, $height = 75, $cut = 0, $pro
     $src = $createfun($src_img);
     
     $dst = imagecreatetruecolor($width ? $width : $dst_w, $height ? $height : $dst_h);
-    imagesavealpha($dst, true);
-    $trans_colour = imagecolorallocatealpha($dst, 0, 0, 0, 127);
+//    imagesavealpha($dst, true);
+//    $trans_colour = imagecolorallocatealpha($dst, 0, 0, 0, 127);
 //     $white = imagecolorallocate($dst, 255, 255, 255);
-    imagefill($dst, 0, 0, $trans_colour);
+     $white = imagecolorallocate($dst, 255, 255, 255);
+//    imagefill($dst, 0, 0, $trans_colour);
+    imagefill($dst, 0, 0, $white);
 
     if(function_exists('imagecopyresampled'))
     {
@@ -159,8 +161,105 @@ function img2thumb($src_img, $dst_img, $width = 75, $height = 75, $cut = 0, $pro
     {
         imagecopyresized($dst, $src, $x, $y, 0, 0, $dst_w, $dst_h, $src_w, $src_h);
     }
-    $otfunc($dst, $dst_img);
+    $otfunc($dst, $dst_img, 9);
     imagedestroy($dst);
     imagedestroy($src);
     return true;
 }
+
+
+function get($url, $header = array(), $timeout = 10){
+    //初始化
+    $curl = curl_init();
+    //设置抓取的url
+    curl_setopt($curl, CURLOPT_URL, $url);
+    if (count($header) > 0){
+        curl_setopt($curl, CURLOPT_HTTPHEADER,$header);
+    }
+    //设置头文件的信息作为数据流输出
+    curl_setopt($curl, CURLOPT_HEADER, false);
+    //设置获取的信息以文件流的形式返回，而不是直接输出。
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_TIMEOUT, $timeout); //30秒超时
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+
+    //执行命令
+    $data = curl_exec($curl);
+    //关闭URL请求
+    curl_close($curl);
+    //获得的数据
+    return $data;
+}
+
+function get_proxy($url, $proxy, $header = array(), $timeout = 10){
+    //初始化
+    $curl = curl_init();
+    curl_setopt ($curl, CURLOPT_PROXY, $proxy);
+    //设置抓取的url
+    curl_setopt($curl, CURLOPT_URL, $url);
+    if (count($header) > 0){
+        curl_setopt($curl, CURLOPT_HTTPHEADER,$header);
+    }
+    //设置头文件的信息作为数据流输出
+    curl_setopt($curl, CURLOPT_HEADER, false);
+    //设置获取的信息以文件流的形式返回，而不是直接输出。
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($curl, CURLOPT_TIMEOUT, $timeout); //30秒超时
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+
+    //执行命令
+    $data = curl_exec($curl);
+    //关闭URL请求
+    curl_close($curl);
+    //获得的数据
+    return $data;
+}
+
+
+function get1($url, $header = array(), $timeout = 10){
+    //初始化
+    $curl = curl_init();
+    //设置抓取的url
+    curl_setopt($curl, CURLOPT_URL, $url);
+    if (count($header) > 0){
+        curl_setopt($curl, CURLOPT_HTTPHEADER,$header);
+    }
+    //设置头文件的信息作为数据流输出
+    curl_setopt($curl, CURLOPT_HEADER, true);
+    //设置获取的信息以文件流的形式返回，而不是直接输出。
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_TIMEOUT, $timeout); //30秒超时
+    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+
+    //执行命令
+    $data = curl_exec($curl);
+    //关闭URL请求
+    curl_close($curl);
+    //获得的数据
+    return $data;
+
+}
+
+/*
+ -----------------------------------------------------------
+ 函数名称：isPhone
+ 简要描述：检查输入的是否为电话
+ 输入：string
+ 输出：boolean
+ 修改日志：------
+ -----------------------------------------------------------
+ */
+function isPhone($val)
+{
+    //eg: xxx-xxxxxxxx-xxx | xxxx-xxxxxxx-xxx ...
+    if(ereg("^((0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$",$val))
+        return true;
+    return false;
+}
+
+function get_jsondata($string){
+    $string = trim($string);
+    $strlen = strlen($string);
+    return substr($string,1, $strlen-2);
+}
+

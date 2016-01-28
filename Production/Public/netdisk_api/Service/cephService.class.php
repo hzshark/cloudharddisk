@@ -59,18 +59,30 @@ class cephService
         return $res->isOK();
     }
     
-    public function listobjects($bucket_name, $type){
+    public function listobjects($bucket_name, $type, $start=0, $excpet_num=20){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $ObjectsListResponse = $Connection->list_objects($bucket_name);
         $Objects = $ObjectsListResponse->body->Contents;
         $list = array();
         $errmsg = '';
+        $idx = 0;
+        $rows = 0;
         if ($ObjectsListResponse->isOK()){
             foreach ($Objects as $Object){
-                $fcontnet = $file->body->Contents;
                 if ("~" == substr($Object->Key,-1)){
                     continue;
                 }
+                if ($idx > $excpet_num){
+                    break;
+                }
+                $idx += 1; 
+                if ($idx < $start){
+                    continue;
+                }
+                if ($rows > $excpet_num){
+                    break;
+                }
+                $rows += 1;
                 $fileinfo = new FileInfo(
                     array('filesize'=> $Object->Size,
                       'lastModified'=>strtotime($Object->LastModified),
@@ -146,7 +158,7 @@ class cephService
             $readbin = file_get_contents($part_file_path);
             if (self::uploadFile($bucket_name, $object_name, $readbin)){
                 $ret_status = 0;
-                $err_msg = 'complete commit object, object less than 5M use uploadfile funciotn.';
+                $err_msg = 'complete commit object, object less than 5M use uploadfile funciotn.'.$part_file_path;
                 $Connection->abort_multipart_upload($bucket_name, $object_name.'~', $upload_id);
                 $Connection->delete_object($bucket_name, $object_name.'~');
                 $user->deleteUserUploadMarker($token, $object_name);
@@ -278,13 +290,13 @@ class cephService
             $res = $Connection->get_object($bucket_name, $object_name);
             if ($res->isOK()){
                 $boby = $res->body;
-                $user_upload_path = session('?user_upload_path')?session('user_upload_path'):'/tmp';
+                $user_upload_path = session('user_upload_path');
                 $filepath = $user_upload_path.DIRECTORY_SEPARATOR.$object_name;
                 mkdirs($filepath);
                 if (file_put_contents($filepath.DIRECTORY_SEPARATOR.$object_name, $boby)){
                     $src_img = $filepath.DIRECTORY_SEPARATOR.$object_name;
                     $dst_img = $filepath.DIRECTORY_SEPARATOR.$object_name.".png";
-                    $stat = img2thumb($src_img, $dst_img, $width = 32, $height = 32, $cut = 0, $proportion = 0);
+                    $stat = img2thumb($src_img, $dst_img, 64, 64, $cut = 0, $proportion = 0);
                     if ($stat){
                         $status = $this->SUCCESS;
                     }else{

@@ -59,6 +59,17 @@ final class FTYPE {
   );
 }
 
+final class PTYPE {
+  const FREE = 1;
+  const NINE = 2;
+  const FIFTEEN = 3;
+  static public $__names = array(
+    1 => 'FREE',
+    2 => 'NINE',
+    3 => 'FIFTEEN',
+  );
+}
+
 final class SYNCTYPE {
   const UPDATE = 1;
   const DELETE = 2;
@@ -695,6 +706,150 @@ class QueryFResult {
 
 }
 
+class UserInfo {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $aliasname = null;
+  /**
+   * @var bool
+   */
+  public $male = null;
+  /**
+   * @var int
+   */
+  public $age = null;
+  /**
+   * @var string
+   */
+  public $mobile = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'aliasname',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'male',
+          'type' => TType::BOOL,
+          ),
+        3 => array(
+          'var' => 'age',
+          'type' => TType::I32,
+          ),
+        4 => array(
+          'var' => 'mobile',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['aliasname'])) {
+        $this->aliasname = $vals['aliasname'];
+      }
+      if (isset($vals['male'])) {
+        $this->male = $vals['male'];
+      }
+      if (isset($vals['age'])) {
+        $this->age = $vals['age'];
+      }
+      if (isset($vals['mobile'])) {
+        $this->mobile = $vals['mobile'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserInfo';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->aliasname);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::BOOL) {
+            $xfer += $input->readBool($this->male);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->age);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->mobile);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserInfo');
+    if ($this->aliasname !== null) {
+      $xfer += $output->writeFieldBegin('aliasname', TType::STRING, 1);
+      $xfer += $output->writeString($this->aliasname);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->male !== null) {
+      $xfer += $output->writeFieldBegin('male', TType::BOOL, 2);
+      $xfer += $output->writeBool($this->male);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->age !== null) {
+      $xfer += $output->writeFieldBegin('age', TType::I32, 3);
+      $xfer += $output->writeI32($this->age);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->mobile !== null) {
+      $xfer += $output->writeFieldBegin('mobile', TType::STRING, 4);
+      $xfer += $output->writeString($this->mobile);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
 class LoginResult {
   static $_TSPEC;
 
@@ -714,10 +869,6 @@ class LoginResult {
    * @var int
    */
   public $uspace = null;
-  /**
-   * @var string
-   */
-  public $aliasname = null;
   /**
    * @var int
    */
@@ -752,18 +903,14 @@ class LoginResult {
           'type' => TType::I32,
           ),
         5 => array(
-          'var' => 'aliasname',
-          'type' => TType::STRING,
-          ),
-        6 => array(
           'var' => 'userid',
           'type' => TType::I32,
           ),
-        7 => array(
+        6 => array(
           'var' => 'flow',
           'type' => TType::I32,
           ),
-        8 => array(
+        7 => array(
           'var' => 'uflow',
           'type' => TType::I32,
           ),
@@ -781,9 +928,6 @@ class LoginResult {
       }
       if (isset($vals['uspace'])) {
         $this->uspace = $vals['uspace'];
-      }
-      if (isset($vals['aliasname'])) {
-        $this->aliasname = $vals['aliasname'];
       }
       if (isset($vals['userid'])) {
         $this->userid = $vals['userid'];
@@ -846,27 +990,20 @@ class LoginResult {
           }
           break;
         case 5:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->aliasname);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 6:
           if ($ftype == TType::I32) {
             $xfer += $input->readI32($this->userid);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
-        case 7:
+        case 6:
           if ($ftype == TType::I32) {
             $xfer += $input->readI32($this->flow);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
-        case 8:
+        case 7:
           if ($ftype == TType::I32) {
             $xfer += $input->readI32($this->uflow);
           } else {
@@ -909,24 +1046,253 @@ class LoginResult {
       $xfer += $output->writeI32($this->uspace);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->aliasname !== null) {
-      $xfer += $output->writeFieldBegin('aliasname', TType::STRING, 5);
-      $xfer += $output->writeString($this->aliasname);
-      $xfer += $output->writeFieldEnd();
-    }
     if ($this->userid !== null) {
-      $xfer += $output->writeFieldBegin('userid', TType::I32, 6);
+      $xfer += $output->writeFieldBegin('userid', TType::I32, 5);
       $xfer += $output->writeI32($this->userid);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->flow !== null) {
-      $xfer += $output->writeFieldBegin('flow', TType::I32, 7);
+      $xfer += $output->writeFieldBegin('flow', TType::I32, 6);
       $xfer += $output->writeI32($this->flow);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->uflow !== null) {
-      $xfer += $output->writeFieldBegin('uflow', TType::I32, 8);
+      $xfer += $output->writeFieldBegin('uflow', TType::I32, 7);
       $xfer += $output->writeI32($this->uflow);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserInfoResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var \proto\UserInfo
+   */
+  public $uinfo = null;
+  /**
+   * @var int
+   */
+  public $userid = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'uinfo',
+          'type' => TType::STRUCT,
+          'class' => '\proto\UserInfo',
+          ),
+        3 => array(
+          'var' => 'userid',
+          'type' => TType::I32,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['uinfo'])) {
+        $this->uinfo = $vals['uinfo'];
+      }
+      if (isset($vals['userid'])) {
+        $this->userid = $vals['userid'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserInfoResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRUCT) {
+            $this->uinfo = new \proto\UserInfo();
+            $xfer += $this->uinfo->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 3:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->userid);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserInfoResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->uinfo !== null) {
+      if (!is_object($this->uinfo)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('uinfo', TType::STRUCT, 2);
+      $xfer += $this->uinfo->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->userid !== null) {
+      $xfer += $output->writeFieldBegin('userid', TType::I32, 3);
+      $xfer += $output->writeI32($this->userid);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class UserAliasResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var string
+   */
+  public $aliasname = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'aliasname',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['aliasname'])) {
+        $this->aliasname = $vals['aliasname'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'UserAliasResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->aliasname);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('UserAliasResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->aliasname !== null) {
+      $xfer += $output->writeFieldBegin('aliasname', TType::STRING, 2);
+      $xfer += $output->writeString($this->aliasname);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -1590,155 +1956,6 @@ class UsageResult {
     if ($this->usage !== null) {
       $xfer += $output->writeFieldBegin('usage', TType::I32, 3);
       $xfer += $output->writeI32($this->usage);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
-  }
-
-}
-
-class DFlowUsageResult {
-  static $_TSPEC;
-
-  /**
-   * @var \proto\RetHead
-   */
-  public $result = null;
-  /**
-   * @var string
-   */
-  public $appid = null;
-  /**
-   * @var string
-   */
-  public $appkey = null;
-  /**
-   * @var string
-   */
-  public $url = null;
-
-  public function __construct($vals=null) {
-    if (!isset(self::$_TSPEC)) {
-      self::$_TSPEC = array(
-        1 => array(
-          'var' => 'result',
-          'type' => TType::STRUCT,
-          'class' => '\proto\RetHead',
-          ),
-        2 => array(
-          'var' => 'appid',
-          'type' => TType::STRING,
-          ),
-        3 => array(
-          'var' => 'appkey',
-          'type' => TType::STRING,
-          ),
-        4 => array(
-          'var' => 'url',
-          'type' => TType::STRING,
-          ),
-        );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['result'])) {
-        $this->result = $vals['result'];
-      }
-      if (isset($vals['appid'])) {
-        $this->appid = $vals['appid'];
-      }
-      if (isset($vals['appkey'])) {
-        $this->appkey = $vals['appkey'];
-      }
-      if (isset($vals['url'])) {
-        $this->url = $vals['url'];
-      }
-    }
-  }
-
-  public function getName() {
-    return 'DFlowUsageResult';
-  }
-
-  public function read($input)
-  {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRUCT) {
-            $this->result = new \proto\RetHead();
-            $xfer += $this->result->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->appid);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->appkey);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->url);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
-  }
-
-  public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('DFlowUsageResult');
-    if ($this->result !== null) {
-      if (!is_object($this->result)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
-      $xfer += $this->result->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->appid !== null) {
-      $xfer += $output->writeFieldBegin('appid', TType::STRING, 2);
-      $xfer += $output->writeString($this->appid);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->appkey !== null) {
-      $xfer += $output->writeFieldBegin('appkey', TType::STRING, 3);
-      $xfer += $output->writeString($this->appkey);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->url !== null) {
-      $xfer += $output->writeFieldBegin('url', TType::STRING, 4);
-      $xfer += $output->writeString($this->url);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -3229,6 +3446,212 @@ class CaptchaResult {
     if ($this->captcha !== null) {
       $xfer += $output->writeFieldBegin('captcha', TType::STRING, 2);
       $xfer += $output->writeString($this->captcha);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class NetURLResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var string
+   */
+  public $url = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'url',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['url'])) {
+        $this->url = $vals['url'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'NetURLResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->url);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('NetURLResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->url !== null) {
+      $xfer += $output->writeFieldBegin('url', TType::STRING, 2);
+      $xfer += $output->writeString($this->url);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class NetMobileNumberResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var string
+   */
+  public $url = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'url',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['url'])) {
+        $this->url = $vals['url'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'NetMobileNumberResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->url);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('NetMobileNumberResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->url !== null) {
+      $xfer += $output->writeFieldBegin('url', TType::STRING, 2);
+      $xfer += $output->writeString($this->url);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

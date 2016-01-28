@@ -5,13 +5,11 @@ require __DIR__.'/../Model/UserSpace.model.php';
 require __DIR__.'/../Model/UserFlow.model.php';
 require __DIR__.'/../Model/UserUpload.model.php';
 require __DIR__.'/../Model/UserCephAuth.model.php';
-require __DIR__.'/../Model/UserTemplet.model.php';
 use UserModel;
 use UserSpaceModel;
 use UserFlowModel;
 use UserCephAuthModel;
 use UserUploadModel;
-use UserTempletModel;
 use lib\Model;
 
 class UserService
@@ -158,58 +156,5 @@ class UserService
             $date['uspace'] = $uspace;
             $userDao->where($condition)->save($date);
         }
-    }
-    
-    function addUserTempleteDate($userid, $mobile,$imei, $captcha){
-        $condition['userid'] = $userid;
-        $userDao = new \UserTempletModel();
-        $user_tmp = $userDao->where($condition)->select();
-        if (count($user_tmp) > 0){
-            $userDao->where($condition)->delete();
-        }
-        $data['userid'] = ''.$userid;
-        $data['indate'] = Date('Y-m-d H:i:s');
-        $data['mobile'] = $mobile;
-        $data['imei'] = $imei;
-        $data['captcha'] = $captcha;
-        return $userDao->add($data);
-    }
-    
-    function RegistUser($uname, $password, $imie){
-        $userDao = new \UserModel();
-        $data['username'] = $uname;
-        $data['lastlogin'] = Date('Y-m-d H:i:s');
-        $data['password'] = $password;
-        $data['alias'] = $imie;
-        $userDao->add($data);
-        $condition['username'] = $uname;
-        $user = $userDao->where($condition)->find();
-        if ($user == null || count($user) == 0) {
-            return false;
-        }else{
-            session('username', $uname);
-            session('userid', $user['userid']);
-            session('lastLogin', $user['lastlogin']);
-            session('alias', $user['alias']);
-            $spaceDao = new \UserSpaceModel();
-            $space_data['userid'] = $user['userid'];
-            $space_data['space'] = 3*1024*1024*1024;
-            $space_data['uspace'] = 0;
-            $spaceDao->add($space_data);
-            $flowDao = new \UserFlowModel();
-            $dflow_data['flow'] = 0;
-            $dflow_data['uflow'] =0;
-            $dflow_data['user_id'] = $user['userid'];
-            $flowDao->add($dflow_data);
-            $cephDao = new \UserCephAuthModel();
-            $ceph_data['user_id'] = $user['userid'];
-            $ceph_data['user_id'] = AWS_KEY;
-            $ceph_data['user_id'] = AWS_SECRET_KEY;
-            $cephDao->add($ceph_data);
-            $
-            
-            return true;
-        }
-        return false;
     }
 }

@@ -25,11 +25,12 @@ class Token_Core{
      * @return string
      */
     public static function is_token($token)
-    {   
-        return true;
+    {  
+        
         session(array('id'=>$token));
         $key = session('token-netdisk');
         $old_token = md5(substr(time(), 0, 3).$key);
+        //return true;
         if($old_token == $token)
         {
             return true;

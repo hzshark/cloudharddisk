@@ -113,6 +113,11 @@ use proto\VersionResult;
 use proto\DFlowUsageResult;
 use proto\QueryUpldObjResult;
 use proto\QueryThumbnailResult;
+use proto\NetURLResult;
+use proto\NetMobileNumberResult;
+use proto\UserInfoResult;
+use proto\UserAliasResult;
+use proto\UserInfo;
 
 class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
     private function _get_bucket_name_by_ftype($ftype){
@@ -240,9 +245,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           $list_ret = $conn->listobjects($Bucket_name, $type);
           
           if ($list_ret['status']){
-              $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>''));
+              $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>$Bucket_name));
           }else{
-              $ret_h = new \proto\RetHead(array('ret'=>2,'msg'=>'query file list error!'.$aws_key));
+              $ret_h = new \proto\RetHead(array('ret'=>2,'msg'=>'query file list error1!'));
           }
       }
       $ret_arr = array('result'=>$ret_h,'files'=>isset($list_ret)?$list_ret['list']:null);
@@ -267,7 +272,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               $ret['ret'] = $alloc_ret['status'];
               $ret['msg'] = $errmsg;
               
-              $user->addUserUploadMarker($token, $alloc_ret['upload_id'] , $tagname);
+              $user->addUserUploadMarker(session('userid'), $alloc_ret['upload_id'] , $tagname);
           }elseif ($alloc_ret['status'] === 2){
               $errmsg = 'alloc object failed!';
               $ret['ret'] = $alloc_ret['status'];
@@ -295,14 +300,14 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
           $conn = new cephService($host, $aws_key, $aws_secret_key);
           $user = new UserService();
-          $upload = $user->queryUserUploadId($token, $oid);
+          $upload = $user->queryUserUploadId(session('userid'), $oid);
           if (isset($upload['uploadid'])){
-              $append_ret = $conn->appendObj($token,$Bucket_name,  $oid, $upload['uploadid'], $upload['nextpartmarker'],$bin);
+              $append_ret = $conn->appendObj(session('userid'),$Bucket_name,  $oid, $upload['uploadid'], $upload['nextpartmarker'],$bin);
               if ($append_ret){
                   $offset = $upload['offset'] + strlen($bin);
-                  $user->updateUserUploadOffset($token, $oid, $offset);
+                  $user->updateUserUploadOffset(session('userid'), $oid, $offset);
                   $ret['ret'] = 0;
-                  $ret['msg'] = count($bin).'append object successfully!'.$offset;
+                  $ret['msg'] =  session('testlen').'append object successfully!'.$offset;
               }else{
                   $ret['ret'] = 2;
                   $ret['msg'] = $upload['uploadid'].'append object failed!' ;
@@ -326,7 +331,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
           $conn = new cephService($host, $aws_key, $aws_secret_key);
           $user = new UserService();
-          $upload = $user->queryUserUploadId($token, $oid);
+          $upload = $user->queryUserUploadId(session('userid'), $oid);
           if (isset($upload['uploadid'])){
             $append_ret = $conn->commitObj($token,$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
             $ret['ret'] = $append_ret['status'];
@@ -477,7 +482,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
   }
   
   public function delObj($token, $oid, $type){
-      $ret = array('ret'=>4,'msg'=>'delete object token invalid!');
+      $ret = array('ret'=>1,'msg'=>'delete object token timeout!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -559,9 +564,11 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           $fees = $misc->queryFee();
           $feelist = array();
           foreach ($fees as $fee){
+              
               $feeinfo = new FeeInfo(array('PrdName'=>$fee['prdname'],'Spnumber'=>$fee['spnumber'],
                   'Cost'=>$fee['cost'],'Smscmd'=>$fee['smscmd'],'Description'=>$fee['desc']));
               $fee_list [] = $feeinfo;
+              unset($feeinfo);
           }
           $ret = array('ret'=>0,'msg'=>'query fee successfully!');
       }
@@ -571,7 +578,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
   }
   
 public function queryThumbnail($token, $ftype, $objid){
-      $ret = array('ret'=>4,'msg'=>'query thumbnail token invalid!');
+      $ret = array('ret'=>4,'msg'=>'query thumbnail token timeout!');
       $token_c = new \lib\Token_Core();
       $ret_bin = '';
       if ($token_c->is_token($token)){
@@ -583,8 +590,7 @@ public function queryThumbnail($token, $ftype, $objid){
           $gen_ret = $conn->queryThumbnail($Bucket_name, $objid);
           if ($gen_ret['status'] == 0){
               $ret = array('ret'=>$gen_ret['status'],'msg'=>'');
-              $user_upload_path = session('?user_upload_path')?session('user_upload_path'):'/tmp';
-              $filepath =$user_upload_path.DIRECTORY_SEPARATOR.$objid.DIRECTORY_SEPARATOR.$objid.".png";
+              $filepath = session('user_upload_path').DIRECTORY_SEPARATOR.$objid.DIRECTORY_SEPARATOR.$objid.".png";
               $ret_bin = file_get_contents($filepath);
               unlink($filepath);
           }else{
@@ -596,29 +602,162 @@ public function queryThumbnail($token, $ftype, $objid){
       return $ret_fee;
   }
   
-  public function BindUmobile($token, $captcha, $umobile, $imie){
-      $ret = array('ret'=>4,'msg'=>'query bind user mobile token invalid!');
-      $token_c = new \lib\Token_Core();
-      $ret_bin = '';
-      if ($token_c->is_token($token)){
-          $user = new UserService();
-          $user->addUserTempleteDate(session('userid'), $umobile, $imie, $captcha);
-          $ret = array('ret'=>0,'msg'=>'');
-      }
+    public function BindUmobile($captcha, $umobile, $imie){
+        
+    }
+    
+    public function RegistUser($uname, $password, $umobile, $captcha, $ptype){
+        
+    }
+    public function VerifyCathcha($token, $captcha){
+        
+    }
+    public function OrderPlan($token, $ptype){
+        
+    }
+    
+    public function AddAlias($token, $ualias){
+        $ret = array('ret'=>4,'msg'=>'add user alias token invalid!');
+        $token_c = new \lib\Token_Core();
+        if ($token_c->is_token($token)){
+            
+            $ret = array('ret'=>1,'msg'=>'');
+        
+        }
+        $ret_h = new \proto\RetHead($ret);
+        return $ret_h;
+    }
+    public function DeleteAlias($token, $ualias){
+        
+    }
+    public function Changepwd($token, $pwd_org, $pwd){
+        
+    }
+    public function Resetpwd($token, $pwd){
+        $ret = array('ret'=>4,'msg'=>'reset user password token invalid!');
+        $token_c = new \lib\Token_Core();
+        if ($token_c->is_token($token)){
+            $ret = array('ret'=>1,'msg'=>'');
+        
+        }
+        $ret_h = new \proto\RetHead($ret);
+        return $ret_h;
+    }
+    public function SetAlias($token, $ualias){
+        $ret = array('ret'=>4,'msg'=>'set user alias token invalid!');
+        $token_c = new \lib\Token_Core();
+        if ($token_c->is_token($token)){
+            $ret = array('ret'=>1,'msg'=>'');
+        
+        }
+        $ret_h = new \proto\RetHead($ret);
+        return $ret_h;
+    }
+    
+    public function QueryAlias($token){
+        $ret = array('ret'=>4,'msg'=>'query user alias token invalid!');
+        $token_c = new \lib\Token_Core();
+        if ($token_c->is_token($token)){
+            $ret = array('ret'=>1,'msg'=>'');
+        
+        }
+        $ret_h = new \proto\RetHead($ret);
+        $userAliasResult = new UserAliasResult(array('result'=>$ret_h, 'aliasname'=>'useraliase'));
+        return $userAliasResult;
+    }
+    
+    public function QueryUserInfo($token){
+        $ret = array('ret'=>4,'msg'=>'query user info token invalid!');
+        $token_c = new \lib\Token_Core();
+        if ($token_c->is_token($token)){
+            $ret = array('ret'=>1,'msg'=>'');
+        
+        }
+        $userInfo = new UserInfo(array('aliasname'=>'user alias','male'=>true,'age'=>100,'mobile'=>'18812345678'));
+        $ret_h = new \proto\RetHead($ret);
+        $userInfoResult = new UserInfoResult(array('result'=>$ret_h, 'userid'=>1000,'uinfo'=>$userInfo));
+        return $userInfoResult;
+    }
+    
+    public function SetUserInfo($token, \proto\UserInfo $uinfo){
+        $ret = array('ret'=>4,'msg'=>'set user info token invalid!');
+        $token_c = new \lib\Token_Core();
+        if ($token_c->is_token($token)){
+            $ret = array('ret'=>1,'msg'=>'');
+        }
+        $ret_h = new \proto\RetHead($ret);
+        return $ret_h;
+    }
+    
+    public function GetMobileAccessUrl($token){
+        $ret = array('ret'=>4,'msg'=>'query mobile access url token invalid!');
+        $token_c = new \lib\Token_Core();
+        $req_url = '';
+        $proxy = "http://182.92.97.3:13128";
+        if ($token_c->is_token($token)){
+            $url = C('NET_URL');
+            $app_id = C('APP_ID');
+            $app_key = C('APP_KEY');
+            $sid = '000000';
+            $sgin = md5($app_id.$app_key.$sid);
+            $request_url = $url.'?action=getkeys&sid='.$sid.'&appid='.$app_id.'&sign='.$sgin;
+            $res_data = get_proxy($request_url, $proxy);
+            $json_data = get_jsondata($res_data);
+            $file_dir = session('user_upload_path').DIRECTORY_SEPARATOR.$token;
+            mkdirs($file_dir);
+            $file_name = "get_net.json";
+            $json_file = $file_dir.DIRECTORY_SEPARATOR.$file_name;
+            file_put_contents($json_file, $json_data);
+            $json_Array=json_decode($json_data, true);
+            
+            $err_code = $json_Array['ErrCode'];
+            $hand_desc = $json_Array['Description'];
+            $hand_appkey = $json_Array['appkey'];
+            $hand_token = $json_Array['token'];
+            $hand_url = $json_Array['Url'];
+            $hand_unikey = $json_Array['unikey'];
+            $req_url = $hand_url.'?unikey='.$hand_unikey;
+            $ret['ret'] = 1;
+            $ret['msg'] = '';
+        }
       $ret_h = new \proto\RetHead($ret);
-      return $ret_h;
-  }
-  
-  public function RegistUser($uname, $password, $imie){
-      $user = new UserService();
-      $ret = $user->RegistUser($uname, $password, $imie);
-      if ($ret){
-          return true;
-      }
-      $ret_h = new \proto\RetHead($ret);
-      return $ret_h;
-  }
-  
+      $ret_net = new NetURLResult(array('result'=>$ret_h,'url'=>$req_url));
+      return $ret_net;
+    }
+    public function GetMobileNumber($token){
+        $ret = array('ret'=>4,'msg'=>'query mobile number token invalid!');
+        $token_c = new \lib\Token_Core();
+        $req_phone = '';
+        $proxy = "http://182.92.97.3:13128";
+        if ($token_c->is_token($token)){
+            $json_file = session('user_upload_path').DIRECTORY_SEPARATOR.$token.DIRECTORY_SEPARATOR."get_net.json";
+            $json_data = file_get_contents($json_file);
+            $json_Array=json_decode($json_data, true);
+
+            $err_code = $json_Array['ErrCode'];
+            $hand_desc = $json_Array['Description'];
+            $hand_appkey = $json_Array['appkey'];
+            $hand_token = $json_Array['token'];
+            $hand_url = $json_Array['Url'];
+            $hand_unikey = $json_Array['unikey'];
+            $astring = "appKey=\"".$hand_appkey."\",token=\"".$hand_token."\"";
+            $req_header[0] = "Accept: text/plain";
+            $req_header[] = "Content-Type: text/plain;charset=UTF-8";
+            $req_header[] = "Connection: keep-alive";
+            $req_header[] = "Keep-Alive: 300";
+            $req_header[] = "Authorization: ".$astring;
+            $req_header[] = "Accept-Language: en-us,en;q=0.5";
+            $req_url_3 = $hand_url.'/'.$hand_unikey;
+            $req_phone = get_proxy($req_url_3,$proxy, $req_header);
+            $ret['ret'] = 1;
+            $ret['msg'] = '';
+        }
+        $ret_h = new \proto\RetHead($ret);
+        $ret_net = new NetMobileNumberResult(array('result'=>$ret_h,'url'=>$req_phone));
+        return $ret_net;
+    }
+    
+
 }
 // header("Content-Type:text/html; charset=utf-8");
 header('Content-Type', 'application/x-thrift');
