@@ -39,14 +39,8 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("UserInfoResult");
 
   private static final org.apache.thrift.protocol.TField RESULT_FIELD_DESC = new org.apache.thrift.protocol.TField("result", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-  private static final org.apache.thrift.protocol.TField AGE_FIELD_DESC = new org.apache.thrift.protocol.TField("age", org.apache.thrift.protocol.TType.I32, (short)2);
-  private static final org.apache.thrift.protocol.TField SEX_FIELD_DESC = new org.apache.thrift.protocol.TField("sex", org.apache.thrift.protocol.TType.I32, (short)3);
-  private static final org.apache.thrift.protocol.TField SPACE_FIELD_DESC = new org.apache.thrift.protocol.TField("space", org.apache.thrift.protocol.TType.I32, (short)4);
-  private static final org.apache.thrift.protocol.TField USPACE_FIELD_DESC = new org.apache.thrift.protocol.TField("uspace", org.apache.thrift.protocol.TType.I32, (short)5);
-  private static final org.apache.thrift.protocol.TField ALIASNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("aliasname", org.apache.thrift.protocol.TType.LIST, (short)6);
-  private static final org.apache.thrift.protocol.TField USERID_FIELD_DESC = new org.apache.thrift.protocol.TField("userid", org.apache.thrift.protocol.TType.I32, (short)7);
-  private static final org.apache.thrift.protocol.TField FLOW_FIELD_DESC = new org.apache.thrift.protocol.TField("flow", org.apache.thrift.protocol.TType.I32, (short)8);
-  private static final org.apache.thrift.protocol.TField UFLOW_FIELD_DESC = new org.apache.thrift.protocol.TField("uflow", org.apache.thrift.protocol.TType.I32, (short)9);
+  private static final org.apache.thrift.protocol.TField UINFO_FIELD_DESC = new org.apache.thrift.protocol.TField("uinfo", org.apache.thrift.protocol.TType.STRUCT, (short)2);
+  private static final org.apache.thrift.protocol.TField USERID_FIELD_DESC = new org.apache.thrift.protocol.TField("userid", org.apache.thrift.protocol.TType.I32, (short)3);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -55,26 +49,14 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
   }
 
   public RetHead result; // required
-  public int age; // required
-  public int sex; // required
-  public int space; // required
-  public int uspace; // required
-  public List<String> aliasname; // required
-  public int userid; // required
-  public int flow; // optional
-  public int uflow; // optional
+  public UserInfo uinfo; // optional
+  public int userid; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     RESULT((short)1, "result"),
-    AGE((short)2, "age"),
-    SEX((short)3, "sex"),
-    SPACE((short)4, "space"),
-    USPACE((short)5, "uspace"),
-    ALIASNAME((short)6, "aliasname"),
-    USERID((short)7, "userid"),
-    FLOW((short)8, "flow"),
-    UFLOW((short)9, "uflow");
+    UINFO((short)2, "uinfo"),
+    USERID((short)3, "userid");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -91,22 +73,10 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
       switch(fieldId) {
         case 1: // RESULT
           return RESULT;
-        case 2: // AGE
-          return AGE;
-        case 3: // SEX
-          return SEX;
-        case 4: // SPACE
-          return SPACE;
-        case 5: // USPACE
-          return USPACE;
-        case 6: // ALIASNAME
-          return ALIASNAME;
-        case 7: // USERID
+        case 2: // UINFO
+          return UINFO;
+        case 3: // USERID
           return USERID;
-        case 8: // FLOW
-          return FLOW;
-        case 9: // UFLOW
-          return UFLOW;
         default:
           return null;
       }
@@ -147,35 +117,17 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
   }
 
   // isset id assignments
-  private static final int __AGE_ISSET_ID = 0;
-  private static final int __SEX_ISSET_ID = 1;
-  private static final int __SPACE_ISSET_ID = 2;
-  private static final int __USPACE_ISSET_ID = 3;
-  private static final int __USERID_ISSET_ID = 4;
-  private static final int __FLOW_ISSET_ID = 5;
-  private static final int __UFLOW_ISSET_ID = 6;
+  private static final int __USERID_ISSET_ID = 0;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.FLOW,_Fields.UFLOW};
+  private static final _Fields optionals[] = {_Fields.UINFO,_Fields.USERID};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.RESULT, new org.apache.thrift.meta_data.FieldMetaData("result", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RetHead.class)));
-    tmpMap.put(_Fields.AGE, new org.apache.thrift.meta_data.FieldMetaData("age", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.SEX, new org.apache.thrift.meta_data.FieldMetaData("sex", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.SPACE, new org.apache.thrift.meta_data.FieldMetaData("space", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.USPACE, new org.apache.thrift.meta_data.FieldMetaData("uspace", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.ALIASNAME, new org.apache.thrift.meta_data.FieldMetaData("aliasname", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.LIST        , "AliasList")));
-    tmpMap.put(_Fields.USERID, new org.apache.thrift.meta_data.FieldMetaData("userid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.FLOW, new org.apache.thrift.meta_data.FieldMetaData("flow", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.UFLOW, new org.apache.thrift.meta_data.FieldMetaData("uflow", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.UINFO, new org.apache.thrift.meta_data.FieldMetaData("uinfo", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, UserInfo.class)));
+    tmpMap.put(_Fields.USERID, new org.apache.thrift.meta_data.FieldMetaData("userid", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(UserInfoResult.class, metaDataMap);
@@ -185,27 +137,10 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
   }
 
   public UserInfoResult(
-    RetHead result,
-    int age,
-    int sex,
-    int space,
-    int uspace,
-    List<String> aliasname,
-    int userid)
+    RetHead result)
   {
     this();
     this.result = result;
-    this.age = age;
-    setAgeIsSet(true);
-    this.sex = sex;
-    setSexIsSet(true);
-    this.space = space;
-    setSpaceIsSet(true);
-    this.uspace = uspace;
-    setUspaceIsSet(true);
-    this.aliasname = aliasname;
-    this.userid = userid;
-    setUseridIsSet(true);
   }
 
   /**
@@ -216,16 +151,10 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
     if (other.isSetResult()) {
       this.result = new RetHead(other.result);
     }
-    this.age = other.age;
-    this.sex = other.sex;
-    this.space = other.space;
-    this.uspace = other.uspace;
-    if (other.isSetAliasname()) {
-      this.aliasname = other.aliasname;
+    if (other.isSetUinfo()) {
+      this.uinfo = new UserInfo(other.uinfo);
     }
     this.userid = other.userid;
-    this.flow = other.flow;
-    this.uflow = other.uflow;
   }
 
   public UserInfoResult deepCopy() {
@@ -235,21 +164,9 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
   @Override
   public void clear() {
     this.result = null;
-    setAgeIsSet(false);
-    this.age = 0;
-    setSexIsSet(false);
-    this.sex = 0;
-    setSpaceIsSet(false);
-    this.space = 0;
-    setUspaceIsSet(false);
-    this.uspace = 0;
-    this.aliasname = null;
+    this.uinfo = null;
     setUseridIsSet(false);
     this.userid = 0;
-    setFlowIsSet(false);
-    this.flow = 0;
-    setUflowIsSet(false);
-    this.uflow = 0;
   }
 
   public RetHead getResult() {
@@ -276,134 +193,27 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
     }
   }
 
-  public int getAge() {
-    return this.age;
+  public UserInfo getUinfo() {
+    return this.uinfo;
   }
 
-  public UserInfoResult setAge(int age) {
-    this.age = age;
-    setAgeIsSet(true);
+  public UserInfoResult setUinfo(UserInfo uinfo) {
+    this.uinfo = uinfo;
     return this;
   }
 
-  public void unsetAge() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __AGE_ISSET_ID);
+  public void unsetUinfo() {
+    this.uinfo = null;
   }
 
-  /** Returns true if field age is set (has been assigned a value) and false otherwise */
-  public boolean isSetAge() {
-    return EncodingUtils.testBit(__isset_bitfield, __AGE_ISSET_ID);
+  /** Returns true if field uinfo is set (has been assigned a value) and false otherwise */
+  public boolean isSetUinfo() {
+    return this.uinfo != null;
   }
 
-  public void setAgeIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __AGE_ISSET_ID, value);
-  }
-
-  public int getSex() {
-    return this.sex;
-  }
-
-  public UserInfoResult setSex(int sex) {
-    this.sex = sex;
-    setSexIsSet(true);
-    return this;
-  }
-
-  public void unsetSex() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __SEX_ISSET_ID);
-  }
-
-  /** Returns true if field sex is set (has been assigned a value) and false otherwise */
-  public boolean isSetSex() {
-    return EncodingUtils.testBit(__isset_bitfield, __SEX_ISSET_ID);
-  }
-
-  public void setSexIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SEX_ISSET_ID, value);
-  }
-
-  public int getSpace() {
-    return this.space;
-  }
-
-  public UserInfoResult setSpace(int space) {
-    this.space = space;
-    setSpaceIsSet(true);
-    return this;
-  }
-
-  public void unsetSpace() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __SPACE_ISSET_ID);
-  }
-
-  /** Returns true if field space is set (has been assigned a value) and false otherwise */
-  public boolean isSetSpace() {
-    return EncodingUtils.testBit(__isset_bitfield, __SPACE_ISSET_ID);
-  }
-
-  public void setSpaceIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SPACE_ISSET_ID, value);
-  }
-
-  public int getUspace() {
-    return this.uspace;
-  }
-
-  public UserInfoResult setUspace(int uspace) {
-    this.uspace = uspace;
-    setUspaceIsSet(true);
-    return this;
-  }
-
-  public void unsetUspace() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __USPACE_ISSET_ID);
-  }
-
-  /** Returns true if field uspace is set (has been assigned a value) and false otherwise */
-  public boolean isSetUspace() {
-    return EncodingUtils.testBit(__isset_bitfield, __USPACE_ISSET_ID);
-  }
-
-  public void setUspaceIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __USPACE_ISSET_ID, value);
-  }
-
-  public int getAliasnameSize() {
-    return (this.aliasname == null) ? 0 : this.aliasname.size();
-  }
-
-  public java.util.Iterator<String> getAliasnameIterator() {
-    return (this.aliasname == null) ? null : this.aliasname.iterator();
-  }
-
-  public void addToAliasname(String elem) {
-    if (this.aliasname == null) {
-      this.aliasname = new ArrayList<String>();
-    }
-    this.aliasname.add(elem);
-  }
-
-  public List<String> getAliasname() {
-    return this.aliasname;
-  }
-
-  public UserInfoResult setAliasname(List<String> aliasname) {
-    this.aliasname = aliasname;
-    return this;
-  }
-
-  public void unsetAliasname() {
-    this.aliasname = null;
-  }
-
-  /** Returns true if field aliasname is set (has been assigned a value) and false otherwise */
-  public boolean isSetAliasname() {
-    return this.aliasname != null;
-  }
-
-  public void setAliasnameIsSet(boolean value) {
+  public void setUinfoIsSet(boolean value) {
     if (!value) {
-      this.aliasname = null;
+      this.uinfo = null;
     }
   }
 
@@ -430,52 +240,6 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
   }
 
-  public int getFlow() {
-    return this.flow;
-  }
-
-  public UserInfoResult setFlow(int flow) {
-    this.flow = flow;
-    setFlowIsSet(true);
-    return this;
-  }
-
-  public void unsetFlow() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __FLOW_ISSET_ID);
-  }
-
-  /** Returns true if field flow is set (has been assigned a value) and false otherwise */
-  public boolean isSetFlow() {
-    return EncodingUtils.testBit(__isset_bitfield, __FLOW_ISSET_ID);
-  }
-
-  public void setFlowIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __FLOW_ISSET_ID, value);
-  }
-
-  public int getUflow() {
-    return this.uflow;
-  }
-
-  public UserInfoResult setUflow(int uflow) {
-    this.uflow = uflow;
-    setUflowIsSet(true);
-    return this;
-  }
-
-  public void unsetUflow() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __UFLOW_ISSET_ID);
-  }
-
-  /** Returns true if field uflow is set (has been assigned a value) and false otherwise */
-  public boolean isSetUflow() {
-    return EncodingUtils.testBit(__isset_bitfield, __UFLOW_ISSET_ID);
-  }
-
-  public void setUflowIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __UFLOW_ISSET_ID, value);
-  }
-
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case RESULT:
@@ -486,43 +250,11 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
       }
       break;
 
-    case AGE:
+    case UINFO:
       if (value == null) {
-        unsetAge();
+        unsetUinfo();
       } else {
-        setAge((Integer)value);
-      }
-      break;
-
-    case SEX:
-      if (value == null) {
-        unsetSex();
-      } else {
-        setSex((Integer)value);
-      }
-      break;
-
-    case SPACE:
-      if (value == null) {
-        unsetSpace();
-      } else {
-        setSpace((Integer)value);
-      }
-      break;
-
-    case USPACE:
-      if (value == null) {
-        unsetUspace();
-      } else {
-        setUspace((Integer)value);
-      }
-      break;
-
-    case ALIASNAME:
-      if (value == null) {
-        unsetAliasname();
-      } else {
-        setAliasname((List<String>)value);
+        setUinfo((UserInfo)value);
       }
       break;
 
@@ -534,22 +266,6 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
       }
       break;
 
-    case FLOW:
-      if (value == null) {
-        unsetFlow();
-      } else {
-        setFlow((Integer)value);
-      }
-      break;
-
-    case UFLOW:
-      if (value == null) {
-        unsetUflow();
-      } else {
-        setUflow((Integer)value);
-      }
-      break;
-
     }
   }
 
@@ -558,29 +274,11 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
     case RESULT:
       return getResult();
 
-    case AGE:
-      return getAge();
-
-    case SEX:
-      return getSex();
-
-    case SPACE:
-      return getSpace();
-
-    case USPACE:
-      return getUspace();
-
-    case ALIASNAME:
-      return getAliasname();
+    case UINFO:
+      return getUinfo();
 
     case USERID:
       return getUserid();
-
-    case FLOW:
-      return getFlow();
-
-    case UFLOW:
-      return getUflow();
 
     }
     throw new IllegalStateException();
@@ -595,22 +293,10 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
     switch (field) {
     case RESULT:
       return isSetResult();
-    case AGE:
-      return isSetAge();
-    case SEX:
-      return isSetSex();
-    case SPACE:
-      return isSetSpace();
-    case USPACE:
-      return isSetUspace();
-    case ALIASNAME:
-      return isSetAliasname();
+    case UINFO:
+      return isSetUinfo();
     case USERID:
       return isSetUserid();
-    case FLOW:
-      return isSetFlow();
-    case UFLOW:
-      return isSetUflow();
     }
     throw new IllegalStateException();
   }
@@ -637,75 +323,21 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
         return false;
     }
 
-    boolean this_present_age = true;
-    boolean that_present_age = true;
-    if (this_present_age || that_present_age) {
-      if (!(this_present_age && that_present_age))
+    boolean this_present_uinfo = true && this.isSetUinfo();
+    boolean that_present_uinfo = true && that.isSetUinfo();
+    if (this_present_uinfo || that_present_uinfo) {
+      if (!(this_present_uinfo && that_present_uinfo))
         return false;
-      if (this.age != that.age)
-        return false;
-    }
-
-    boolean this_present_sex = true;
-    boolean that_present_sex = true;
-    if (this_present_sex || that_present_sex) {
-      if (!(this_present_sex && that_present_sex))
-        return false;
-      if (this.sex != that.sex)
+      if (!this.uinfo.equals(that.uinfo))
         return false;
     }
 
-    boolean this_present_space = true;
-    boolean that_present_space = true;
-    if (this_present_space || that_present_space) {
-      if (!(this_present_space && that_present_space))
-        return false;
-      if (this.space != that.space)
-        return false;
-    }
-
-    boolean this_present_uspace = true;
-    boolean that_present_uspace = true;
-    if (this_present_uspace || that_present_uspace) {
-      if (!(this_present_uspace && that_present_uspace))
-        return false;
-      if (this.uspace != that.uspace)
-        return false;
-    }
-
-    boolean this_present_aliasname = true && this.isSetAliasname();
-    boolean that_present_aliasname = true && that.isSetAliasname();
-    if (this_present_aliasname || that_present_aliasname) {
-      if (!(this_present_aliasname && that_present_aliasname))
-        return false;
-      if (!this.aliasname.equals(that.aliasname))
-        return false;
-    }
-
-    boolean this_present_userid = true;
-    boolean that_present_userid = true;
+    boolean this_present_userid = true && this.isSetUserid();
+    boolean that_present_userid = true && that.isSetUserid();
     if (this_present_userid || that_present_userid) {
       if (!(this_present_userid && that_present_userid))
         return false;
       if (this.userid != that.userid)
-        return false;
-    }
-
-    boolean this_present_flow = true && this.isSetFlow();
-    boolean that_present_flow = true && that.isSetFlow();
-    if (this_present_flow || that_present_flow) {
-      if (!(this_present_flow && that_present_flow))
-        return false;
-      if (this.flow != that.flow)
-        return false;
-    }
-
-    boolean this_present_uflow = true && this.isSetUflow();
-    boolean that_present_uflow = true && that.isSetUflow();
-    if (this_present_uflow || that_present_uflow) {
-      if (!(this_present_uflow && that_present_uflow))
-        return false;
-      if (this.uflow != that.uflow)
         return false;
     }
 
@@ -721,45 +353,15 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
     if (present_result)
       list.add(result);
 
-    boolean present_age = true;
-    list.add(present_age);
-    if (present_age)
-      list.add(age);
+    boolean present_uinfo = true && (isSetUinfo());
+    list.add(present_uinfo);
+    if (present_uinfo)
+      list.add(uinfo);
 
-    boolean present_sex = true;
-    list.add(present_sex);
-    if (present_sex)
-      list.add(sex);
-
-    boolean present_space = true;
-    list.add(present_space);
-    if (present_space)
-      list.add(space);
-
-    boolean present_uspace = true;
-    list.add(present_uspace);
-    if (present_uspace)
-      list.add(uspace);
-
-    boolean present_aliasname = true && (isSetAliasname());
-    list.add(present_aliasname);
-    if (present_aliasname)
-      list.add(aliasname);
-
-    boolean present_userid = true;
+    boolean present_userid = true && (isSetUserid());
     list.add(present_userid);
     if (present_userid)
       list.add(userid);
-
-    boolean present_flow = true && (isSetFlow());
-    list.add(present_flow);
-    if (present_flow)
-      list.add(flow);
-
-    boolean present_uflow = true && (isSetUflow());
-    list.add(present_uflow);
-    if (present_uflow)
-      list.add(uflow);
 
     return list.hashCode();
   }
@@ -782,52 +384,12 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetAge()).compareTo(other.isSetAge());
+    lastComparison = Boolean.valueOf(isSetUinfo()).compareTo(other.isSetUinfo());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetAge()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.age, other.age);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetSex()).compareTo(other.isSetSex());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetSex()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sex, other.sex);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetSpace()).compareTo(other.isSetSpace());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetSpace()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.space, other.space);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetUspace()).compareTo(other.isSetUspace());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetUspace()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.uspace, other.uspace);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetAliasname()).compareTo(other.isSetAliasname());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetAliasname()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.aliasname, other.aliasname);
+    if (isSetUinfo()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.uinfo, other.uinfo);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -838,26 +400,6 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
     }
     if (isSetUserid()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userid, other.userid);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetFlow()).compareTo(other.isSetFlow());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetFlow()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.flow, other.flow);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetUflow()).compareTo(other.isSetUflow());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetUflow()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.uflow, other.uflow);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -889,44 +431,20 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
       sb.append(this.result);
     }
     first = false;
-    if (!first) sb.append(", ");
-    sb.append("age:");
-    sb.append(this.age);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("sex:");
-    sb.append(this.sex);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("space:");
-    sb.append(this.space);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("uspace:");
-    sb.append(this.uspace);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("aliasname:");
-    if (this.aliasname == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.aliasname);
-    }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("userid:");
-    sb.append(this.userid);
-    first = false;
-    if (isSetFlow()) {
+    if (isSetUinfo()) {
       if (!first) sb.append(", ");
-      sb.append("flow:");
-      sb.append(this.flow);
+      sb.append("uinfo:");
+      if (this.uinfo == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.uinfo);
+      }
       first = false;
     }
-    if (isSetUflow()) {
+    if (isSetUserid()) {
       if (!first) sb.append(", ");
-      sb.append("uflow:");
-      sb.append(this.uflow);
+      sb.append("userid:");
+      sb.append(this.userid);
       first = false;
     }
     sb.append(")");
@@ -938,6 +456,9 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
     // check for sub-struct validity
     if (result != null) {
       result.validate();
+    }
+    if (uinfo != null) {
+      uinfo.validate();
     }
   }
 
@@ -986,76 +507,19 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // AGE
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.age = iprot.readI32();
-              struct.setAgeIsSet(true);
+          case 2: // UINFO
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+              struct.uinfo = new UserInfo();
+              struct.uinfo.read(iprot);
+              struct.setUinfoIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // SEX
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.sex = iprot.readI32();
-              struct.setSexIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 4: // SPACE
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.space = iprot.readI32();
-              struct.setSpaceIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 5: // USPACE
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.uspace = iprot.readI32();
-              struct.setUspaceIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 6: // ALIASNAME
-            if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-              {
-                org.apache.thrift.protocol.TList _list24 = iprot.readListBegin();
-                struct.aliasname = new ArrayList<String>(_list24.size);
-                String _elem25;
-                for (int _i26 = 0; _i26 < _list24.size; ++_i26)
-                {
-                  _elem25 = iprot.readString();
-                  struct.aliasname.add(_elem25);
-                }
-                iprot.readListEnd();
-              }
-              struct.setAliasnameIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 7: // USERID
+          case 3: // USERID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.userid = iprot.readI32();
               struct.setUseridIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 8: // FLOW
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.flow = iprot.readI32();
-              struct.setFlowIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 9: // UFLOW
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.uflow = iprot.readI32();
-              struct.setUflowIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1080,41 +544,16 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
         struct.result.write(oprot);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(AGE_FIELD_DESC);
-      oprot.writeI32(struct.age);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(SEX_FIELD_DESC);
-      oprot.writeI32(struct.sex);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(SPACE_FIELD_DESC);
-      oprot.writeI32(struct.space);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(USPACE_FIELD_DESC);
-      oprot.writeI32(struct.uspace);
-      oprot.writeFieldEnd();
-      if (struct.aliasname != null) {
-        oprot.writeFieldBegin(ALIASNAME_FIELD_DESC);
-        {
-          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.aliasname.size()));
-          for (String _iter27 : struct.aliasname)
-          {
-            oprot.writeString(_iter27);
-          }
-          oprot.writeListEnd();
+      if (struct.uinfo != null) {
+        if (struct.isSetUinfo()) {
+          oprot.writeFieldBegin(UINFO_FIELD_DESC);
+          struct.uinfo.write(oprot);
+          oprot.writeFieldEnd();
         }
-        oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(USERID_FIELD_DESC);
-      oprot.writeI32(struct.userid);
-      oprot.writeFieldEnd();
-      if (struct.isSetFlow()) {
-        oprot.writeFieldBegin(FLOW_FIELD_DESC);
-        oprot.writeI32(struct.flow);
-        oprot.writeFieldEnd();
-      }
-      if (struct.isSetUflow()) {
-        oprot.writeFieldBegin(UFLOW_FIELD_DESC);
-        oprot.writeI32(struct.uflow);
+      if (struct.isSetUserid()) {
+        oprot.writeFieldBegin(USERID_FIELD_DESC);
+        oprot.writeI32(struct.userid);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -1138,115 +577,41 @@ public class UserInfoResult implements org.apache.thrift.TBase<UserInfoResult, U
       if (struct.isSetResult()) {
         optionals.set(0);
       }
-      if (struct.isSetAge()) {
+      if (struct.isSetUinfo()) {
         optionals.set(1);
       }
-      if (struct.isSetSex()) {
+      if (struct.isSetUserid()) {
         optionals.set(2);
       }
-      if (struct.isSetSpace()) {
-        optionals.set(3);
-      }
-      if (struct.isSetUspace()) {
-        optionals.set(4);
-      }
-      if (struct.isSetAliasname()) {
-        optionals.set(5);
-      }
-      if (struct.isSetUserid()) {
-        optionals.set(6);
-      }
-      if (struct.isSetFlow()) {
-        optionals.set(7);
-      }
-      if (struct.isSetUflow()) {
-        optionals.set(8);
-      }
-      oprot.writeBitSet(optionals, 9);
+      oprot.writeBitSet(optionals, 3);
       if (struct.isSetResult()) {
         struct.result.write(oprot);
       }
-      if (struct.isSetAge()) {
-        oprot.writeI32(struct.age);
-      }
-      if (struct.isSetSex()) {
-        oprot.writeI32(struct.sex);
-      }
-      if (struct.isSetSpace()) {
-        oprot.writeI32(struct.space);
-      }
-      if (struct.isSetUspace()) {
-        oprot.writeI32(struct.uspace);
-      }
-      if (struct.isSetAliasname()) {
-        {
-          oprot.writeI32(struct.aliasname.size());
-          for (String _iter28 : struct.aliasname)
-          {
-            oprot.writeString(_iter28);
-          }
-        }
+      if (struct.isSetUinfo()) {
+        struct.uinfo.write(oprot);
       }
       if (struct.isSetUserid()) {
         oprot.writeI32(struct.userid);
-      }
-      if (struct.isSetFlow()) {
-        oprot.writeI32(struct.flow);
-      }
-      if (struct.isSetUflow()) {
-        oprot.writeI32(struct.uflow);
       }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, UserInfoResult struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(9);
+      BitSet incoming = iprot.readBitSet(3);
       if (incoming.get(0)) {
         struct.result = new RetHead();
         struct.result.read(iprot);
         struct.setResultIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.age = iprot.readI32();
-        struct.setAgeIsSet(true);
+        struct.uinfo = new UserInfo();
+        struct.uinfo.read(iprot);
+        struct.setUinfoIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.sex = iprot.readI32();
-        struct.setSexIsSet(true);
-      }
-      if (incoming.get(3)) {
-        struct.space = iprot.readI32();
-        struct.setSpaceIsSet(true);
-      }
-      if (incoming.get(4)) {
-        struct.uspace = iprot.readI32();
-        struct.setUspaceIsSet(true);
-      }
-      if (incoming.get(5)) {
-        {
-          org.apache.thrift.protocol.TList _list29 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.aliasname = new ArrayList<String>(_list29.size);
-          String _elem30;
-          for (int _i31 = 0; _i31 < _list29.size; ++_i31)
-          {
-            _elem30 = iprot.readString();
-            struct.aliasname.add(_elem30);
-          }
-        }
-        struct.setAliasnameIsSet(true);
-      }
-      if (incoming.get(6)) {
         struct.userid = iprot.readI32();
         struct.setUseridIsSet(true);
-      }
-      if (incoming.get(7)) {
-        struct.flow = iprot.readI32();
-        struct.setFlowIsSet(true);
-      }
-      if (incoming.get(8)) {
-        struct.uflow = iprot.readI32();
-        struct.setUflowIsSet(true);
       }
     }
   }

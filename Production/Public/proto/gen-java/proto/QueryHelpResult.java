@@ -442,13 +442,13 @@ public class QueryHelpResult implements org.apache.thrift.TBase<QueryHelpResult,
           case 2: // MSG
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list48 = iprot.readListBegin();
-                struct.msg = new ArrayList<String>(_list48.size);
-                String _elem49;
-                for (int _i50 = 0; _i50 < _list48.size; ++_i50)
+                org.apache.thrift.protocol.TList _list24 = iprot.readListBegin();
+                struct.msg = new ArrayList<String>(_list24.size);
+                String _elem25;
+                for (int _i26 = 0; _i26 < _list24.size; ++_i26)
                 {
-                  _elem49 = iprot.readString();
-                  struct.msg.add(_elem49);
+                  _elem25 = iprot.readString();
+                  struct.msg.add(_elem25);
                 }
                 iprot.readListEnd();
               }
@@ -481,9 +481,9 @@ public class QueryHelpResult implements org.apache.thrift.TBase<QueryHelpResult,
         oprot.writeFieldBegin(MSG_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.msg.size()));
-          for (String _iter51 : struct.msg)
+          for (String _iter27 : struct.msg)
           {
-            oprot.writeString(_iter51);
+            oprot.writeString(_iter27);
           }
           oprot.writeListEnd();
         }
@@ -520,9 +520,9 @@ public class QueryHelpResult implements org.apache.thrift.TBase<QueryHelpResult,
       if (struct.isSetMsg()) {
         {
           oprot.writeI32(struct.msg.size());
-          for (String _iter52 : struct.msg)
+          for (String _iter28 : struct.msg)
           {
-            oprot.writeString(_iter52);
+            oprot.writeString(_iter28);
           }
         }
       }
@@ -539,13 +539,13 @@ public class QueryHelpResult implements org.apache.thrift.TBase<QueryHelpResult,
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list53 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.msg = new ArrayList<String>(_list53.size);
-          String _elem54;
-          for (int _i55 = 0; _i55 < _list53.size; ++_i55)
+          org.apache.thrift.protocol.TList _list29 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+          struct.msg = new ArrayList<String>(_list29.size);
+          String _elem30;
+          for (int _i31 = 0; _i31 < _list29.size; ++_i31)
           {
-            _elem54 = iprot.readString();
-            struct.msg.add(_elem54);
+            _elem30 = iprot.readString();
+            struct.msg.add(_elem30);
           }
         }
         struct.setMsgIsSet(true);

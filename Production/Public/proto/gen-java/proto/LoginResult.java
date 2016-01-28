@@ -42,10 +42,9 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
   private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField SPACE_FIELD_DESC = new org.apache.thrift.protocol.TField("space", org.apache.thrift.protocol.TType.I32, (short)3);
   private static final org.apache.thrift.protocol.TField USPACE_FIELD_DESC = new org.apache.thrift.protocol.TField("uspace", org.apache.thrift.protocol.TType.I32, (short)4);
-  private static final org.apache.thrift.protocol.TField ALIASNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("aliasname", org.apache.thrift.protocol.TType.LIST, (short)5);
-  private static final org.apache.thrift.protocol.TField USERID_FIELD_DESC = new org.apache.thrift.protocol.TField("userid", org.apache.thrift.protocol.TType.I32, (short)6);
-  private static final org.apache.thrift.protocol.TField FLOW_FIELD_DESC = new org.apache.thrift.protocol.TField("flow", org.apache.thrift.protocol.TType.I32, (short)7);
-  private static final org.apache.thrift.protocol.TField UFLOW_FIELD_DESC = new org.apache.thrift.protocol.TField("uflow", org.apache.thrift.protocol.TType.I32, (short)8);
+  private static final org.apache.thrift.protocol.TField USERID_FIELD_DESC = new org.apache.thrift.protocol.TField("userid", org.apache.thrift.protocol.TType.I32, (short)5);
+  private static final org.apache.thrift.protocol.TField FLOW_FIELD_DESC = new org.apache.thrift.protocol.TField("flow", org.apache.thrift.protocol.TType.I32, (short)6);
+  private static final org.apache.thrift.protocol.TField UFLOW_FIELD_DESC = new org.apache.thrift.protocol.TField("uflow", org.apache.thrift.protocol.TType.I32, (short)7);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -57,7 +56,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
   public String token; // required
   public int space; // required
   public int uspace; // required
-  public List<String> aliasname; // required
   public int userid; // required
   public int flow; // optional
   public int uflow; // optional
@@ -68,10 +66,9 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     TOKEN((short)2, "token"),
     SPACE((short)3, "space"),
     USPACE((short)4, "uspace"),
-    ALIASNAME((short)5, "aliasname"),
-    USERID((short)6, "userid"),
-    FLOW((short)7, "flow"),
-    UFLOW((short)8, "uflow");
+    USERID((short)5, "userid"),
+    FLOW((short)6, "flow"),
+    UFLOW((short)7, "uflow");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -94,13 +91,11 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
           return SPACE;
         case 4: // USPACE
           return USPACE;
-        case 5: // ALIASNAME
-          return ALIASNAME;
-        case 6: // USERID
+        case 5: // USERID
           return USERID;
-        case 7: // FLOW
+        case 6: // FLOW
           return FLOW;
-        case 8: // UFLOW
+        case 7: // UFLOW
           return UFLOW;
         default:
           return null;
@@ -160,8 +155,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.USPACE, new org.apache.thrift.meta_data.FieldMetaData("uspace", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.ALIASNAME, new org.apache.thrift.meta_data.FieldMetaData("aliasname", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.LIST        , "AliasList")));
     tmpMap.put(_Fields.USERID, new org.apache.thrift.meta_data.FieldMetaData("userid", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.FLOW, new org.apache.thrift.meta_data.FieldMetaData("flow", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -180,7 +173,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     String token,
     int space,
     int uspace,
-    List<String> aliasname,
     int userid)
   {
     this();
@@ -190,7 +182,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     setSpaceIsSet(true);
     this.uspace = uspace;
     setUspaceIsSet(true);
-    this.aliasname = aliasname;
     this.userid = userid;
     setUseridIsSet(true);
   }
@@ -208,9 +199,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     }
     this.space = other.space;
     this.uspace = other.uspace;
-    if (other.isSetAliasname()) {
-      this.aliasname = other.aliasname;
-    }
     this.userid = other.userid;
     this.flow = other.flow;
     this.uflow = other.uflow;
@@ -228,7 +216,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     this.space = 0;
     setUspaceIsSet(false);
     this.uspace = 0;
-    this.aliasname = null;
     setUseridIsSet(false);
     this.userid = 0;
     setFlowIsSet(false);
@@ -329,45 +316,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
 
   public void setUspaceIsSet(boolean value) {
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __USPACE_ISSET_ID, value);
-  }
-
-  public int getAliasnameSize() {
-    return (this.aliasname == null) ? 0 : this.aliasname.size();
-  }
-
-  public java.util.Iterator<String> getAliasnameIterator() {
-    return (this.aliasname == null) ? null : this.aliasname.iterator();
-  }
-
-  public void addToAliasname(String elem) {
-    if (this.aliasname == null) {
-      this.aliasname = new ArrayList<String>();
-    }
-    this.aliasname.add(elem);
-  }
-
-  public List<String> getAliasname() {
-    return this.aliasname;
-  }
-
-  public LoginResult setAliasname(List<String> aliasname) {
-    this.aliasname = aliasname;
-    return this;
-  }
-
-  public void unsetAliasname() {
-    this.aliasname = null;
-  }
-
-  /** Returns true if field aliasname is set (has been assigned a value) and false otherwise */
-  public boolean isSetAliasname() {
-    return this.aliasname != null;
-  }
-
-  public void setAliasnameIsSet(boolean value) {
-    if (!value) {
-      this.aliasname = null;
-    }
   }
 
   public int getUserid() {
@@ -473,14 +421,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       }
       break;
 
-    case ALIASNAME:
-      if (value == null) {
-        unsetAliasname();
-      } else {
-        setAliasname((List<String>)value);
-      }
-      break;
-
     case USERID:
       if (value == null) {
         unsetUserid();
@@ -522,9 +462,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     case USPACE:
       return getUspace();
 
-    case ALIASNAME:
-      return getAliasname();
-
     case USERID:
       return getUserid();
 
@@ -553,8 +490,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       return isSetSpace();
     case USPACE:
       return isSetUspace();
-    case ALIASNAME:
-      return isSetAliasname();
     case USERID:
       return isSetUserid();
     case FLOW:
@@ -614,15 +549,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
         return false;
     }
 
-    boolean this_present_aliasname = true && this.isSetAliasname();
-    boolean that_present_aliasname = true && that.isSetAliasname();
-    if (this_present_aliasname || that_present_aliasname) {
-      if (!(this_present_aliasname && that_present_aliasname))
-        return false;
-      if (!this.aliasname.equals(that.aliasname))
-        return false;
-    }
-
     boolean this_present_userid = true;
     boolean that_present_userid = true;
     if (this_present_userid || that_present_userid) {
@@ -676,11 +602,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     list.add(present_uspace);
     if (present_uspace)
       list.add(uspace);
-
-    boolean present_aliasname = true && (isSetAliasname());
-    list.add(present_aliasname);
-    if (present_aliasname)
-      list.add(aliasname);
 
     boolean present_userid = true;
     list.add(present_userid);
@@ -744,16 +665,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     }
     if (isSetUspace()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.uspace, other.uspace);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetAliasname()).compareTo(other.isSetAliasname());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetAliasname()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.aliasname, other.aliasname);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -830,14 +741,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     if (!first) sb.append(", ");
     sb.append("uspace:");
     sb.append(this.uspace);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("aliasname:");
-    if (this.aliasname == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.aliasname);
-    }
     first = false;
     if (!first) sb.append(", ");
     sb.append("userid:");
@@ -936,25 +839,7 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 5: // ALIASNAME
-            if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-              {
-                org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
-                struct.aliasname = new ArrayList<String>(_list16.size);
-                String _elem17;
-                for (int _i18 = 0; _i18 < _list16.size; ++_i18)
-                {
-                  _elem17 = iprot.readString();
-                  struct.aliasname.add(_elem17);
-                }
-                iprot.readListEnd();
-              }
-              struct.setAliasnameIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 6: // USERID
+          case 5: // USERID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.userid = iprot.readI32();
               struct.setUseridIsSet(true);
@@ -962,7 +847,7 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 7: // FLOW
+          case 6: // FLOW
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.flow = iprot.readI32();
               struct.setFlowIsSet(true);
@@ -970,7 +855,7 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 8: // UFLOW
+          case 7: // UFLOW
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.uflow = iprot.readI32();
               struct.setUflowIsSet(true);
@@ -1009,18 +894,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       oprot.writeFieldBegin(USPACE_FIELD_DESC);
       oprot.writeI32(struct.uspace);
       oprot.writeFieldEnd();
-      if (struct.aliasname != null) {
-        oprot.writeFieldBegin(ALIASNAME_FIELD_DESC);
-        {
-          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.aliasname.size()));
-          for (String _iter19 : struct.aliasname)
-          {
-            oprot.writeString(_iter19);
-          }
-          oprot.writeListEnd();
-        }
-        oprot.writeFieldEnd();
-      }
       oprot.writeFieldBegin(USERID_FIELD_DESC);
       oprot.writeI32(struct.userid);
       oprot.writeFieldEnd();
@@ -1064,19 +937,16 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       if (struct.isSetUspace()) {
         optionals.set(3);
       }
-      if (struct.isSetAliasname()) {
+      if (struct.isSetUserid()) {
         optionals.set(4);
       }
-      if (struct.isSetUserid()) {
+      if (struct.isSetFlow()) {
         optionals.set(5);
       }
-      if (struct.isSetFlow()) {
+      if (struct.isSetUflow()) {
         optionals.set(6);
       }
-      if (struct.isSetUflow()) {
-        optionals.set(7);
-      }
-      oprot.writeBitSet(optionals, 8);
+      oprot.writeBitSet(optionals, 7);
       if (struct.isSetResult()) {
         struct.result.write(oprot);
       }
@@ -1088,15 +958,6 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
       }
       if (struct.isSetUspace()) {
         oprot.writeI32(struct.uspace);
-      }
-      if (struct.isSetAliasname()) {
-        {
-          oprot.writeI32(struct.aliasname.size());
-          for (String _iter20 : struct.aliasname)
-          {
-            oprot.writeString(_iter20);
-          }
-        }
       }
       if (struct.isSetUserid()) {
         oprot.writeI32(struct.userid);
@@ -1112,7 +973,7 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, LoginResult struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(8);
+      BitSet incoming = iprot.readBitSet(7);
       if (incoming.get(0)) {
         struct.result = new RetHead();
         struct.result.read(iprot);
@@ -1131,27 +992,14 @@ public class LoginResult implements org.apache.thrift.TBase<LoginResult, LoginRe
         struct.setUspaceIsSet(true);
       }
       if (incoming.get(4)) {
-        {
-          org.apache.thrift.protocol.TList _list21 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.aliasname = new ArrayList<String>(_list21.size);
-          String _elem22;
-          for (int _i23 = 0; _i23 < _list21.size; ++_i23)
-          {
-            _elem22 = iprot.readString();
-            struct.aliasname.add(_elem22);
-          }
-        }
-        struct.setAliasnameIsSet(true);
-      }
-      if (incoming.get(5)) {
         struct.userid = iprot.readI32();
         struct.setUseridIsSet(true);
       }
-      if (incoming.get(6)) {
+      if (incoming.get(5)) {
         struct.flow = iprot.readI32();
         struct.setFlowIsSet(true);
       }
-      if (incoming.get(7)) {
+      if (incoming.get(6)) {
         struct.uflow = iprot.readI32();
         struct.setUflowIsSet(true);
       }

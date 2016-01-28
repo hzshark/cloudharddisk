@@ -445,14 +445,14 @@ public class QueryFeeResult implements org.apache.thrift.TBase<QueryFeeResult, Q
           case 2: // MSG
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
-                org.apache.thrift.protocol.TList _list40 = iprot.readListBegin();
-                struct.msg = new ArrayList<FeeInfo>(_list40.size);
-                FeeInfo _elem41;
-                for (int _i42 = 0; _i42 < _list40.size; ++_i42)
+                org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
+                struct.msg = new ArrayList<FeeInfo>(_list16.size);
+                FeeInfo _elem17;
+                for (int _i18 = 0; _i18 < _list16.size; ++_i18)
                 {
-                  _elem41 = new FeeInfo();
-                  _elem41.read(iprot);
-                  struct.msg.add(_elem41);
+                  _elem17 = new FeeInfo();
+                  _elem17.read(iprot);
+                  struct.msg.add(_elem17);
                 }
                 iprot.readListEnd();
               }
@@ -485,9 +485,9 @@ public class QueryFeeResult implements org.apache.thrift.TBase<QueryFeeResult, Q
         oprot.writeFieldBegin(MSG_FIELD_DESC);
         {
           oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.msg.size()));
-          for (FeeInfo _iter43 : struct.msg)
+          for (FeeInfo _iter19 : struct.msg)
           {
-            _iter43.write(oprot);
+            _iter19.write(oprot);
           }
           oprot.writeListEnd();
         }
@@ -524,9 +524,9 @@ public class QueryFeeResult implements org.apache.thrift.TBase<QueryFeeResult, Q
       if (struct.isSetMsg()) {
         {
           oprot.writeI32(struct.msg.size());
-          for (FeeInfo _iter44 : struct.msg)
+          for (FeeInfo _iter20 : struct.msg)
           {
-            _iter44.write(oprot);
+            _iter20.write(oprot);
           }
         }
       }
@@ -543,14 +543,14 @@ public class QueryFeeResult implements org.apache.thrift.TBase<QueryFeeResult, Q
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list45 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.msg = new ArrayList<FeeInfo>(_list45.size);
-          FeeInfo _elem46;
-          for (int _i47 = 0; _i47 < _list45.size; ++_i47)
+          org.apache.thrift.protocol.TList _list21 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+          struct.msg = new ArrayList<FeeInfo>(_list21.size);
+          FeeInfo _elem22;
+          for (int _i23 = 0; _i23 < _list21.size; ++_i23)
           {
-            _elem46 = new FeeInfo();
-            _elem46.read(iprot);
-            struct.msg.add(_elem46);
+            _elem22 = new FeeInfo();
+            _elem22.read(iprot);
+            struct.msg.add(_elem22);
           }
         }
         struct.setMsgIsSet(true);

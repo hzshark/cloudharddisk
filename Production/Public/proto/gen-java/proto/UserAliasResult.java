@@ -39,7 +39,7 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("UserAliasResult");
 
   private static final org.apache.thrift.protocol.TField RESULT_FIELD_DESC = new org.apache.thrift.protocol.TField("result", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-  private static final org.apache.thrift.protocol.TField ALIASNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("aliasname", org.apache.thrift.protocol.TType.LIST, (short)2);
+  private static final org.apache.thrift.protocol.TField ALIASNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("aliasname", org.apache.thrift.protocol.TType.STRING, (short)2);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -48,7 +48,7 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
   }
 
   public RetHead result; // required
-  public List<String> aliasname; // required
+  public String aliasname; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -118,7 +118,7 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
     tmpMap.put(_Fields.RESULT, new org.apache.thrift.meta_data.FieldMetaData("result", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, RetHead.class)));
     tmpMap.put(_Fields.ALIASNAME, new org.apache.thrift.meta_data.FieldMetaData("aliasname", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.LIST        , "AliasList")));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(UserAliasResult.class, metaDataMap);
   }
@@ -128,7 +128,7 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
 
   public UserAliasResult(
     RetHead result,
-    List<String> aliasname)
+    String aliasname)
   {
     this();
     this.result = result;
@@ -181,26 +181,11 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
     }
   }
 
-  public int getAliasnameSize() {
-    return (this.aliasname == null) ? 0 : this.aliasname.size();
-  }
-
-  public java.util.Iterator<String> getAliasnameIterator() {
-    return (this.aliasname == null) ? null : this.aliasname.iterator();
-  }
-
-  public void addToAliasname(String elem) {
-    if (this.aliasname == null) {
-      this.aliasname = new ArrayList<String>();
-    }
-    this.aliasname.add(elem);
-  }
-
-  public List<String> getAliasname() {
+  public String getAliasname() {
     return this.aliasname;
   }
 
-  public UserAliasResult setAliasname(List<String> aliasname) {
+  public UserAliasResult setAliasname(String aliasname) {
     this.aliasname = aliasname;
     return this;
   }
@@ -234,7 +219,7 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
       if (value == null) {
         unsetAliasname();
       } else {
-        setAliasname((List<String>)value);
+        setAliasname((String)value);
       }
       break;
 
@@ -438,18 +423,8 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
             }
             break;
           case 2: // ALIASNAME
-            if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-              {
-                org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
-                struct.aliasname = new ArrayList<String>(_list8.size);
-                String _elem9;
-                for (int _i10 = 0; _i10 < _list8.size; ++_i10)
-                {
-                  _elem9 = iprot.readString();
-                  struct.aliasname.add(_elem9);
-                }
-                iprot.readListEnd();
-              }
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.aliasname = iprot.readString();
               struct.setAliasnameIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -477,14 +452,7 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
       }
       if (struct.aliasname != null) {
         oprot.writeFieldBegin(ALIASNAME_FIELD_DESC);
-        {
-          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, struct.aliasname.size()));
-          for (String _iter11 : struct.aliasname)
-          {
-            oprot.writeString(_iter11);
-          }
-          oprot.writeListEnd();
-        }
+        oprot.writeString(struct.aliasname);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -516,13 +484,7 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
         struct.result.write(oprot);
       }
       if (struct.isSetAliasname()) {
-        {
-          oprot.writeI32(struct.aliasname.size());
-          for (String _iter12 : struct.aliasname)
-          {
-            oprot.writeString(_iter12);
-          }
-        }
+        oprot.writeString(struct.aliasname);
       }
     }
 
@@ -536,16 +498,7 @@ public class UserAliasResult implements org.apache.thrift.TBase<UserAliasResult,
         struct.setResultIsSet(true);
       }
       if (incoming.get(1)) {
-        {
-          org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-          struct.aliasname = new ArrayList<String>(_list13.size);
-          String _elem14;
-          for (int _i15 = 0; _i15 < _list13.size; ++_i15)
-          {
-            _elem14 = iprot.readString();
-            struct.aliasname.add(_elem14);
-          }
-        }
+        struct.aliasname = iprot.readString();
         struct.setAliasnameIsSet(true);
       }
     }
