@@ -18,18 +18,18 @@ class cephService
     private $OUT_OF_SERVICE                = 2;
     private $INVAILD_PARAMETER         = 3;
     private $INVAILD_IDENTIFY              = 4;// token 验证错误
-    private $EXCEED_SESSION_LIMIT      = 5;// 并发限制 
+    private $EXCEED_SESSION_LIMIT      = 5;// 并发限制
     private $TRY_LATER                          = 6;
-    private $ERR_OCCURED                    = 7;// 未知异常错误    
+    private $ERR_OCCURED                    = 7;// 未知异常错误
     private $FILE_EXIST                           = 8;// 文件已经存在
-    
+
     public function __construct($host, $aws_key, $aws_secret_key){
         $this->user_aws_key = $aws_key;
         $this->user_aws_secret_key = $aws_secret_key;
         $this->host = $host;
         $this->ceph_conn = self::connectionCeph();
     }
-    
+
     private function connectionCeph(){
         $credentials = array(
             'key'    => $this->user_aws_key,
@@ -41,24 +41,24 @@ class cephService
         $Connection = new AmazonS3($credentials);
         $Connection->disable_ssl();
         $Connection->disable_ssl_verification();
-        
+
         $Connection->set_hostname($this->host);
         $Connection->allow_hostname_override(false);
-        
+
         // Set the S3 class to use objects.dreamhost.com/bucket
         // instead of bucket.objects.dreamhost.com
         $Connection->enable_path_style();
         return $Connection;
     }
-    
+
     public function uploadFile($bucket_name, $object_name, $bin){
         $opt = array('body'=>$bin, 'acl'=>$this->ACL_PRIVATE);
-        
+
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $res = $Connection->create_object($bucket_name, $object_name, $opt);
         return $res->isOK();
     }
-    
+
     public function listobjects($bucket_name, $type, $start=0, $excpet_num=20){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $ObjectsListResponse = $Connection->list_objects($bucket_name);
@@ -75,7 +75,7 @@ class cephService
                 if ($idx > $excpet_num){
                     break;
                 }
-                $idx += 1; 
+                $idx += 1;
                 if ($idx < $start){
                     continue;
                 }
@@ -94,11 +94,11 @@ class cephService
         }
         $ret = array('status'=>$ObjectsListResponse->isOK(),'list'=>$list);
         return $ret;
-    
+
     }
-    
+
     public function allocobj($bucket_name, $object_name){
-        
+
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $status = $Connection->if_object_exists($bucket_name, $object_name);
         $ret = $this->ERR_OCCURED;
@@ -126,10 +126,10 @@ class cephService
         }
         return array('status'=>$ret, 'upload_id'=>$upload_id);
     }
-    
+
     public function appendObj($token, $bucket_name, $object_name, $upload_id, $next_marker, $data){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
-        
+
         $part_file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$object_name.'~'.DIRECTORY_SEPARATOR.''.$next_marker;
         appendToFile($part_file_path, $data);
         if (getfilesize($part_file_path) > 5*1024*1024){
@@ -147,7 +147,7 @@ class cephService
         }
         return true;
     }
-    
+
     public function commitObj($token, $bucket_name, $object_name, $upload_id, $next_marker, $data){
         $ret_status = 0;
         $err_msg = '';
@@ -194,13 +194,13 @@ class cephService
         }
         return array('status'=>$ret_status, 'msg'=>$err_msg);
     }
-    
+
     public function queryUsageByBucket($bucket){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         return  $Connection->get_bucket_filesize($bucket, $friendly_format = true); // return  size is string
-        
+
     }
-    
+
     public function downloadFile($bucket_name, $object_name, $offerset, $buf_size){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         if ($Connection->if_object_exists($bucket_name, $object_name)){
@@ -213,13 +213,13 @@ class cephService
         }
         return '';
     }
-    
+
     public function changeObjectACL($bucket_name, $object_name, $user_acl=self::ACL_PRIVATE){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $res = $Connection->set_object_acl($bucket_name, $object_name, $user_acl);
         return $res->isOK();
     }
-    
+
     public function getDownloadURL($bucket_name, $object_name, $preauth = 10000){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         if ($Connection->if_object_exists($bucket_name, $object_name)){
@@ -228,7 +228,7 @@ class cephService
         }
         return '';
     }
-    
+
     public function getObjectMeta($bucket_name, $object_name){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         if ($Connection->if_object_exists($bucket_name, $object_name)){
@@ -236,12 +236,12 @@ class cephService
         }
         return '';
     }
-    
+
     public function queryFile($bucket_name, $object_name){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $status = $Connection->if_object_exists($bucket_name, $object_name);
         $ret = 0;
-        
+
         if ($status){
             $Object = $Connection->get_object($bucket_name, $object_name);
             if (!$Object->isOK()){
@@ -256,7 +256,7 @@ class cephService
             return array('status'=>2, 'filesize'=>0,'lasttime'=>'','msg'=>'no file object ['.$object_name.']');
         }
     }
-    
+
     public function deleteObject($bucket_name, $object_name){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         if ($Connection->if_object_exists($bucket_name, $object_name)){
@@ -269,19 +269,16 @@ class cephService
         }
         return true;
     }
-    public function queryusage() {
+    public function queryusage($Buckets) {
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
-        $ListResponse = $Connection->list_buckets();
-        $Buckets = $ListResponse->body->Buckets->Bucket;
         $usages = 0;
-        foreach ($Buckets as $Bucket) {
-            $bucket_name = $Bucket->Name;
+        foreach ($Buckets as $bucket_name) {
             $usage = $Connection->get_bucket_filesize($bucket_name);
             $usages += $usage;
         }
         return $usages;
     }
-    
+
     public function queryThumbnail($bucket_name, $object_name) {
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $msg = '';
@@ -307,7 +304,7 @@ class cephService
                     $status = $this->ERR_OCCURED;
                     $msg = 'get object use generate temporary files failed!';
                 }
-                
+
             }else{
                 $status = $this->OUT_OF_SERVICE;
                 $msg = 'get object body failed!';
@@ -318,4 +315,4 @@ class cephService
         return array('status'=>$status, 'msg'=>$msg);
     }
 }
-    
+

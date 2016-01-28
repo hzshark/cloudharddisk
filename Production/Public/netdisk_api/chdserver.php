@@ -123,7 +123,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
     private function _get_bucket_name_by_ftype($ftype){
         $username = session('?username')?session('username'):TEST_USER;
         $userid = session('?userid')?session('userid'):TEST_USERID;
-        
+
         switch ($ftype) {
             case 1:
                 return $username.$userid.'other';
@@ -151,7 +151,6 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
             break;
         }
     }
-    
 
   public function uploadFile($token, \proto\UploadParam $uploadParam){
       $filename = $uploadParam->filename;
@@ -164,7 +163,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
           $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
           $conn = new cephService($host, $aws_key, $aws_secret_key);
-          
+
           if ($conn->uploadFile($Bucket_name, $filename, $bin)){
               $err_msg = 'uploadFile=>filename['.$filename.']'.'success!]';
               $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>$err_msg));
@@ -175,12 +174,12 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               return new uploaddResult(array('result'=>$ret_h));
           }
       }else{
-          $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'upload token timeout'));
+          $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'upload token invalid'));
           return new uploaddResult(array('result'=>$ret_h));
       }
-      
+
   }
-  
+
   public function verificationLoginAuth($username, $password, $authcode){
       $token_c = new \lib\Token_Core();
       $token = $token_c->grante_key();
@@ -188,7 +187,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret_arr = array('result'=>$ret_h,
           'token'=>$token,'space'=>1024,'uspace'=>512);
       $loginret = new loginResult($ret_arr);
-      
+
       return $loginret;
   }
   public function loginAuth($username, $password, $salt){
@@ -200,7 +199,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'login auth error'));
       $ret_arr = array('result'=>$ret_h, 'token'=>$token,'space'=>0,'uspace'=>0,
           'aliasname'=>'', 'userid'=>0,'flow'=>0,'uflow'=>0);
-      
+
       $user = new UserService();
       $status = $user->loginAuth($username, $password, $salt);
       if ($status){
@@ -221,7 +220,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret = new loginResult($ret_arr);
       return $ret;
   }
-  
+
   public function loginAuthApp($imie, $username, $password, $salt){
       $token_c = new \lib\Token_Core();
       $token = $token_c->grante_key();
@@ -229,13 +228,13 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret_arr = array('result'=>$ret_h,
           'token'=>$token,'space'=>1024,'uspace'=>512);
       $loginret = new loginResult($ret_arr);
-      
+
       return $loginret;
-        
+
   }
   public function queryFileList($token, $type, $start, $excpet_num){
       $token_c = new \lib\Token_Core();
-      $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'query file list token timeout!'));
+      $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'query file list token invalid!'));
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
@@ -243,7 +242,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
           $conn = new cephService($host, $aws_key, $aws_secret_key);
           $list_ret = $conn->listobjects($Bucket_name, $type);
-          
+
           if ($list_ret['status']){
               $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>$Bucket_name));
           }else{
@@ -251,13 +250,13 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           }
       }
       $ret_arr = array('result'=>$ret_h,'files'=>isset($list_ret)?$list_ret['list']:null);
-      
+
       $qret = new QueryFListResult($ret_arr);
-      
+
       return $qret;
   }
   public function allocobj($token, $type, $tagname){
-      $ret = array('ret'=>1,'msg'=>'alloc object token timeout!');
+      $ret = array('ret'=>1,'msg'=>'alloc object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -271,7 +270,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               $errmsg = 'init object successfully!'.$alloc_ret['upload_id'] ;
               $ret['ret'] = $alloc_ret['status'];
               $ret['msg'] = $errmsg;
-              
+
               $user->addUserUploadMarker(session('userid'), $alloc_ret['upload_id'] , $tagname);
           }elseif ($alloc_ret['status'] === 2){
               $errmsg = 'alloc object failed!';
@@ -289,9 +288,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $alloco_ret = new AllocObjResult(array('result'=>$ret_h,'resourceid'=>$tagname));
       return $alloco_ret;
   }
-  
+
   public function appendObj($token, $oid, $bin, $type){
-      $ret = array('ret'=>1,'msg'=>'append object token timeout!');
+      $ret = array('ret'=>1,'msg'=>'append object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -322,7 +321,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
   }
 
   public function commitObj($token, $oid, $data, $type){
-      $ret = array('ret'=>1,'msg'=>'append object token timeout!');
+      $ret = array('ret'=>1,'msg'=>'append object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -344,9 +343,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret_h = new \proto\RetHead($ret);
       return $ret_h;
   }
-  
+
   public  function queryobj($token, $type, $objid)  {
-      $ret = array('ret'=>4,'msg'=>'query object token timeout!');
+      $ret = array('ret'=>4,'msg'=>'query object token invalid!');
       $token_c = new \lib\Token_Core();
       $offset = 0;
       if ($token_c->is_token($token)){
@@ -362,12 +361,12 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           }
       }
       $ret_h = new \proto\RetHead($ret);
-      
+
       $ret_qur = new QueryUpldObjResult(array('result'=>$ret_h,'offset'=>$offset));
       return $ret_qur;
   }
   public function querusage($token, $type){
-      $ret = array('ret'=>4,'msg'=>'query usage token timeout!');
+      $ret = array('ret'=>4,'msg'=>'query usage token invalid!');
       $token_c = new \lib\Token_Core();
       $usage = 0;
       if ($token_c->is_token($token)){
@@ -376,34 +375,39 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
               $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
               $conn = new cephService($host, $aws_key, $aws_secret_key);
-              $usage= $conn->queryusage();
+
+              $Buckets = array();
+              $userTypes = array(1,2,3,6,7);
+              foreach ($userTypes as $type){
+                  $Buckets [] = self::_get_bucket_name_by_ftype($type);
+              }
+
+              $usage= $conn->queryusage($Buckets);
               $ret = array('ret'=>0,'msg'=>'query usage successfully!');
               $user = new UserService();
               $user->updateUserUspace(session("userid"), $usage);
-          }elseif ($type == 4){
-              
           }else{
-              $ret = array('ret'=>3,'msg'=>'error ftype!');
+              $ret = array('ret'=>3,'msg'=>'query usage ftype invalid!');
           }
       }
       $ret_h = new \proto\RetHead($ret);
       $ret_fee = new \proto\UsageResult(array('result'=>$ret_h,'capacity'=>session('space'),'usage'=>$usage));
       return $ret_fee;
   }
-  
+
   public function downloadFile($token, \proto\DownloadParam $param){
       $filename = $param->objid;
       $offer_set = $param->offerset;
       $buf_size = $param->reqlen;
       $token_c = new \lib\Token_Core();
-      $h_ret = array('ret'=>4,'msg'=>'download file ['.$filename.'] token timeout!');
+      $h_ret = array('ret'=>4,'msg'=>'download file ['.$filename.'] token invalid!');
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($param->type);
           $host = CEPH_HOST;
           $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
           $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
           $conn = new cephService($host, $aws_key, $aws_secret_key);
-                
+
           $string = $conn->downloadFile($Bucket_name, $filename, $offer_set, $buf_size);
           if (empty($string)){
               $h_ret = array('ret'=>2,'msg'=>'download File ['.$filename.'] failed');
@@ -411,17 +415,17 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               $h_ret = array('ret'=>0,'msg'=>'download File ['.$filename.'] successfully');
           }
       }
-      
+
       $ret_h = new \proto\RetHead($h_ret);
-      
+
       $ret_arr = array('result'=>$ret_h,'bin'=>isset($string)?$string:'');
-      
+
       $ret_d = new DownloadResult($ret_arr);
       return $ret_d;
   }
-  
+
   public function CreateShare($token, $oid, $type){
-      
+
       $filename = $param->filepath;
       $offer_set = $param->offerset;
       $token = $param->token;
@@ -438,31 +442,31 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       }else{
           $ret_h = new \proto\RetHead(array('ret'=>2,'msg'=>'create share failed!'));
       }
-      
+
       $token_c = new \lib\Token_Core();
       $token = $token_c->grante_key();
       $ret = array('result'=>$ret_h,'token'=>$token,'url'=>$ret_url);
       $cs_ret = new CreateShareResult($ret);
       return $cs_ret;
   }
-  
+
   public function queryAttribute($token, $attribute, $objid, $type){
       $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'queryAttribute=>'.$token));
       $ret = array('result'=>$ret_h,'token'=>$token,'attribute_value'=>'attribute_value');
       $QA_ret = new QueryAttributeResult($ret);
       return $QA_ret;
-      
+
   }
   public function QueryFile($token, $type, $fname){
       $token_c = new \lib\Token_Core();
-      $ret_h = new \proto\RetHead(array('ret'=>4,'msg'=>'query file ['.$fname.'] token timeout!'));
+      $ret_h = new \proto\RetHead(array('ret'=>4,'msg'=>'query file ['.$fname.'] token invalid!'));
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
           $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
           $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
           $conn = new cephService($host, $aws_key, $aws_secret_key);
-          
+
           $ret = $conn->queryFile($Bucket_name, $fname);
           $arr_ret = array('objid'=>$fname,'filesize'=>'','lastModified'=>'','ftype'=>$type);
           if ($ret['status']===0){
@@ -480,9 +484,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $QF_ret = new QueryFResult($ret);
       return $QF_ret;
   }
-  
+
   public function delObj($token, $oid, $type){
-      $ret = array('ret'=>1,'msg'=>'delete object token timeout!');
+      $ret = array('ret'=>1,'msg'=>'delete object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -495,17 +499,16 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           }else{
               $ret = array('ret'=>2,'msg'=>'delete object failed!');
           }
-      
       }
       $ret_h = new \proto\RetHead($ret);
       return $ret_h;
   }
-  
+
   public function renameObj($token, $oid, $newname, $type){
       $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>' rename obj function'));
       return $ret_h;
   }
-  
+
   public function queryApps(){
       $appSer = new AppService();
       $apps = $appSer->queryAllApp();
@@ -519,31 +522,31 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret =  new QueryAppResult(array('result'=>$ret_h,'msg'=>$applist));
       return $ret;
   }
-  
+
   public function querydflowusage($token, $type){
-      $ret = array('ret'=>4,'msg'=>'query dflow token timeout!');
+      $ret = array('ret'=>4,'msg'=>'query dflow token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
-          
+
           $ret = array('ret'=>0,'msg'=>'query fee successfully!');
       }
       $ret_h = new \proto\RetHead($ret);
-      $ret_dflow = new DFlowUsageResult(array('result'=>$ret_h,
+      $ret_dflow = new  DFlowUsageResult(array('result'=>$ret_h,
           'appid'=>C('APP_ID'),'appkey'=>C('APP_KEY'),'url'=>C('NET_URL')));
       return $ret_dflow;
   }
-   
+
   public function GetVer(){
       $misc = new MiscService();
       $ver = $misc->queryVersionInfo();
       $verUrl = $misc->queryVersionUrl();
-      
+
       $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>''));
       $ret =  new VersionResult(array('result'=>$ret_h,'version'=>$ver['value'],
           'url'=>$verUrl['value']));
       return $ret;
   }
-  
+
   public function queryHelp(){
       $misc = new MiscService();
       $helps = $misc->queryHelp();
@@ -555,16 +558,15 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret =  new QueryHelpResult(array('result'=>$ret_h,'msg'=>$helplist));
       return $ret;
   }
-  
+
   public function queryFee($token){
-      $ret = array('ret'=>4,'msg'=>'query fee token timeout!');
+      $ret = array('ret'=>4,'msg'=>'query fee token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $misc = new MiscService();
           $fees = $misc->queryFee();
           $feelist = array();
           foreach ($fees as $fee){
-              
               $feeinfo = new FeeInfo(array('PrdName'=>$fee['prdname'],'Spnumber'=>$fee['spnumber'],
                   'Cost'=>$fee['cost'],'Smscmd'=>$fee['smscmd'],'Description'=>$fee['desc']));
               $fee_list [] = $feeinfo;
@@ -576,9 +578,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret_fee = new QueryFeeResult(array('result'=>$ret_h,'msg'=>$fee_list));
       return $ret_fee;
   }
-  
+
 public function queryThumbnail($token, $ftype, $objid){
-      $ret = array('ret'=>4,'msg'=>'query thumbnail token timeout!');
+      $ret = array('ret'=>4,'msg'=>'query thumbnail token invalid!');
       $token_c = new \lib\Token_Core();
       $ret_bin = '';
       if ($token_c->is_token($token)){
@@ -601,94 +603,100 @@ public function queryThumbnail($token, $ftype, $objid){
       $ret_fee = new QueryThumbnailResult(array('result'=>$ret_h,'bin'=>$ret_bin));
       return $ret_fee;
   }
-  
+
     public function BindUmobile($captcha, $umobile, $imie){
-        
+
     }
-    
+
     public function RegistUser($uname, $password, $umobile, $captcha, $ptype){
-        
+
     }
     public function VerifyCathcha($token, $captcha){
-        
+
     }
     public function OrderPlan($token, $ptype){
-        
+
     }
-    
-    public function AddAlias($token, $ualias){
+
+    public function SetAlias($token, $ualias){
         $ret = array('ret'=>4,'msg'=>'add user alias token invalid!');
         $token_c = new \lib\Token_Core();
         if ($token_c->is_token($token)){
-            
+            $user = new UserService();
+            $user->setUserAlias(session('userid'), $ualias);
             $ret = array('ret'=>1,'msg'=>'');
-        
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
     }
-    public function DeleteAlias($token, $ualias){
-        
-    }
     public function Changepwd($token, $pwd_org, $pwd){
-        
+        $ret = array('ret'=>4,'msg'=>'changed user password token invalid!');
+        $token_c = new \lib\Token_Core();
+        if ($token_c->is_token($token)){
+            $ret = array('ret'=>1,'msg'=>'');
+
+        }
+        $ret_h = new \proto\RetHead($ret);
+        return $ret_h;
     }
     public function Resetpwd($token, $pwd){
         $ret = array('ret'=>4,'msg'=>'reset user password token invalid!');
         $token_c = new \lib\Token_Core();
         if ($token_c->is_token($token)){
             $ret = array('ret'=>1,'msg'=>'');
-        
+
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
     }
-    public function SetAlias($token, $ualias){
-        $ret = array('ret'=>4,'msg'=>'set user alias token invalid!');
-        $token_c = new \lib\Token_Core();
-        if ($token_c->is_token($token)){
-            $ret = array('ret'=>1,'msg'=>'');
-        
-        }
-        $ret_h = new \proto\RetHead($ret);
-        return $ret_h;
-    }
-    
+
     public function QueryAlias($token){
         $ret = array('ret'=>4,'msg'=>'query user alias token invalid!');
         $token_c = new \lib\Token_Core();
+        $ualias = '';
         if ($token_c->is_token($token)){
+            $user = new UserService();
+            $ualias = $user->queryUserAlias(session('userid'));
             $ret = array('ret'=>1,'msg'=>'');
-        
         }
         $ret_h = new \proto\RetHead($ret);
-        $userAliasResult = new UserAliasResult(array('result'=>$ret_h, 'aliasname'=>'useraliase'));
+        $userAliasResult = new UserAliasResult(array('result'=>$ret_h, 'aliasname'=>$ualias));
         return $userAliasResult;
     }
-    
+
     public function QueryUserInfo($token){
         $ret = array('ret'=>4,'msg'=>'query user info token invalid!');
         $token_c = new \lib\Token_Core();
         if ($token_c->is_token($token)){
+            $user = new UserService();
+            $uinfo = $user->queryUserInfo(session('userid'));
+            $ualias = $user->queryUserAlias(session('userid'));
+            $umobile = $user->queryUserMobile(session('userid'));
+            $userInfo = new UserInfo(array('aliasname'=>$ualias,'male'=>$uinfo['sex']==1?true:false,
+                'age'=>$uinfo['age'], 'mobile'=>$umobile));
             $ret = array('ret'=>1,'msg'=>'');
-        
         }
-        $userInfo = new UserInfo(array('aliasname'=>'user alias','male'=>true,'age'=>100,'mobile'=>'18812345678'));
         $ret_h = new \proto\RetHead($ret);
-        $userInfoResult = new UserInfoResult(array('result'=>$ret_h, 'userid'=>1000,'uinfo'=>$userInfo));
+        $userInfoResult = new UserInfoResult(array('result'=>$ret_h, 'userid'=>session('userid'),'uinfo'=>$userInfo));
         return $userInfoResult;
     }
-    
+
     public function SetUserInfo($token, \proto\UserInfo $uinfo){
         $ret = array('ret'=>4,'msg'=>'set user info token invalid!');
         $token_c = new \lib\Token_Core();
         if ($token_c->is_token($token)){
+//             $ualias = $uinfo->aliasname;
+//             $umobile = $uinfo->mobile;
+            $sex = $uinfo->male?1:2;
+            $age = $uinfo->age;
+            $user = new UserService();
+            $uinfo = $user->setUserInfo(session('userid'), $age, $sex );
             $ret = array('ret'=>1,'msg'=>'');
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
     }
-    
+
     public function GetMobileAccessUrl($token){
         $ret = array('ret'=>4,'msg'=>'query mobile access url token invalid!');
         $token_c = new \lib\Token_Core();
@@ -709,7 +717,7 @@ public function queryThumbnail($token, $ftype, $objid){
             $json_file = $file_dir.DIRECTORY_SEPARATOR.$file_name;
             file_put_contents($json_file, $json_data);
             $json_Array=json_decode($json_data, true);
-            
+
             $err_code = $json_Array['ErrCode'];
             $hand_desc = $json_Array['Description'];
             $hand_appkey = $json_Array['appkey'];
@@ -756,7 +764,7 @@ public function queryThumbnail($token, $ftype, $objid){
         $ret_net = new NetMobileNumberResult(array('result'=>$ret_h,'url'=>$req_phone));
         return $ret_net;
     }
-    
+
 
 }
 // header("Content-Type:text/html; charset=utf-8");
@@ -773,7 +781,7 @@ $protocol = new TBinaryProtocol($transport, true, true);
 
 $transport->open();
 $processor->process($protocol, $protocol);
-$transport->close();     
+$transport->close();
 # 关闭链接
 
 

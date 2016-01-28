@@ -5,11 +5,17 @@ require __DIR__.'/../Model/UserSpace.model.php';
 require __DIR__.'/../Model/UserFlow.model.php';
 require __DIR__.'/../Model/UserUpload.model.php';
 require __DIR__.'/../Model/UserCephAuth.model.php';
+require __DIR__.'/../Model/UserInfo.model.php';
+require __DIR__.'/../Model/UserMobile.model.php';
+require __DIR__.'/../Model/UserAlias.model.php';
 use UserModel;
+use UserAliasModel;
+use UserInfoModel;
 use UserSpaceModel;
 use UserFlowModel;
 use UserCephAuthModel;
 use UserUploadModel;
+use UserMobileModel;
 use lib\Model;
 
 class UserService
@@ -24,7 +30,7 @@ class UserService
         if ($user == null || count($user) == 0) {
             return false;
         }
-        
+
         if (MD5($password) == $user["password"]) {
             session('username', $username);
             session('userid', $user['userid']);
@@ -36,7 +42,7 @@ class UserService
         }
         return false;
     }
-    
+
     function queryAdmin($username, $password, $salt){
         $condition['username'] = $username;
         $userDao = new userModel();
@@ -57,13 +63,13 @@ class UserService
         }
         return false;
     }
-    
+
     function querySpace($userid){
         $condition['userid'] = $userid;
         $userDao = new UserSpaceModel();
         return $userDao->where($condition)->find();
     }
-    
+
     function queryCephAuth($userid){
         session('user_key_use',$userid);
         $condition['user_id'] = $userid;
@@ -74,17 +80,17 @@ class UserService
             session('user_secret_key', $user['secret_key']);
         }
     }
-    
+
     function queryFlow($userid){
         $condition['user_id'] = $userid;
         $userDao = new UserFlowModel();
         return $userDao->where($condition)->find();
     }
-    
+
     function verificationLoginAuth($username, $password, $authcode ){
         return true;
     }
-    
+
     function delUser($tokenm, $name){
         return true;
     }
@@ -108,7 +114,7 @@ class UserService
         $condition['uploadid'] = ''.$upload_id;
         $condition['createdate'] = Date('Y-m-d H:i:s');
         $condition['nextpartmarker'] = '0';
-        
+
         return $userDao->add($condition);
     }
     function queryUserUploadId($token, $object_name){
@@ -117,27 +123,27 @@ class UserService
         $userDao = new \UserUploadModel();
         return $userDao->where($condition)->find();
     }
-    
+
     function updateUserUploadMarker($token,$object_name, $next_marker){
         $condition['token'] = $token;
         $condition['objectname'] = $object_name;
         $userDao = new \UserUploadModel();
         $user_upload = $userDao->where($condition)->select();
         if (count($user_upload) > 0){
-            $date['nextpartmarker'] = $next_marker;
-            $userDao->where($condition)->save($date);
+            $data['nextpartmarker'] = $next_marker;
+            $userDao->where($condition)->save($data);
         }
     }
-    
+
     function updateUserUploadOffset($token,$object_name, $offset){
         $condition['token'] = $token;
         $condition['objectname'] = $object_name;
         $userDao = new \UserUploadModel();
-        $date['offset'] = $offset;
-        $userDao->where($condition)->save($date);
-        
+        $data['offset'] = $offset;
+        $userDao->where($condition)->save($data);
+
     }
-    
+
     function deleteUserUploadMarker($token,$object_name){
         $condition['token'] = $token;
         $condition['objectname'] = $object_name;
@@ -147,14 +153,76 @@ class UserService
             $userDao->where($condition)->delete();
         }
     }
-    
+
     function updateUserUspace($userid, $uspace){
         $condition['userid'] = $userid;
         $userDao = new UserSpaceModel();
         $user_upload = $userDao->where($condition)->select();
         if (count($user_upload) > 0){
-            $date['uspace'] = $uspace;
-            $userDao->where($condition)->save($date);
+            $data['uspace'] = $uspace;
+            $userDao->where($condition)->save($data);
         }
     }
+
+    function setUserAlias($userid, $alias){
+        $userDao = new \UserAliasModel();
+        $condition['userid'] = $userid;
+        $ualias = $userDao->where($condition)->find();
+        $data['alias'] = $alias;
+        if (isset($ualias)){
+            if ($ualias['alias'] != $alias){
+                $userDao->where($condition)->save($data);
+            }
+        }else{
+            $data['userid'] = $userid;
+            $userDao->add($data);
+        }
+    }
+
+    function deleteUserAlias($userid,$ualias){
+        $userDao = new \UserAliasModel();
+        $data['userid'] = $userid;
+        $data['alias'] = $ualias;
+        $userDao->where($data)->delete();
+    }
+
+    function queryUserAlias($userid){
+        $userDao = new \UserAliasModel();
+        $data['userid'] = $userid;
+        $ualias = $userDao->where($data)->find();
+        return isset($ualias)? $ualias['alias']:'';
+    }
+
+    function setUserInfo($userid, $age, $sex){
+        $userDao = new \UserInfoModel();
+        $condition['userid'] = $userid;
+        $uInfo = $userDao->where($condition)->find();
+        $data['age'] = $age;
+        $data['sex'] = $sex;
+        if (isset($uInfo)){
+            if ($uInfo['age'] != $age || $uInfo['sex'] != $sex){
+                $userDao->where($condition)->save($data);
+            }
+            $userDao->where($condition)->save($data);
+        }else{
+            $data['userid'] = $userid;
+            $userDao->add($data);
+        }
+    }
+
+    function queryUserInfo($userid){
+        $userDao = new \UserInfoModel();
+        $data['userid'] = $userid;
+        $ualias = $userDao->where($data)->find();
+        return $ualias;
+    }
+
+    function queryUserMobile($userid){
+        $userDao = new \UserMobileModel();
+        $data['userid'] = $userid;
+        $umobile = $userDao->where($data)->find();
+        return isset($umobile)? $umobile['mobile']:'';
+    }
+
+
 }
