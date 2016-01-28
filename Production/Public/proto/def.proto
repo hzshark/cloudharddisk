@@ -356,5 +356,8 @@ service CloudHardDiskService {
     NetURLResult GetMobileAccessUrl(1:Token token);
     //获取手机号码
     NetMobileNumberResult GetMobileNumber(1:Token token);
+    // use changed user info
+    RetHead ChangedUserInfo(1:Token token,2:string age,3:i32 sex);
+    // touxiang wenjian ming: netdiskportrait
 }
 
