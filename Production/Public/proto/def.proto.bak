@@ -375,9 +375,9 @@ service CloudHardDiskService {
     NetMobileNumberResult GetMobileNumber(1:Token token);
     
     // 设置用户信息
-    RetHead SetUserInfo(1:Token token,2:UserInfo uinfo);
+    RetHead SetUserInfo(1:Token token,2:i32 age,3:i32 sex);
     // 查询用户信息
-    UserInfoResult QueryUserInfo(1:Token token);
+    UserInfoResult QueryUserInfo(1:Token token,2:UserInfo uinfo);
     // touxiang wenjian ming: netdiskportrait
 }
 
