@@ -27,8 +27,6 @@ namespace php proto
 typedef list <FileInfo>	FilesMatchList
 typedef string Token
 typedef string OBJID   //资源id ,某个bucket的一个ojbect 
-typedef list <string> AliasList
-
 typedef list <BucketInfo> BucketList 
 
 enum Errcode
@@ -123,17 +121,22 @@ struct LoginResult {
   2: Token  token;  //身份牌
   3: i32  space ;   //用户空间单位K
   4: i32  uspace;   //已经使用的用户空间 单位k
-  //5: AliasList aliasname;           // 别名
-  6: i32 userid;             // 
-  7: optional i32  flow;     // 免费流量
-  8: optional i32  uflow;    // 已使用流量
+  5: i32 userid;             // 
+  6: optional i32  flow;     // 免费流量
+  7: optional i32  uflow;    // 已使用流量
 }
 
 // UserInfo
 struct UserInfoResult {
   1: RetHead result;
-  2: optional UserInfo;
+  2: optional UserInfo uinfo;
   3: optional i32 userid;
+}
+
+// User Alias
+struct UserAliasResult {
+  1: RetHead result;
+  2: string aliasname;
 }
 
 // download result
@@ -358,9 +361,13 @@ service CloudHardDiskService {
     * imie 需要存入 uid->imie
     **/
     RetHead BindUmobile(2:string captcha,3:string umobile,4:string imie)
-    //注册需要参数 1.用户名 2.密码 3.手机号 4.验证码 5.套餐类型
-    RetHead RegistUser(1:string uname,2:string password;3:string umobile, 4:string captcha,5:PTYPE ptype);
-     
+    
+    //注册需要参数 1.用户名 2.密码 3.手机号 4.验证码 5.套餐类型  此方法暂不对外开放
+    RetHead RegistUserContract(1:string uname,2:string password;3:string umobile, 4:string imie,5:PTYPE ptype);
+    
+    //
+    RetHead RegistUser(1:string uname,2:string password;3:string umobile); 
+    
     RetHead VerifyCathcha(1:Token token,2:string captcha);   
     RetHead OrderPlan(1:Token token,2:PTYPE ptype);     // use app order plan
     //别名修改走删除后添加方式
@@ -375,9 +382,9 @@ service CloudHardDiskService {
     NetMobileNumberResult GetMobileNumber(1:Token token);
     
     // 设置用户信息
-    RetHead SetUserInfo(1:Token token,2:i32 age,3:i32 sex);
+    RetHead SetUserInfo(1:Token token,2:UserInfo uinfo);
     // 查询用户信息
-    UserInfoResult QueryUserInfo(1:Token token,2:UserInfo uinfo);
+    UserInfoResult QueryUserInfo(1:Token token);
     // touxiang wenjian ming: netdiskportrait
 }
 
