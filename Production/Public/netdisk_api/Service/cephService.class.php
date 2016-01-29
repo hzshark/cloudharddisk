@@ -72,6 +72,9 @@ class cephService
                 if ("~" == substr($Object->Key,-1)){
                     continue;
                 }
+                if ("netdiskportrait" == $Object->Key){
+                    continue;
+                }
                 if ($idx > $excpet_num){
                     break;
                 }

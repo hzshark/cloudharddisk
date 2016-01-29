@@ -174,7 +174,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               return new uploaddResult(array('result'=>$ret_h));
           }
       }else{
-          $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'upload token invalid'));
+          $ret_h = new \proto\RetHead(array('ret'=>4,'msg'=>'upload token invalid'));
           return new uploaddResult(array('result'=>$ret_h));
       }
 
@@ -256,7 +256,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       return $qret;
   }
   public function allocobj($token, $type, $tagname){
-      $ret = array('ret'=>1,'msg'=>'alloc object token invalid!');
+      $ret = array('ret'=>4,'msg'=>'alloc object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -290,7 +290,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
   }
 
   public function appendObj($token, $oid, $bin, $type){
-      $ret = array('ret'=>1,'msg'=>'append object token invalid!');
+      $ret = array('ret'=>4,'msg'=>'append object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -321,7 +321,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
   }
 
   public function commitObj($token, $oid, $data, $type){
-      $ret = array('ret'=>1,'msg'=>'append object token invalid!');
+      $ret = array('ret'=>4,'msg'=>'append object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -486,7 +486,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
   }
 
   public function delObj($token, $oid, $type){
-      $ret = array('ret'=>1,'msg'=>'delete object token invalid!');
+      $ret = array('ret'=>4,'msg'=>'delete object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -624,7 +624,7 @@ public function queryThumbnail($token, $ftype, $objid){
         if ($token_c->is_token($token)){
             $user = new UserService();
             $user->setUserAlias(session('userid'), $ualias);
-            $ret = array('ret'=>1,'msg'=>'');
+            $ret = array('ret'=>0,'msg'=>'');
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
@@ -633,7 +633,7 @@ public function queryThumbnail($token, $ftype, $objid){
         $ret = array('ret'=>4,'msg'=>'changed user password token invalid!');
         $token_c = new \lib\Token_Core();
         if ($token_c->is_token($token)){
-            $ret = array('ret'=>1,'msg'=>'');
+            $ret = array('ret'=>0,'msg'=>'');
 
         }
         $ret_h = new \proto\RetHead($ret);
@@ -643,7 +643,7 @@ public function queryThumbnail($token, $ftype, $objid){
         $ret = array('ret'=>4,'msg'=>'reset user password token invalid!');
         $token_c = new \lib\Token_Core();
         if ($token_c->is_token($token)){
-            $ret = array('ret'=>1,'msg'=>'');
+            $ret = array('ret'=>0,'msg'=>'');
 
         }
         $ret_h = new \proto\RetHead($ret);
@@ -657,7 +657,7 @@ public function queryThumbnail($token, $ftype, $objid){
         if ($token_c->is_token($token)){
             $user = new UserService();
             $ualias = $user->queryUserAlias(session('userid'));
-            $ret = array('ret'=>1,'msg'=>'');
+            $ret = array('ret'=>0,'msg'=>'');
         }
         $ret_h = new \proto\RetHead($ret);
         $userAliasResult = new UserAliasResult(array('result'=>$ret_h, 'aliasname'=>$ualias));
@@ -674,7 +674,7 @@ public function queryThumbnail($token, $ftype, $objid){
             $umobile = $user->queryUserMobile(session('userid'));
             $userInfo = new UserInfo(array('aliasname'=>$ualias,'male'=>$uinfo['sex']==1?true:false,
                 'age'=>$uinfo['age'], 'mobile'=>$umobile));
-            $ret = array('ret'=>1,'msg'=>'');
+            $ret = array('ret'=>0,'msg'=>'');
         }
         $ret_h = new \proto\RetHead($ret);
         $userInfoResult = new UserInfoResult(array('result'=>$ret_h, 'userid'=>session('userid'),'uinfo'=>$userInfo));
@@ -691,7 +691,7 @@ public function queryThumbnail($token, $ftype, $objid){
             $age = $uinfo->age;
             $user = new UserService();
             $uinfo = $user->setUserInfo(session('userid'), $age, $sex );
-            $ret = array('ret'=>1,'msg'=>'');
+            $ret = array('ret'=>0,'msg'=>'');
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
