@@ -361,9 +361,13 @@ service CloudHardDiskService {
     * imie 需要存入 uid->imie
     **/
     RetHead BindUmobile(2:string captcha,3:string umobile,4:string imie)
-    //注册需要参数 1.用户名 2.密码 3.手机号 4.验证码 5.套餐类型
-    RetHead RegistUser(1:string uname,2:string password;3:string umobile, 4:string captcha,5:PTYPE ptype);
-     
+    
+    //注册需要参数 1.用户名 2.密码 3.手机号 4.验证码 5.套餐类型  此方法暂不对外开放
+    RetHead RegistUserContract(1:string uname,2:string password;3:string umobile, 4:string imie,5:PTYPE ptype);
+    
+    //app 端注册
+    RetHead RegistUser(1:string uname,2:string password;3:string umobile); 
+    
     RetHead VerifyCathcha(1:Token token,2:string captcha);   
     RetHead OrderPlan(1:Token token,2:PTYPE ptype);     // use app order plan
     //别名修改走删除后添加方式
