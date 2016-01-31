@@ -72,9 +72,6 @@ class cephService
                 if ("~" == substr($Object->Key,-1)){
                     continue;
                 }
-                if ("netdiskportrait" == $Object->Key){
-                    continue;
-                }
                 if ($idx > $excpet_num){
                     break;
                 }
@@ -316,6 +313,13 @@ class cephService
             $msg = 'not found the ['.$object_name.'].' ;
         }
         return array('status'=>$status, 'msg'=>$msg);
+    }
+
+    public function createUserBuckets($buckets) {
+        $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
+        foreach ($buckets as $bucket_name) {
+            $Connection->create_bucket($bucket_name);
+        }
     }
 }
 

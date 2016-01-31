@@ -8,6 +8,7 @@ require __DIR__.'/../Model/UserCephAuth.model.php';
 require __DIR__.'/../Model/UserInfo.model.php';
 require __DIR__.'/../Model/UserMobile.model.php';
 require __DIR__.'/../Model/UserAlias.model.php';
+require __DIR__.'/../Model/CephAuth.model.php';
 use UserModel;
 use UserAliasModel;
 use UserInfoModel;
@@ -16,6 +17,7 @@ use UserFlowModel;
 use UserCephAuthModel;
 use UserUploadModel;
 use UserMobileModel;
+use CephAuthModel;
 use lib\Model;
 
 class UserService
@@ -70,6 +72,19 @@ class UserService
         return $userDao->where($condition)->find();
     }
 
+    function setSpace($userid, $space){
+        $condition['userid'] = $userid;
+        $data['space'] = $space;
+        $userDao = new UserSpaceModel();
+        $user_space = $userDao->where($condition)->find();
+        if ($user_space == null || count($user_space) == 0) {
+            $data['userid'] = $userid;
+            $userDao->add($data);
+        }else{
+            $userDao->where($condition)->save($data);
+        }
+    }
+
     function queryCephAuth($userid){
         session('user_key_use',$userid);
         $condition['user_id'] = $userid;
@@ -92,10 +107,16 @@ class UserService
     }
 
     function delUser($tokenm, $name){
+
         return true;
     }
-    function createUser(){
-        return true;
+    function createUser($name, $password){
+        $data['lastlogin'] = date("Y-m-d h:i:s");
+        $data['username'] = $name;
+        $data['password'] = MD5($password);
+        $userDao = new userModel();
+        $userDao->add($data);
+        return $userDao->where($data)->find();
     }
     function queryUser(){
         return true;
@@ -224,5 +245,59 @@ class UserService
         return isset($umobile)? $umobile['mobile']:'';
     }
 
+    function queryUserMobileByPhoneNumber($umobile){
+        $userDao = new \UserMobileModel();
+        $data['mobile'] = $umobile;
+        $umobile = $userDao->where($data)->find();
+        return $umobile;
+    }
+
+    function addUserMobile($userid, $umobile){
+        $userDao = new \UserMobileModel();
+        $data['userid'] = $userid;
+        $data['mobile'] = $umobile;
+        $umobile = $userDao->add($data);
+    }
+
+    function addCephAuth($userid){
+        $condition['id'] = $userid%10000;
+        $cephAuthDao = new CephAuthModel();
+        $cephAuth = $cephAuthDao->where($condition)->find();
+        if (isset($cephAuth) && count($cephAuth)> 0) {
+            $key = $cephAuth['aws_key'];
+            $secret_key = $cephAuth['aws_secret_key'];
+        }else {
+            $key = '2QHC917U91W0Q5KK1X06';
+            $secret_key = 'l27vtnpZIv4A6QQ2W6URh2YNtDAvuA2POLyMi6BH';
+        }
+        $data['user_id'] = $userid;
+        $data['key'] = $cephAuth['aws_key'];;
+        $data['secret_key'] = $cephAuth['aws_secret_key'];
+        $userCeph = new \UserCephAuthModel();
+        $userCeph->add($data);
+    }
+
+    function RegistUser($umobile, $password, $capacity){
+        $ret = array('status'=>7, 'msg'=>'regist user unknown failed!');
+        $query_ret = self::queryUserMobileByPhoneNumber($umobile);
+        if ($umobile == null || count($umobile) == 0) {
+            $user_ret = self::createUser($umobile, $password);
+            if ($user_ret == null || count($user_ret) == 0) {
+                $ret['status'] = 7;
+                $ret['msg'] = 'create user error!';
+            }else{
+                $userid = $user_ret['userid'];
+                self::addCephAuth($userid);
+                self::addUserMobile($userid, $umobile);
+                self::setSpace($userid,$capacity);
+                $ret['status'] = 0;
+                $ret['msg'] = 'Regist user success!';
+            }
+        }else {
+            $ret['status'] = 3;
+            $ret['msg'] = 'Regist mobile is exist!';
+        }
+        return $ret;
+    }
 
 }
