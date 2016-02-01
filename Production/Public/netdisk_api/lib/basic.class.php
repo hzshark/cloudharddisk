@@ -1,24 +1,24 @@
 <?php
 
-function mkdirs($dir, $mode = 0777) {   
+function mkdirs($dir, $mode = 0777) {
     if (is_dir($dir) || @mkdir($dir, $mode)) {
-        return TRUE;   
+        return TRUE;
     }
     if (!mkdirs(dirname($dir), $mode)) {
-        return FALSE;   
+        return FALSE;
     }
     return @mkdir($dir, $mode);
-} 
+}
 
 function fileext($file)
 {
     return pathinfo($file, PATHINFO_EXTENSION);
 }
 
-function is_exists($filename)//文件名  
-{  
-    //检查文件$fileName_str是否存在，存在则返回true，不存在返回false  
-    return file_exists($filename);  
+function is_exists($filename)//文件名
+{
+    //检查文件$fileName_str是否存在，存在则返回true，不存在返回false
+    return file_exists($filename);
 }
 
 function appendToFile($filename, $data){
@@ -51,14 +51,14 @@ function img2thumb($src_img, $dst_img, $width = 75, $height = 75, $cut = 0, $pro
         return false;
     }
     $srcinfo = getimagesize($src_img);
-    
+
     if (!$srcinfo){
         return false;
     }
-    
+
     $ot = fileext($dst_img);
     $otfunc = 'image' . ($ot == 'jpg' ? 'jpeg' : $ot);
-    
+
     $src_w = $srcinfo[0];
     $src_h = $srcinfo[1];
     $type  = strtolower(substr(image_type_to_extension($srcinfo[2]), 1));
@@ -144,7 +144,7 @@ function img2thumb($src_img, $dst_img, $width = 75, $height = 75, $cut = 0, $pro
     }
 
     $src = $createfun($src_img);
-    
+
     $dst = imagecreatetruecolor($width ? $width : $dst_w, $height ? $height : $dst_h);
 //    imagesavealpha($dst, true);
 //    $trans_colour = imagecolorallocatealpha($dst, 0, 0, 0, 127);
@@ -263,3 +263,49 @@ function get_jsondata($string){
     return substr($string,1, $strlen-2);
 }
 
+function VerificationCode($apiurl, array $params = array(), $timeout = 30) {
+    $ch = curl_init();
+    curl_setopt( $ch, CURLOPT_URL, $apiurl );
+    // 以返回的形式接收信息
+    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+    // 设置为POST方式
+    curl_setopt( $ch, CURLOPT_POST, 1 );
+    curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params ) );
+    // 不验证https证书
+    curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
+    curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0 );
+    curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
+    curl_setopt( $ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/x-www-form-urlencoded;charset=UTF-8',
+        'Accept: application/json',
+    ) );
+    // 发送数据
+    $response = curl_exec( $ch );
+    // 不要忘记释放资源
+    curl_close( $ch );
+    return $response;
+}
+
+function VerificationCode_proxy($apiurl, $proxy, array $params = array(), $timeout = 30) {
+    $ch = curl_init();
+    curl_setopt ($ch, CURLOPT_PROXY, $proxy);
+    curl_setopt( $ch, CURLOPT_URL, $apiurl );
+    // 以返回的形式接收信息
+    curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+    // 设置为POST方式
+    curl_setopt( $ch, CURLOPT_POST, 1 );
+    curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $params ) );
+    // 不验证https证书
+    curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
+    curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0 );
+    curl_setopt( $ch, CURLOPT_TIMEOUT, $timeout );
+    curl_setopt( $ch, CURLOPT_HTTPHEADER, array(
+        'Content-Type: application/x-www-form-urlencoded;charset=UTF-8',
+        'Accept: application/json',
+    ) );
+    // 发送数据
+    $response = curl_exec( $ch );
+    // 不要忘记释放资源
+    curl_close( $ch );
+    return $response;
+}
