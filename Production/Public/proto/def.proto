@@ -364,7 +364,7 @@ service CloudHardDiskService {
     
     
     //app 端注册
-    RetHead RegistUser(1:string umobile,2:string password); 
+    RetHead RegistUser(1:string umobile,2:string password, 3:string captcha); 
     
     RetHead VerifyCathcha(1:string umobile,2:string captcha);   
     RetHead OrderPlan(1:Token token,2:PTYPE ptype);     // use app order plan

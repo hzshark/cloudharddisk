@@ -193,9 +193,10 @@ interface CloudHardDiskServiceIf {
   /**
    * @param string $umobile
    * @param string $password
+   * @param string $captcha
    * @return \proto\RetHead
    */
-  public function RegistUser($umobile, $password);
+  public function RegistUser($umobile, $password, $captcha);
   /**
    * @param string $umobile
    * @param string $captcha
@@ -1516,17 +1517,18 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("BindUmobile failed: unknown result");
   }
 
-  public function RegistUser($umobile, $password)
+  public function RegistUser($umobile, $password, $captcha)
   {
-    $this->send_RegistUser($umobile, $password);
+    $this->send_RegistUser($umobile, $password, $captcha);
     return $this->recv_RegistUser();
   }
 
-  public function send_RegistUser($umobile, $password)
+  public function send_RegistUser($umobile, $password, $captcha)
   {
     $args = new \proto\CloudHardDiskService_RegistUser_args();
     $args->umobile = $umobile;
     $args->password = $password;
+    $args->captcha = $captcha;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -6650,6 +6652,10 @@ class CloudHardDiskService_RegistUser_args {
    * @var string
    */
   public $password = null;
+  /**
+   * @var string
+   */
+  public $captcha = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -6662,6 +6668,10 @@ class CloudHardDiskService_RegistUser_args {
           'var' => 'password',
           'type' => TType::STRING,
           ),
+        3 => array(
+          'var' => 'captcha',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -6670,6 +6680,9 @@ class CloudHardDiskService_RegistUser_args {
       }
       if (isset($vals['password'])) {
         $this->password = $vals['password'];
+      }
+      if (isset($vals['captcha'])) {
+        $this->captcha = $vals['captcha'];
       }
     }
   }
@@ -6707,6 +6720,13 @@ class CloudHardDiskService_RegistUser_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 3:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->captcha);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -6728,6 +6748,11 @@ class CloudHardDiskService_RegistUser_args {
     if ($this->password !== null) {
       $xfer += $output->writeFieldBegin('password', TType::STRING, 2);
       $xfer += $output->writeString($this->password);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->captcha !== null) {
+      $xfer += $output->writeFieldBegin('captcha', TType::STRING, 3);
+      $xfer += $output->writeString($this->captcha);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -8642,7 +8667,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_RegistUser_result();
-    $result->success = $this->handler_->RegistUser($args->umobile, $args->password);
+    $result->success = $this->handler_->RegistUser($args->umobile, $args->password, $args->captcha);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
