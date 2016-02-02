@@ -51,9 +51,9 @@ class cephService
         return $Connection;
     }
 
-    public function uploadFile($bucket_name, $object_name, $bin){
-        $opt = array('body'=>$bin, 'acl'=>$this->ACL_PRIVATE);
+    public function uploadFile($bucket_name, $object_name, $bin, array $opt = array()){
 
+        $opt = array_merge(array('body'=>$bin, 'acl'=>$this->ACL_PRIVATE), $opt);
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $res = $Connection->create_object($bucket_name, $object_name, $opt);
         return $res->isOK();
@@ -156,7 +156,8 @@ class cephService
         $user = new UserService();
         if ($next_marker == 0){
             $readbin = file_get_contents($part_file_path);
-            if (self::uploadFile($bucket_name, $object_name, $readbin)){
+            $opt = array('meta'=>$data);
+            if (self::uploadFile($bucket_name, $object_name, $readbin, $opt)){
                 $ret_status = 0;
                 $err_msg = 'complete commit object, object less than 5M use uploadfile funciotn.'.$part_file_path;
                 $Connection->abort_multipart_upload($bucket_name, $object_name.'~', $upload_id);
@@ -181,8 +182,8 @@ class cephService
                     $user->deleteUserUploadMarker($token, $object_name);
                     $src_arr = array('bucket'=>$bucket_name, 'filename'=>$object_name.'~');
                     $dest_arr = array('bucket'=>$bucket_name, 'filename'=>$object_name);
-                    $Connection->copy_object($src_arr, $dest_arr);
-                    $Connection->delete_object($bucket_name, 'hello_110.txt');
+                    $Connection->copy_object($src_arr, $dest_arr, array('meta'=>$data));
+                    $Connection->delete_object($bucket_name, $object_name.'~');
                 }else{
                     $ret_status = 2;
                     $err_msg = 'complete multipart upload filaed!';
@@ -319,5 +320,31 @@ class cephService
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         return $Connection->create_bucket($bucket_name, AmazonS3::REGION_US_W1);
     }
+
+    public function setObjectMetadata($bucket_name, $object_name, $data){
+        $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
+        $ret = array('status'=>7,'msg'=>'set obect metadata unknow error!');
+        if ($Connection->if_object_exists($bucket_name, $object_name)){
+            $opt = array('meta'=>$data);
+            $CFRes =$Connection->update_object($bucket_name, $object_name, $opt);
+            if ($CFRes->isOK()){
+                $ret['status'] = 0;
+                $ret['msg'] = '';
+            }else{
+                $ret['status'] = 2;
+                $ret['msg'] = 'update object metadata failed';
+            }
+        }else{
+            $ret['status'] = 2;
+            $ret['msg'] = 'the object not found';
+        }
+    }
+
+    public function queryObjectMetadata($bucket_name, $object_name){
+        $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
+        $response = $Connection->get_object_metadata($bucket_name, $object_name);
+        return $response;
+    }
+
 }
 

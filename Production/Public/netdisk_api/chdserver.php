@@ -327,20 +327,24 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret = array('ret'=>4,'msg'=>'append object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
-          $Bucket_name = self::_get_bucket_name_by_ftype($type);
-          $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
-          $conn = new cephService($host, $aws_key, $aws_secret_key);
-          $user = new UserService();
-          $upload = $user->queryUserUploadId(session('userid'), $oid);
-          if (isset($upload['uploadid'])){
-            $append_ret = $conn->commitObj($token,$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
-            $ret['ret'] = $append_ret['status'];
-            $ret['msg'] = $append_ret['msg'];
-          }else {
-              $ret['ret'] = 3;
-              $ret['msg'] = 'commit object failed,upload id not exist!' ;
+          if( is_array( $data ) ){
+              $Bucket_name = self::_get_bucket_name_by_ftype($type);
+              $host = CEPH_HOST;
+              $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+              $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+              $conn = new cephService($host, $aws_key, $aws_secret_key);
+              $user = new UserService();
+              $upload = $user->queryUserUploadId(session('userid'), $oid);
+              if (isset($upload['uploadid'])){
+                $append_ret = $conn->commitObj($token,$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
+                $ret['ret'] = $append_ret['status'];
+                $ret['msg'] = $append_ret['msg'];
+              }else {
+                  $ret['ret'] = 3;
+                  $ret['msg'] = 'commit object failed,upload id not exist!' ;
+              }
+          }else{
+              $ret = array('ret'=>3,'msg'=>'invaild parameter type!');
           }
       }
       $ret_h = new \proto\RetHead($ret);
@@ -452,10 +456,28 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
   }
 
   public function queryAttribute($token, $attribute, $objid, $type){
-      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'queryAttribute=>'.$token));
-      $ret = array('result'=>$ret_h,'token'=>$token,'attribute_value'=>'attribute_value');
-      $QA_ret = new QueryAttributeResult($ret);
-      return $QA_ret;
+      $token_c = new \lib\Token_Core();
+      $ret = array('ret'=>4,'msg'=>'query object ['.$objid.'] attribute token invalid!');
+      if ($token_c->is_token($token)){
+          $bucket_name = self::_get_bucket_name_by_ftype($type);
+          $host = CEPH_HOST;
+          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
+          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $conn = new cephService($host, $aws_key, $aws_secret_key);
+
+          $response = $conn->queryObjectMetadata($bucket_name, $objid);
+          if ($response){
+              $ret['ret'] = 0;
+              $ret['msg'] = 'query object metadata suc!';
+          }else {
+              $ret['ret'] = 2;
+              $ret['msg'] = 'query object metadata failed!';
+          }
+      }
+      $ret_h = new \proto\RetHead($ret);
+      $qar_ret = array('result'=>$ret_h,'attribute_value'=>$response,'token'=>$token);
+      $QAR_ret = new QueryAttributeResult($ret);
+      return $QAR_ret;
 
   }
   public function QueryFile($token, $type, $fname){
