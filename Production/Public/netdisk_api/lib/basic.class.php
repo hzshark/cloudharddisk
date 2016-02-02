@@ -251,9 +251,15 @@ function get1($url, $header = array(), $timeout = 10){
  */
 function isPhone($val)
 {
-    //eg: xxx-xxxxxxxx-xxx | xxxx-xxxxxxx-xxx ...
-    if(ereg("^((0\d{2,3})-)(\d{7,8})(-(\d{3,}))?$",$val))
+    if(preg_match("/^1[34578]\d{9}$/",$val))
         return true;
+    return false;
+}
+
+function is_numericStart($str){
+    if (is_numeric(substr( $str, 0, 1 ))) {
+        return true;
+    }
     return false;
 }
 

@@ -315,11 +315,9 @@ class cephService
         return array('status'=>$status, 'msg'=>$msg);
     }
 
-    public function createUserBuckets($buckets) {
+    public function createUserBucket($bucket_name) {
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
-        foreach ($buckets as $bucket_name) {
-            $Connection->create_bucket($bucket_name);
-        }
+        return $Connection->create_bucket($bucket_name, AmazonS3::REGION_US_W1);
     }
 }
 

@@ -247,8 +247,8 @@ class UserService
 
     function queryUserMobileByPhoneNumber($umobile){
         $userDao = new \UserMobileModel();
-        $data['mobile'] = $umobile;
-        $umobile = $userDao->where($data)->find();
+        $condition['mobile'] = $umobile;
+        $umobile = $userDao->where($condition)->find();
         return $umobile;
     }
 
@@ -256,6 +256,7 @@ class UserService
         $userDao = new \UserMobileModel();
         $data['userid'] = $userid;
         $data['mobile'] = $umobile;
+        $data['indate'] = date("Y-m-d h:i:s");
         $umobile = $userDao->add($data);
     }
 
@@ -270,9 +271,11 @@ class UserService
             $key = '2QHC917U91W0Q5KK1X06';
             $secret_key = 'l27vtnpZIv4A6QQ2W6URh2YNtDAvuA2POLyMi6BH';
         }
+        session('user_key', $key);
+        session('user_secret_key', $secret_key);
         $data['user_id'] = $userid;
-        $data['key'] = $cephAuth['aws_key'];;
-        $data['secret_key'] = $cephAuth['aws_secret_key'];
+        $data['key'] = $key;
+        $data['secret_key'] = $secret_key;
         $userCeph = new \UserCephAuthModel();
         $userCeph->add($data);
     }
@@ -280,13 +283,16 @@ class UserService
     function RegistUser($umobile, $password, $capacity){
         $ret = array('status'=>7, 'msg'=>'regist user unknown failed!');
         $query_ret = self::queryUserMobileByPhoneNumber($umobile);
-        if ($umobile == null || count($umobile) == 0) {
+        if ($query_ret == null || count($query_ret) == 0) {
             $user_ret = self::createUser($umobile, $password);
             if ($user_ret == null || count($user_ret) == 0) {
                 $ret['status'] = 7;
                 $ret['msg'] = 'create user error!';
             }else{
                 $userid = $user_ret['userid'];
+                session('username', $umobile);
+                session('userid', $user_ret['userid']);
+                session('lastLogin', $user_ret['lastlogin']);
                 self::addCephAuth($userid);
                 self::addUserMobile($userid, $umobile);
                 self::setSpace($userid,$capacity);
@@ -295,7 +301,7 @@ class UserService
             }
         }else {
             $ret['status'] = 3;
-            $ret['msg'] = 'Regist mobile is exist!';
+            $ret['msg'] = 'Regist mobile ['.$umobile.'] is exist!';
         }
         return $ret;
     }
