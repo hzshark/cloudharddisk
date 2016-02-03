@@ -469,15 +469,16 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           if ($response){
               $ret['ret'] = 0;
               $ret['msg'] = 'query object metadata suc!';
+              $attribute_value = $response['Headers']['x-amz-meta-'.$attribute];
           }else {
               $ret['ret'] = 2;
               $ret['msg'] = 'query object metadata failed!';
           }
       }
       $ret_h = new \proto\RetHead($ret);
-      $qar_ret = array('result'=>$ret_h,'attribute_value'=>$response,'token'=>$token);
-      $QAR_ret = new QueryAttributeResult($qar_ret);
-      return $QAR_ret;
+      $qar_ret = array('result'=>$ret_h,'token'=>$token, 'attribute_value'=>$attribute_value,);
+      $q_ret = new QueryAttributeResult($qar_ret);
+      return $q_ret;
 
   }
   public function QueryFile($token, $type, $fname){
