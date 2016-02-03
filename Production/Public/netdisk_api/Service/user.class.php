@@ -305,5 +305,33 @@ class UserService
         }
         return $ret;
     }
+    
+    function resetPassword($userid, $password){
+        $condition['userid'] = $userid;
+        $userDao = new UserModel();
+        $user = $userDao->where($condition)->find();
+        if ($user == null || count($user) == 0) {
+            return false;
+        }else{
+            $data['password'] = MD5($password);
+            $userDao->where($condition)->save($data);
+        }
+        return true;
+    }
+    
+    function changedPassword($userid, $oldPassword, $newPassword){
+        $condition['userid'] = $userid;
+        $userDao = new UserModel();
+        $user = $userDao->where($condition)->find();
+        if ($user == null || count($user) == 0) {
+            return false;
+        }
+        if (MD5($oldPassword) == $user["password"]) {
+            $data['password'] = MD5($newPassword);
+            $userDao->where($condition)->save($data);
+            return true;
+        }
+        return false;
+    }
 
 }

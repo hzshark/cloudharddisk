@@ -716,18 +716,45 @@ public function queryThumbnail($token, $ftype, $objid){
         $ret = array('ret'=>4,'msg'=>'changed user password token invalid!');
         $token_c = new \lib\Token_Core();
         if ($token_c->is_token($token)){
-            $ret = array('ret'=>0,'msg'=>'');
-
+            $user = new UserService();
+            if ($user->changedPassword(session('userid'), $pwd_org, $pwd)){
+                $ret = array('ret'=>0,'msg'=>'');
+            }else{
+                $ret = array('ret'=>7,'msg'=>'user not exist or the old password error!');
+            }
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
     }
-    public function Resetpwd($token, $pwd){
+    public function Resetpwd($token, $pwd, $umobile, $captcha){
         $ret = array('ret'=>4,'msg'=>'reset user password token invalid!');
         $token_c = new \lib\Token_Core();
         if ($token_c->is_token($token)){
-            $ret = array('ret'=>0,'msg'=>'');
-
+            $proxy = "http://182.92.97.3:13128";
+            $api = 'https://webapi.sms.mob.com';//（例：https://webapi.sms.mob.com);
+            $appkey = 'f40f0f41f1d1'; //您的appkey
+            $zone = '86';
+            $apiurl = $api . '/sms/verify';
+            $param = array(
+                'appkey' => $appkey,
+                'phone' => $umobile,
+                'zone' =>  $zone,
+                'code' => $captcha,
+            ) ;
+            $vrest = VerificationCode_proxy($apiurl, $proxy, $param);
+            if (!$vrest){
+                $ret['ret'] = 1;
+                $ret['msg'] = 'verify cathcha error!';
+            }else{
+                $user = new UserService();
+                if ($user->resetPassword(session('userid'), $pwd)){
+                    $ret['ret'] = 0;
+                    $ret['msg'] = '';
+                }else{
+                    $ret['ret'] = 7;
+                    $ret['msg'] = 'user not exist or reset user password failed!';
+                }
+            }
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
@@ -768,12 +795,13 @@ public function queryThumbnail($token, $ftype, $objid){
         $ret = array('ret'=>4,'msg'=>'set user info token invalid!');
         $token_c = new \lib\Token_Core();
         if ($token_c->is_token($token)){
-//             $ualias = $uinfo->aliasname;
+            $ualias = $uinfo->aliasname;
 //             $umobile = $uinfo->mobile;
             $sex = $uinfo->male?1:2;
             $age = $uinfo->age;
             $user = new UserService();
             $uinfo = $user->setUserInfo(session('userid'), $age, $sex );
+            $user->setUserAlias(session('userid'), $ualias);
             $ret = array('ret'=>0,'msg'=>'');
         }
         $ret_h = new \proto\RetHead($ret);
