@@ -476,7 +476,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       }
       $ret_h = new \proto\RetHead($ret);
       $qar_ret = array('result'=>$ret_h,'attribute_value'=>$response,'token'=>$token);
-      $QAR_ret = new QueryAttributeResult($ret);
+      $QAR_ret = new QueryAttributeResult($qar_ret);
       return $QAR_ret;
 
   }
