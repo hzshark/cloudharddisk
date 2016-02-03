@@ -345,6 +345,20 @@ class cephService
         $response = $Connection->get_object_metadata($bucket_name, $object_name);
         return $response;
     }
+    
+    public function queryBucketExist($bucket){
+        $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
+        $buckets = $Connection->get_bucket_list(); 
+        foreach ($buckets as $name){
+            if ($name == $bucket){
+                return True;
+            }
+        }
+        return FALSE;
+        
+        
+    
+    }
 
 }
 

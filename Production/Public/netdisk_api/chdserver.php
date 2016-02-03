@@ -665,6 +665,23 @@ public function queryThumbnail($token, $ftype, $objid){
                 foreach ($userTypes as $type){
                     $bucketname = self::_get_bucket_name_by_ftype($type);
                     //$cb_ret = $conn->createUserBucket($bucketname);
+                    try {
+                        $pythonpath = '/usr/bin/python';
+                        $python_script = __DIR__.'/lib/createUserBucket.py';
+                        $param = '-a '.session('user_key').' -s '.session('user_secret_key').' -b '.$bucketname;
+                        $command = $pythonpath.' '.$python_script.' '.$param;
+                        system($command);
+                    }catch (Exception $e){
+                        $reg_ret['status'] = 7;
+                        $reg_ret['msg'] = 'create user bucket have a exeption!';
+                        break;
+                    }
+                    if (!$conn->queryBucketExist($bucketname)){
+                        $reg_ret['status'] = 2;
+                        $reg_ret['msg'] = 'create user bucket failed!';
+                        break;
+                    }
+                    
                 }
             }
             $ret = array('ret'=>$reg_ret['status'],'msg'=>$reg_ret['msg']);
