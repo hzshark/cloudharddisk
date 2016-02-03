@@ -351,7 +351,7 @@ service CloudHardDiskService {
     
     QueryThumbnailResult queryThumbnail(1:Token token,2:FTYPE ftype,3:string objid);
     
-    RetHead Resetpwd(1:Token token,2:string pwd,3:string captcha); //重置密码
+    RetHead Resetpwd(1:Token token,2:string pwd,3:string umobile,4:string captcha); //重置密码
 
     RetHead Changepwd(1:Token token,2:string pwd_org,3:string pwd);//修改密码 让用户输入
     

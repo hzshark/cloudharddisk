@@ -168,10 +168,11 @@ interface CloudHardDiskServiceIf {
   /**
    * @param string $token
    * @param string $pwd
+   * @param string $umobile
    * @param string $captcha
    * @return \proto\RetHead
    */
-  public function Resetpwd($token, $pwd, $captcha);
+  public function Resetpwd($token, $pwd, $umobile, $captcha);
   /**
    * @param string $token
    * @param string $pwd_org
@@ -1360,17 +1361,18 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("queryThumbnail failed: unknown result");
   }
 
-  public function Resetpwd($token, $pwd, $captcha)
+  public function Resetpwd($token, $pwd, $umobile, $captcha)
   {
-    $this->send_Resetpwd($token, $pwd, $captcha);
+    $this->send_Resetpwd($token, $pwd, $umobile, $captcha);
     return $this->recv_Resetpwd();
   }
 
-  public function send_Resetpwd($token, $pwd, $captcha)
+  public function send_Resetpwd($token, $pwd, $umobile, $captcha)
   {
     $args = new \proto\CloudHardDiskService_Resetpwd_args();
     $args->token = $token;
     $args->pwd = $pwd;
+    $args->umobile = $umobile;
     $args->captcha = $captcha;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -6077,6 +6079,10 @@ class CloudHardDiskService_Resetpwd_args {
   /**
    * @var string
    */
+  public $umobile = null;
+  /**
+   * @var string
+   */
   public $captcha = null;
 
   public function __construct($vals=null) {
@@ -6091,6 +6097,10 @@ class CloudHardDiskService_Resetpwd_args {
           'type' => TType::STRING,
           ),
         3 => array(
+          'var' => 'umobile',
+          'type' => TType::STRING,
+          ),
+        4 => array(
           'var' => 'captcha',
           'type' => TType::STRING,
           ),
@@ -6102,6 +6112,9 @@ class CloudHardDiskService_Resetpwd_args {
       }
       if (isset($vals['pwd'])) {
         $this->pwd = $vals['pwd'];
+      }
+      if (isset($vals['umobile'])) {
+        $this->umobile = $vals['umobile'];
       }
       if (isset($vals['captcha'])) {
         $this->captcha = $vals['captcha'];
@@ -6144,6 +6157,13 @@ class CloudHardDiskService_Resetpwd_args {
           break;
         case 3:
           if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->umobile);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 4:
+          if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->captcha);
           } else {
             $xfer += $input->skip($ftype);
@@ -6172,8 +6192,13 @@ class CloudHardDiskService_Resetpwd_args {
       $xfer += $output->writeString($this->pwd);
       $xfer += $output->writeFieldEnd();
     }
+    if ($this->umobile !== null) {
+      $xfer += $output->writeFieldBegin('umobile', TType::STRING, 3);
+      $xfer += $output->writeString($this->umobile);
+      $xfer += $output->writeFieldEnd();
+    }
     if ($this->captcha !== null) {
-      $xfer += $output->writeFieldBegin('captcha', TType::STRING, 3);
+      $xfer += $output->writeFieldBegin('captcha', TType::STRING, 4);
       $xfer += $output->writeString($this->captcha);
       $xfer += $output->writeFieldEnd();
     }
@@ -8635,7 +8660,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_Resetpwd_result();
-    $result->success = $this->handler_->Resetpwd($args->token, $args->pwd, $args->captcha);
+    $result->success = $this->handler_->Resetpwd($args->token, $args->pwd, $args->umobile, $args->captcha);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
