@@ -77,6 +77,12 @@ try {
     $client = new \proto\CloudHardDiskServiceClient($protocol);
     $transport->open();
     
+    $user = '13355786900';
+    $password = '123456';
+    $ftype = 1;
+    $testfile = 'test001.txt';
+    $filedata = 'test data';
+    $odescr = array('test1'=>'testa','test2'=>'testb');
     echo "test getver interface...";
     echo "<b />";
     $res_ver = $client->GetVer();
@@ -84,122 +90,179 @@ try {
     if ($res_ver->result->ret == $SUCCESS){
         echo "getver is ok. ";
         echo "getver return value:";
-        echo "getver return value:";
+        echo $res_ver->url;
+        echo "<b />";
+        echo $res_ver->version;
+        echo "<b />";
+    }else{
+        echo "<b>getver is error. <b />";
+        echo $res_ver->result->msg;
+        echo "<b />";
+    }
+    echo "<b />";
+    echo "<b />";
+    echo "test queryHelp interface...";
+    echo "<b />";
+    $help_ret = $client->queryHelp();
+    if ($help_ret->result->ret == $SUCCESS){
+        echo "query help is ok. ";
+        echo "queryhelp return value:";
+        var_dump($help_ret->msg);
+        echo "<b />";
+    }else{
+        echo "<b>queryhelp is error. <b />";
+        echo $res_ver->result->msg;
+        echo "<b />";
+    }
+    echo "<b />";
+    echo "<b />";
+    echo "test queryApps interface...";
+    echo "<b />";
+    $app_ret = $client->queryApps();
+    if ($app_ret->result->ret == $SUCCESS){
+        echo "queryApps is ok. ";
+        echo "queryApps return value:";
+        var_dump($app_ret->msg);
+        echo "<b />";
+    }else{
+        echo "<b>queryApps is error. <b />";
+        echo $app_ret->result->msg;
+        echo "<b />";
+    }
+    echo "<b />";
+    echo "<b />";
+    echo "test loginAuth interface...";
+    echo "<b />";
+    $auth_ret = $client->loginAuth($user, $password, 1);
+    if ($auth_ret->result->ret == $SUCCESS){
+        echo "loginAuth is ok. ";
+        echo "loginAuth return value:";
+        echo "flow:".$auth_ret->flow;
+        echo "<b />";
+        echo "uflow:".$auth_ret->uflow;
+        echo "<b />";
+        echo "space:".$auth_ret->space;
+        echo "<b />";
+        echo "uspace:".$auth_ret->uspace;
+        echo "<b />";
+        echo "token:".$auth_ret->token;
+        echo "<b />";
+        echo "userid:".$auth_ret->userid;
+        echo "<b />";
+    }else{
+        echo "<b>loginAuth is error. <b />";
+        echo $auth_ret->result->msg;
+        echo "<b />";
+    }
+    $token = $auth_ret->token;
+    echo "<b />";
+    echo "<b />";
+    echo "test queryFee interface...";
+    echo "<b />";
+    $fee_ret = $client->queryFee($token);
+    if ($fee_ret->result->ret == $SUCCESS){
+        echo "queryFee is ok. ";
+        echo "queryFee return value:";
+        var_dump($fee_ret->msg);
+        echo "<b />";
+    }else{
+        echo "<b>queryFee is error. <b />";
+        echo $fee_ret->result->msg;
+        echo "<b />";
+    }
+    echo "<b />";
+    echo "<b />";
+    echo "test queryFileList interface...";
+    $list_ret = $client->queryFileList($token,$ftype, 0, 10);
+    if ($list_ret->result->ret == $SUCCESS){
+        echo "queryFileList is ok. ";
+        var_dump($list_ret->files);
+    }else{
+        echo "<b>queryFileList is error. <b />";
+        echo $list_ret->result->msg;
+        echo "<b />";
+        echo $list_ret->result->ret;
+        echo "<b />";
+    }
+
+    echo "<b />";
+    echo "<b />";
+    echo "test delObj interface...";
+    $ret_del = $client->delObj($token, $testfile, $ftype);
+    if ($ret_del->ret == $SUCCESS){
+        echo "delObj is ok. ";
+    }else{
+        echo "<b>delObj is error. <b />";
+        echo $ret_del->msg;
+        echo "<b />";
+        echo $ret_del->ret;
         echo "<b />";
     }
     
+    echo "<b />";
+    echo "<b />";
+    echo "test allocobj interface...";
+    $alloc_ret = $client->allocobj($token, $ftype, $testfile) ;
+    if ($alloc_ret->result->ret == $SUCCESS){
+        echo "allocobj is ok. ";
+        var_dump($alloc_ret->resourceid);
+    }else{
+        echo "<b>allocobj is error. <b />";
+        echo $alloc_ret->result->msg;
+        echo "<b />";
+        echo $alloc_ret->result->ret;
+        echo "<b />";
+    }
+    echo "<b />";
+    echo "<b />";
+    echo "test appendObj interface...";
+    $append_ret = $client->appendObj($token, $testfile, $filedata , $ftype);
+    if ($append_ret->ret == $SUCCESS){
+        echo "appendObj is ok. ";
+    }else{
+        echo "<b>appendObj is error. <b />";
+        echo $append_ret->msg;
+        echo "<b />";
+        echo $append_ret->ret;
+        echo "<b />";
+    }
+    echo "<b />";
+    echo "<b />";
+    echo "test queryobj offset interface...";
+    $queryobj_ret = $client->queryobj($token, $ftype, $testfile);
+    if ($queryobj_ret->result->ret == $SUCCESS){
+        echo "queryobj offset is ok. ";
+        var_dump($queryobj_ret->offset);
+        echo "<b />";
+    }else{
+        echo "<b>queryobj offset is error. <b />";
+        echo $queryobj_ret->msg;
+        echo "<b />";
+        echo $queryobj_ret->ret;
+        echo "<b />";
+    }
+    echo "<b />";
+    echo "<b />";
+    echo "test commitObj interface...";
+    $com_ret = $client->commitObj($token, $testfile, $odescr, $ftype);
+    if ($com_ret->ret == $SUCCESS){
+        echo "commitObj is ok. ";
+        echo "<b />";
+    }else{
+        echo "<b>commitObj is error. <b />";
+        echo $com_ret->msg;
+        echo "<b />";
+        echo $com_ret->ret;
+        echo "<b />";
+    }
+    $attribute = 'test1';
+    $ret1 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
     
-    echo "===22===<br />";
-    $auth_ret = $client->loginAuth('netdisk', 'aerohive', 1);
-    echo "===3===<br />";
-    var_dump($auth_ret);
-    $token = $auth_ret->token;
-    echo "===4===<br />";
-     
-    $list_ret = $client->queryFileList($token,1, 0, 10);
-    var_dump($list_ret);
-    echo "====22==<br />";
-    $q_ret = $client->QueryFile($token, 1, 'hello.txt');
-
-    var_dump($q_ret);
-    echo "====333==<br />";
-    exit(0);
-    $download_arr['objid'] =  'hello.txt';
-    $download_arr['offerset'] =  0;
-    $download_arr['reqlen'] =  1024*1024;
-    $download_param = new \proto\DownloadParam($download_arr);
-
-    $download  = $client->downloadFile($token, $download_param);
-    var_dump($download);
-
-    echo "====4444==<br />";
-    $alloc_ret = $client->allocobj($token, 1, 'test2.txt') ;
-    var_dump($alloc_ret);
-    echo "====5555==<br />";
-
-    //     exit(0);
-    //     echo "1-----------<br />";
-    //     $token = "01b01749295bde67648c687b44ff408c";
-    //     $filename = "aa.txt";
-    //     $offer_star = 0;
-    //     echo "2-----------<br />";
-    //     $param['filename'] = $filename;
-    //     $param['offerstar'] = $offer_star;
-    //     $param['bin'] = 0;
-
-    //     $filepath = '/tmp/test.thrift';
-    //     if (file_exists($filepath)){
-    //         $filename = basename($filepath);
-    //         print $filename;
-    //         try {
-    //             $fp = fopen($filepath, 'rb');
-    //             $filesize = filesize($filepath);
-
-    //             $read_size = 100;
-    //             $offer_end = $offer_star + $read_size;
-    //             $reload = TRUE;
-
-
-
-    //             // 剩余长度
-    //             header(sprintf('content-length:%u',$read_size));
-
-    //             // range信息
-    //             header(sprintf('content-range:bytes %s-%s/%s', $offer_star, $offer_end, $file_size));
-
-
-
-    //             // fp指针跳到断点位置
-    //             fseek($fp, sprintf('%u', $offer_star));
-
-    //             $read_bin = null;
-
-    //             if (!feof($fp)){
-    //                 $read_bin = fread($fp, round($offer_star,0));
-    //                 ob_flush();
-    //                 flush();
-    //                 //sleep(1); // 用于测试,减慢下载速度
-    //             }
-
-    //             $param['token'] = $token;
-    //             $param['filename'] = $filename;
-    //             $param['offerstar'] = $offer_star;
-    //             $param['bin'] = $read_bin;
-
-    //             $uploadParam = new \proto\UploadParam($param);
-
-    //             $upload_ret = $client->uploadFile($uploadParam);
-    //             print "<br />********************<br />";
-    //             var_dump($upload_ret);
-    //             print "<br />********************<br />";
-
-    //         } catch (Exception $e) {
-    //             print $e;
-    //         }finally {
-    //             ($fp!=null) && fclose($fp);
-    //         }
-    //     }
-    //     exit(0);
-    //     $ret = $client->verificationLoginAuth('hzshark', 'aerohive', 'ssss');
-    //     var_dump($ret);
-    //     print "<br />********************<br />";
-    //     $ret = $client->loginAuthApp('loginAuthApp','hzshark', 'aerohive', 2);
-    //     var_dump($ret);
-    print "<br />********************<br />";
-    $ret = $client->queryFileList('hzshark', '1', 0,10);
-    var_dump($ret);
-    print "<br />********************<br />";
-    //    $ret = $client->allocobj('token', 1,'allocobj1212122111');
-    //    var_dump($ret);
-    print "<br />********************<br />";
-    //     $comobj = array('com');
-    //     $ret = $client->commitObj('token', 'commitObj',$comobj);
-    //     var_dump($ret);
-    //     print "<br />********************<br />";
-    //     $appendobj = array('appendobj');
-    //     $ret = $client->appendObj('token','appendObj',$appendobj);
-    //     var_dump($ret);
-    //     print "<br />********************<br />";
+    var_dump($ret1);
+    
+    $q_ret = $client->QueryFile($token, $ftype, $testfile);
+var_dump($q_ret);
+    
     $transport->close();
 
 } catch (TException $tx) {

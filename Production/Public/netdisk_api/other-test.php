@@ -67,7 +67,7 @@ try {
     $client = new \proto\CloudHardDiskServiceClient($protocol);
 
     $transport->open();
-    $auth_ret = $client->loginAuth('hzshark', 'aerohive', 1);
+    $auth_ret = $client->loginAuth('13355786900', '123456', 1);
     echo "===3===<br />";
     var_dump($auth_ret);
     $token = $auth_ret->token;

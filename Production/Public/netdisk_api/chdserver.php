@@ -198,14 +198,14 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $password = isset($password) ? $password : '';
       $salt = isset($salt) ? $salt : 0;
       $token_c = new \lib\Token_Core();
-      $token = $token_c->grante_token();
+      
       $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'login auth error'));
-      $ret_arr = array('result'=>$ret_h, 'token'=>$token,'space'=>0,'uspace'=>0,
+      $ret_arr = array('result'=>$ret_h, 'token'=>'','space'=>0,'uspace'=>0,
           'aliasname'=>'', 'userid'=>0,'flow'=>0,'uflow'=>0);
-
       $user = new UserService();
       $status = $user->loginAuth($username, $password, $salt);
       if ($status){
+          $token = $token_c->grante_token();
           $userspace = $user->querySpace(session("userid"));
           session('space',$userspace['space']);
           session('uspace',$userspace['uspace']);
@@ -357,7 +357,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $offset = 0;
       if ($token_c->is_token($token)){
           $user = new UserService();
-          $upload = $user->queryUserUploadId($token, $objid);
+          $upload = $user->queryUserUploadId(session('userid'), $objid);
           if (isset($upload['uploadid'])){
               $ret['ret'] = 0;
               $ret['msg'] = '';
@@ -674,19 +674,19 @@ public function queryThumbnail($token, $ftype, $objid){
                         exec($command, $output, $ret_var);
                     }catch (\Exception $e){
                         $reg_ret['status'] = 7;
-                        $reg_ret['msg'] = 'create user bucket have a exeption!'.$command;
+                        $reg_ret['msg'] = 'create user bucket have a exeption!';
                         break;
                     }
                     $conn = new cephService($host, $aws_key, $aws_secret_key);
                     if (!$conn->queryBucketExist($bucketname)){
                         $reg_ret['status'] = 2;
-                        $reg_ret['msg'] = 'create user bucket failed!'.$command;
+                        $reg_ret['msg'] = 'create user bucket failed!';
                         break;
                     }
                     
                 }
             }
-            $ret = array('ret'=>$reg_ret['status'],'msg'=>$reg_ret['msg'].$command);
+            $ret = array('ret'=>$reg_ret['status'],'msg'=>$reg_ret['msg']);
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
