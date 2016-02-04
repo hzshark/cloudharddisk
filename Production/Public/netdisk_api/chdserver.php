@@ -198,14 +198,13 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $password = isset($password) ? $password : '';
       $salt = isset($salt) ? $salt : 0;
       $token_c = new \lib\Token_Core();
-      
+      $token = $token_c->grante_token();
       $ret_h = new \proto\RetHead(array('ret'=>1,'msg'=>'login auth error'));
       $ret_arr = array('result'=>$ret_h, 'token'=>'','space'=>0,'uspace'=>0,
           'aliasname'=>'', 'userid'=>0,'flow'=>0,'uflow'=>0);
       $user = new UserService();
       $status = $user->loginAuth($username, $password, $salt);
       if ($status){
-          $token = $token_c->grante_token();
           $userspace = $user->querySpace(session("userid"));
           session('space',$userspace['space']);
           session('uspace',$userspace['uspace']);
