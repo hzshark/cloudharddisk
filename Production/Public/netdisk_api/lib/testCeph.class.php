@@ -23,6 +23,8 @@ define('AWS_CANONICAL_ID', 'hshao_uid');
 define('AWS_CANONICAL_NAME', 'hshao');
 define('HOST', 'adminnode');
 
+
+
 // Check for CURL
 if (!extension_loaded('curl') && !@dl(PHP_SHLIB_SUFFIX == 'so' ? 'curl.so' : 'php_curl.dll')) {
     exit("ERROR: CURL extension not loaded");
@@ -47,9 +49,11 @@ $Connection->allow_hostname_override(false);
 // instead of bucket.objects.dreamhost.com
 $Connection->enable_path_style();
 
- 
+$bucket = 'test';
+$region = \AmazonS3::DEFAULT_URL;
+$opt['location'] = 'adminnode';
 //列出bucket
-$ListResponse = $Connection->list_buckets();
+$ListResponse = $Connection->create_bucket($bucket, $region, $opt);
 // var_dump($ListResponse);
 $Buckets = $ListResponse->body->Buckets->Bucket;
 foreach ($Buckets as $Bucket) {
@@ -59,7 +63,7 @@ $Bucket_name = 'my-new-bucket-test';
 $files = $Connection->list_objects($Bucket_name);
 
 var_dump($files);
-
+exit(0);
 // $obj3 =  $Connection->get
 // $obj2 = $Connection->change_content_type($bucket, $filename, $contentType);
 

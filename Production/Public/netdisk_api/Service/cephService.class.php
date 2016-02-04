@@ -267,6 +267,19 @@ class cephService
             }else{
                 return false;
             }
+        }elseif ($Connection->if_object_exists($bucket_name, $object_name)){
+            $user = new UserService();
+            $upload = $user->queryUserUploadId(session('userid'), add);
+            $Connection->abort_multipart_upload($bucket_name, $object_name.'~', $upload['uploadid']);
+            $res = $Connection->delete_object($bucket_name, $object_name.'~');
+            $user->deleteUserUploadMarker(session('userid'), $object_name);
+            $part_file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$object_name.'~'.DIRECTORY_SEPARATOR;
+            rmdir($part_file_path);
+            if ($res->isOK()){
+                return TRUE;
+            }else{
+                return false;
+            }
         }
         return true;
     }

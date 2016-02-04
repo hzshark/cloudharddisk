@@ -70,7 +70,8 @@ try {
 
     $mobile = '13989497004';
     $passwd = 'aerohive';
-    $uspace = $client->RegistUser($mobile, $passwd);
+    $cat = '5676';
+    $uspace = $client->RegistUser($mobile, $passwd,$cat);
     var_dump($uspace);
     $auth_ret = $client->loginAuth($mobile, $passwd, 1);
     echo "===3===<br />";

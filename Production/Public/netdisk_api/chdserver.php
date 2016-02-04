@@ -121,11 +121,11 @@ use proto\UserInfo;
 
 class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
     private function _get_bucket_name_by_ftype($ftype){
-        $username = session('?username')?session('username'):TEST_USER;
+        $username = session('username');
         if (is_numericStart($username)){
             $username = 'nd'.$username;
         }
-        $userid = session('?userid')?session('userid'):TEST_USERID;
+        $userid = session('userid');
 
         switch ($ftype) {
             case 1:
@@ -163,8 +163,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($uploadParam->type);
           $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $aws_key = session('user_key');
+          $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
 
           if ($conn->uploadFile($Bucket_name, $filename, $bin)){
@@ -241,8 +241,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $aws_key = session('user_key');
+          $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
           $list_ret = $conn->listobjects($Bucket_name, $type);
 
@@ -264,8 +264,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $aws_key = session('user_key');
+          $aws_secret_key = session('user_secret_key');
           $user = new UserService();
           $conn = new cephService($host, $aws_key, $aws_secret_key);
           $alloc_ret = $conn->allocobj($Bucket_name, $tagname);
@@ -298,8 +298,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $aws_key = session('user_key');
+          $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
           $user = new UserService();
           $upload = $user->queryUserUploadId(session('userid'), $oid);
@@ -330,8 +330,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           if( is_array( $data ) ){
               $Bucket_name = self::_get_bucket_name_by_ftype($type);
               $host = CEPH_HOST;
-              $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-              $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+              $aws_key = session('user_key');
+              $aws_secret_key = session('user_secret_key');
               $conn = new cephService($host, $aws_key, $aws_secret_key);
               $user = new UserService();
               $upload = $user->queryUserUploadId(session('userid'), $oid);
@@ -379,8 +379,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           if ($type == 5){
               $host = CEPH_HOST;
-              $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-              $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+              $aws_key = session('user_key');
+              $aws_secret_key = session('user_secret_key');
               $conn = new cephService($host, $aws_key, $aws_secret_key);
               $Buckets = array();
               $userTypes = array(1,2,3,6,7);
@@ -409,8 +409,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($param->type);
           $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $aws_key = session('user_key');
+          $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
 
           $string = $conn->downloadFile($Bucket_name, $filename, $offer_set, $buf_size);
@@ -436,8 +436,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $token = $param->token;
       $Bucket_name = self::_get_bucket_name_by_ftype($type);
       $host = CEPH_HOST;
-      $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-      $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+      $aws_key = session('user_key');
+      $aws_secret_key = session('user_secret_key');
       $conn = new cephService($host, $aws_key, $aws_secret_key);
       $ret_url = '';
       $buf_size = 1024*1024;
@@ -461,8 +461,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           $bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $aws_key = session('user_key');
+          $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
 
           $response = $conn->queryObjectMetadata($bucket_name, $objid);
@@ -487,8 +487,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $aws_key = session('user_key');
+          $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
 
           $ret = $conn->queryFile($Bucket_name, $fname);
@@ -515,8 +515,8 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $aws_key = session('user_key');
+          $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
           if ($conn->deleteObject($Bucket_name, $oid)){
               $ret = array('ret'=>0,'msg'=>'');
@@ -610,8 +610,8 @@ public function queryThumbnail($token, $ftype, $objid){
       if ($token_c->is_token($token)){
           $Bucket_name = self::_get_bucket_name_by_ftype(6);
           $host = CEPH_HOST;
-          $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-          $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
+          $aws_key = session('user_key');
+          $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
           $gen_ret = $conn->queryThumbnail($Bucket_name, $objid);
           if ($gen_ret['status'] == 0){
@@ -658,9 +658,9 @@ public function queryThumbnail($token, $ftype, $objid){
             $cb_ret = '';
             if ($reg_ret['status'] == 0){
                 $host = CEPH_HOST;
-                $aws_key = session('?user_key')?session('user_key'):AWS_KEY;
-                $aws_secret_key = session('?user_secret_key')?session('user_secret_key'):AWS_SECRET_KEY;
-                $conn = new cephService($host, $aws_key, $aws_secret_key);
+                $aws_key = session('user_key');
+                $aws_secret_key = session('user_secret_key');
+                
                 $Buckets = array();
                 $userTypes = array(1,2,3,6,7);
                 foreach ($userTypes as $type){
@@ -671,21 +671,22 @@ public function queryThumbnail($token, $ftype, $objid){
                         $python_script = __DIR__.'/lib/createUserBucket.py';
                         $param = '-a '.session('user_key').' -s '.session('user_secret_key').' -b '.$bucketname;
                         $command = $pythonpath.' '.$python_script.' '.$param;
-                        system($command);
-                    }catch (Exception $e){
+                        exec($command, $output, $ret_var);
+                    }catch (\Exception $e){
                         $reg_ret['status'] = 7;
-                        $reg_ret['msg'] = 'create user bucket have a exeption!';
+                        $reg_ret['msg'] = 'create user bucket have a exeption!'.$command;
                         break;
                     }
+                    $conn = new cephService($host, $aws_key, $aws_secret_key);
                     if (!$conn->queryBucketExist($bucketname)){
                         $reg_ret['status'] = 2;
-                        $reg_ret['msg'] = 'create user bucket failed!';
+                        $reg_ret['msg'] = 'create user bucket failed!'.$command;
                         break;
                     }
                     
                 }
             }
-            $ret = array('ret'=>$reg_ret['status'],'msg'=>$reg_ret['msg']);
+            $ret = array('ret'=>$reg_ret['status'],'msg'=>$reg_ret['msg'].$command);
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
