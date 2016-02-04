@@ -85,6 +85,7 @@ try {
     $testfile = 'test001.jpg';
     $filedata = 'test data';
     $odescr = array('test1'=>'testa','test2'=>'testb');
+    $attribute = 'test1';
     echo "test getver interface...";
     echo "<br />";
     $res_ver = $client->GetVer();
@@ -172,6 +173,24 @@ try {
         echo $fee_ret->result->msg;
         echo "<br />";
     }
+    
+    echo "<br />";
+    echo "<br />";
+    echo "test querusage interface...";
+    echo "<br />";
+    $usage_ret = $client->querusage($token, 5);
+    if ($usage_ret->result->ret == $SUCCESS){
+        echo "querusage is ok. ";
+        echo "querusage return value:";
+        var_dump('usage=>'.$usage_ret->usage);
+        var_dump('capacity=>'.$usage_ret->capacity);
+        echo "<br />";
+    }else{
+        echo "<b>querusage is error. </b>";
+        echo $usage_ret->result->msg;
+        echo "<br />";
+    }
+    
     echo "<br />";
     echo "<br />";
     echo "test queryFileList interface...";
@@ -257,13 +276,39 @@ try {
         echo $com_ret->ret;
         echo "<br />";
     }
-    $attribute = 'test1';
-    $ret1 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
     
-    var_dump($ret1);
-    
-    $q_ret = $client->QueryFile($token, $ftype, $testfile);
-var_dump($q_ret);
+    echo "<br />";
+    echo "<br />";
+    echo "test queryAttribute interface...";
+    $qatt_ret = $client->queryAttribute($token, $attribute, $testfile, $ftype);
+    if ($qatt_ret->result->ret == $SUCCESS){
+        echo "queryAttribute is ok. ";
+        var_dump($qatt_ret->attribute_value);
+        echo "<br />";
+    }else{
+        echo "<b>queryAttribute is error. </b>";
+        echo $qatt_ret->result->ret;
+        echo "<br />";
+        echo $qatt_ret->result->msg;
+        echo "<br />";
+    }
+    echo "<br />";
+    echo "<br />";
+    echo "test QueryFile interface...";
+    $qfile_ret = $client->QueryFile($token, $ftype, $testfile);
+    if ($qfile_ret->result->ret == $SUCCESS){
+        echo "QueryFile is ok. ";
+        var_dump($qfile_ret->finfo);
+        echo "<br />";
+    }else{
+        echo "<b>QueryFile is error. </b>";
+        echo $qfile_ret->result->ret;
+        echo "<br />";
+        echo $qfile_ret->result->msg;
+        echo "<br />";
+    }
+    echo "<br />";
+    echo "<br />";
     
     $transport->close();
 
