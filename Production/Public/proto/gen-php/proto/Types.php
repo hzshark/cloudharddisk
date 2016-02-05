@@ -48,6 +48,7 @@ final class FTYPE {
   const STORE = 5;
   const PICTURE = 6;
   const MUSIC = 7;
+  const NOTEPAD = 8;
   static public $__names = array(
     1 => 'NORMAL',
     2 => 'SMS',
@@ -56,6 +57,7 @@ final class FTYPE {
     5 => 'STORE',
     6 => 'PICTURE',
     7 => 'MUSIC',
+    8 => 'NOTEPAD',
   );
 }
 
@@ -3241,6 +3243,10 @@ class VersionResult {
    * @var string
    */
   public $url = null;
+  /**
+   * @var string
+   */
+  public $whatsnew = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3258,6 +3264,10 @@ class VersionResult {
           'var' => 'url',
           'type' => TType::STRING,
           ),
+        4 => array(
+          'var' => 'whatsnew',
+          'type' => TType::STRING,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -3269,6 +3279,9 @@ class VersionResult {
       }
       if (isset($vals['url'])) {
         $this->url = $vals['url'];
+      }
+      if (isset($vals['whatsnew'])) {
+        $this->whatsnew = $vals['whatsnew'];
       }
     }
   }
@@ -3314,6 +3327,13 @@ class VersionResult {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->whatsnew);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -3343,6 +3363,11 @@ class VersionResult {
     if ($this->url !== null) {
       $xfer += $output->writeFieldBegin('url', TType::STRING, 3);
       $xfer += $output->writeString($this->url);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->whatsnew !== null) {
+      $xfer += $output->writeFieldBegin('whatsnew', TType::STRING, 4);
+      $xfer += $output->writeString($this->whatsnew);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

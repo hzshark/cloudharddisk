@@ -18,7 +18,8 @@ public enum FTYPE implements org.apache.thrift.TEnum {
   DFlOW(4),
   STORE(5),
   PICTURE(6),
-  MUSIC(7);
+  MUSIC(7),
+  NOTEPAD(8);
 
   private final int value;
 
@@ -53,6 +54,8 @@ public enum FTYPE implements org.apache.thrift.TEnum {
         return PICTURE;
       case 7:
         return MUSIC;
+      case 8:
+        return NOTEPAD;
       default:
         return null;
     }
