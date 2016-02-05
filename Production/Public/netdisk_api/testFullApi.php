@@ -69,7 +69,7 @@ $ERR_OCCURED              = 7;// 未知异常错误
 $FILE_EXIST               = 8;// 文件已经存在
 
 function print_log(){
-    
+
 }
 
 try {
@@ -78,7 +78,7 @@ try {
     $protocol = new TBinaryProtocol($transport);
     $client = new \proto\CloudHardDiskServiceClient($protocol);
     $transport->open();
-    
+
     $user = '13355786900';
     $password = '123456';
     $ftype = 6;
@@ -89,13 +89,15 @@ try {
     echo "test getver interface...";
     echo "<br />";
     $res_ver = $client->GetVer();
-    
+
     if ($res_ver->result->ret == $SUCCESS){
         echo "getver is ok. ";
         echo "getver return value:";
-        echo $res_ver->url;
+        echo 'url=>'.$res_ver->url;
         echo "<br />";
-        echo $res_ver->version;
+        echo 'version=>'.$res_ver->version;
+        echo "<br />";
+        echo 'whatsnew=>'.$res_ver->whatsnew;
         echo "<br />";
     }else{
         echo "<b>getver is error. </b>";
@@ -173,7 +175,7 @@ try {
         echo $fee_ret->result->msg;
         echo "<br />";
     }
-    
+
     echo "<br />";
     echo "<br />";
     echo "test querusage interface...";
@@ -190,7 +192,7 @@ try {
         echo $usage_ret->result->msg;
         echo "<br />";
     }
-    
+
     echo "<br />";
     echo "<br />";
     echo "test queryFileList interface...";
@@ -219,7 +221,7 @@ try {
         echo $ret_del->ret;
         echo "<br />";
     }
-    
+
     echo "<br />";
     echo "<br />";
     echo "test allocobj interface...";
@@ -276,7 +278,7 @@ try {
         echo $com_ret->ret;
         echo "<br />";
     }
-    
+
     echo "<br />";
     echo "<br />";
     echo "test queryAttribute interface...";
@@ -309,7 +311,7 @@ try {
     }
     echo "<br />";
     echo "<br />";
-    
+
     $transport->close();
 
 } catch (TException $tx) {

@@ -120,6 +120,10 @@ use proto\UserAliasResult;
 use proto\UserInfo;
 
 class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
+    private function _get_user_all_ftype(){
+        return array(1,2,3,6,7,8);
+    }
+
     private function _get_bucket_name_by_ftype($ftype){
         $username = session('username');
         if (is_numericStart($username)){
@@ -149,6 +153,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
             case 7:
                 return $username.$userid.'music';
             break;
+            case 8:
+                return $username.$userid.'notepad';
+                break;
             default:
                 return $username.$userid.'other';
             break;
@@ -190,9 +197,20 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret_arr = array('result'=>$ret_h,
           'token'=>$token,'space'=>1024,'uspace'=>512);
       $loginret = new loginResult($ret_arr);
-
       return $loginret;
   }
+
+  public function loginAuthApp($imie, $username, $password, $salt){
+      $token_c = new \lib\Token_Core();
+      $token = $token_c->grante_key();
+      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'loginAuthApp=>'.$imie.'|'.$username.'|'.$password.'|'.$salt));
+      $ret_arr = array('result'=>$ret_h,
+          'token'=>$token,'space'=>1024,'uspace'=>512);
+      $loginret = new loginResult($ret_arr);
+      return $loginret;
+
+  }
+
   public function loginAuth($username, $password, $salt){
       $username = isset($username) ? $username : '';
       $password = isset($password) ? $password : '';
@@ -223,17 +241,6 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       return $ret;
   }
 
-  public function loginAuthApp($imie, $username, $password, $salt){
-      $token_c = new \lib\Token_Core();
-      $token = $token_c->grante_key();
-      $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>'loginAuthApp=>'.$imie.'|'.$username.'|'.$password.'|'.$salt));
-      $ret_arr = array('result'=>$ret_h,
-          'token'=>$token,'space'=>1024,'uspace'=>512);
-      $loginret = new loginResult($ret_arr);
-
-      return $loginret;
-
-  }
   public function queryFileList($token, $type, $start, $excpet_num){
       $token_c = new \lib\Token_Core();
       $ret_h = new \proto\RetHead(array('ret'=>4,'msg'=>'query file list token invalid!'));
@@ -382,7 +389,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               $aws_secret_key = session('user_secret_key');
               $conn = new cephService($host, $aws_key, $aws_secret_key);
               $Buckets = array();
-              $userTypes = array(1,2,3,6,7);
+              $userTypes = self::_get_user_all_ftype();
               foreach ($userTypes as $type){
                   $Buckets [] = self::_get_bucket_name_by_ftype($type);
               }
@@ -563,10 +570,10 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $misc = new MiscService();
       $ver = $misc->queryVersionInfo();
       $verUrl = $misc->queryVersionUrl();
-
+      $whatsnew  =  $misc->queryVersionWhatsNew();
       $ret_h = new \proto\RetHead(array('ret'=>0,'msg'=>''));
       $ret =  new VersionResult(array('result'=>$ret_h,'version'=>$ver['value'],
-          'url'=>$verUrl['value']));
+          'url'=>$verUrl['value'],'whatsnew'=>$whatsnew['value']));
       return $ret;
   }
 
@@ -659,9 +666,9 @@ public function queryThumbnail($token, $ftype, $objid){
                 $host = CEPH_HOST;
                 $aws_key = session('user_key');
                 $aws_secret_key = session('user_secret_key');
-                
+
                 $Buckets = array();
-                $userTypes = array(1,2,3,6,7);
+                $userTypes = self::_get_user_all_ftype();
                 foreach ($userTypes as $type){
                     $bucketname = self::_get_bucket_name_by_ftype($type);
                     //$cb_ret = $conn->createUserBucket($bucketname);
@@ -682,7 +689,7 @@ public function queryThumbnail($token, $ftype, $objid){
                         $reg_ret['msg'] = 'create user bucket failed!';
                         break;
                     }
-                    
+
                 }
             }
             $ret = array('ret'=>$reg_ret['status'],'msg'=>$reg_ret['msg']);
