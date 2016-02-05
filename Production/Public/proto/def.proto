@@ -47,9 +47,10 @@ enum FTYPE{
   SMS = 2,		// 短信备份文件
   ADDRESS = 3,		//通讯录备份文件
   DFlOW = 4,            // 3g 流量
-  STORE   =5 ,              //存储 
+  STORE   =5 ,            //存储 
   PICTURE = 6 ,		//图片
-  MUSIC =7              //音乐
+  MUSIC =7  ,            //音乐
+  NOTEPAD =8		 //记事簿	
   }
 
 
@@ -260,6 +261,7 @@ struct VersionResult {
     1:RetHead result;
     2:string version;
     3:string url;
+    4:string whatsnew;
 }
 
 struct CaptchaResult {
