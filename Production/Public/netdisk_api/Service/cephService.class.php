@@ -98,7 +98,6 @@ class cephService
     }
 
     public function allocobj($bucket_name, $object_name){
-
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $status = $Connection->if_object_exists($bucket_name, $object_name);
         $ret = $this->ERR_OCCURED;
@@ -115,7 +114,9 @@ class cephService
             $res = $Connection->initiate_multipart_upload($bucket_name, $object_name);
             if ($res->isOK()){
                 $upload_id = $res->body->UploadId;
-                if (mkdirs(session('user_upload_path').DIRECTORY_SEPARATOR.$object_name)){
+                $file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$object_name;
+                removeFile($file_path);
+                if (mkdirs($file_path)){
                     $ret = $this->SUCCESS;
                 }else{
                     $ret = $this->ERR_OCCURED;
@@ -158,11 +159,11 @@ class cephService
             $readbin = file_get_contents($part_file_path);
             $opt = array('meta'=>$data);
             if (self::uploadFile($bucket_name, $object_name, $readbin, $opt)){
-                $ret_status = 0;
-                $err_msg = 'complete commit object, object less than 5M use uploadfile funciotn.'.$part_file_path;
                 $Connection->abort_multipart_upload($bucket_name, $object_name.'~', $upload_id);
                 $Connection->delete_object($bucket_name, $object_name.'~');
                 $user->deleteUserUploadMarker($token, $object_name);
+                $ret_status = 0;
+                $err_msg = 'complete commit object, object less than 5M use uploadfile funciotn.';
             }else{
                 $ret_status = 2;
                 $err_msg = 'complete commit object, object less than 5M use uploadfile funciotn failed.';
@@ -176,7 +177,6 @@ class cephService
                 $CFResponse = $Connection->list_parts($bucket_name, $object_name.'~', $upload_id);
                 $res = $Connection->complete_multipart_upload($bucket_name, $object_name.'~', $upload_id, $CFResponse);
                 if ($res->isOK()){
-                    removeFile($part_file_path);
                     $ret_status = 0;
                     $err_msg = 'complete multipart upload successfully!';
                     $user->deleteUserUploadMarker($token, $object_name);
@@ -193,6 +193,8 @@ class cephService
                 $err_msg = 'complete multipart upload filaed,reason is upload last part failed!';
             }
         }
+//         unlink($part_file_path);
+        removeFile($part_file_path);
         return array('status'=>$ret_status, 'msg'=>$err_msg);
     }
 
@@ -267,7 +269,7 @@ class cephService
             }else{
                 return false;
             }
-        }elseif ($Connection->if_object_exists($bucket_name, $object_name)){
+        }elseif ($Connection->if_object_exists($bucket_name, $object_name.'~')){
             $user = new UserService();
             $upload = $user->queryUserUploadId(session('userid'), add);
             $Connection->abort_multipart_upload($bucket_name, $object_name.'~', $upload['uploadid']);
@@ -358,19 +360,19 @@ class cephService
         $response = $Connection->get_object_metadata($bucket_name, $object_name);
         return $response;
     }
-    
+
     public function queryBucketExist($bucket){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
-        $buckets = $Connection->get_bucket_list(); 
+        $buckets = $Connection->get_bucket_list();
         foreach ($buckets as $name){
             if ($name == $bucket){
                 return True;
             }
         }
         return FALSE;
-        
-        
-    
+
+
+
     }
 
 }

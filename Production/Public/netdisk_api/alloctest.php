@@ -66,33 +66,47 @@ try {
     $client = new \proto\CloudHardDiskServiceClient($protocol);
 
     $transport->open();
-    $auth_ret = $client->loginAuth('13989497004', 'aerohive', 1);
-    var_dump($auth_ret);
-    $token = $auth_ret->token;
+//     $auth_ret = $client->loginAuth('13989497004', 'aerohive', 1);
+//     var_dump($auth_ret);
+//     $token = $auth_ret->token;
 
-//     $token = '3cffe26fa5a787dc9dfa4321d43d4dbb';
+    $token ="f9d2db952c7bcee6ca913c90670d8e81";
     echo $token,' <br />';
-    $testfile = 'test0002.txt';
-    $ftype = 1;
-    $bin = 'test';
+    $testfile = 'netdiskportrait';
+    $ftype = 6;
     echo "===11===<br />";
-    $alloc_ret = $client->allocobj($token, $ftype, $testfile) ;
-    var_dump($alloc_ret);
-    echo "====5555==<br />";
-    $append_ret = $client->appendObj($token, $testfile, $bin , $ftype);
-    var_dump($append_ret);
+//     $alloc_ret = $client->allocobj($token, $ftype, $testfile) ;
+//     var_dump($alloc_ret);
+//     echo "====5555==<br />";
+//     $append_ret = $client->appendObj($token, $testfile, $bin , $ftype);
+//     var_dump($append_ret);
 
-    $odescr = array('test1'=>'testa','test2'=>'testb');
+//     $odescr = array('test1'=>'testa','test2'=>'testb');
 
-    $com_ret = $client->commitObj($token, $testfile, $odescr, $ftype);
-    var_dump($com_ret);
-    $attribute = 'test1';
-    $ret1 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
-    var_dump($ret1);
-    $attribute = 'test2';
-    $ret2 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
-    var_dump($ret2);
+//     $com_ret = $client->commitObj($token, $testfile, $odescr, $ftype);
+//     var_dump($com_ret);
+//     $attribute = 'test1';
+//     $ret1 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
+//     var_dump($ret1);
+//     $attribute = 'test2';
+//     $ret2 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
+//     var_dump($ret2);
 
+    $q_ret = $client->QueryFile($token, $ftype, 'netdiskportrait');
+
+    var_dump($q_ret);
+    echo "====333==<br />";
+
+    $filepath = 'C:\\Users\\Administrator\\Desktop\\test11.jpg';
+    $download_arr['objid'] =  'netdiskportrait';
+    $download_arr['offerset'] =  0;
+    $download_arr['reqlen'] =  74671;
+    $download_arr['type'] =  $ftype;
+    $download_param = new \proto\DownloadParam($download_arr);
+
+    $download  = $client->downloadFile($token, $download_param);
+    var_dump($download->result);
+    file_put_contents($filepath, $download->bin);
     $transport->close();
 
 } catch (TException $tx) {

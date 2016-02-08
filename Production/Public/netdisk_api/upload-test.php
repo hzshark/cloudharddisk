@@ -67,47 +67,47 @@ try {
     $client = new \proto\CloudHardDiskServiceClient($protocol);
 
     $transport->open();
-//     $auth_ret = $client->loginAuth('hzshark', 'aerohive', 1);
-//     echo "===3===<br />";
+//     $auth_ret = $client->loginAuth('13989497004', 'aerohive', 1);
+//     echo "===3====<br />";
 //     var_dump($auth_ret);
 //     $token = $auth_ret->token;
 //     echo "===4===<br />";
-    $token ="f3452dd52ecfd725bc14781d3c16b019";
+    $token ="f9d2db952c7bcee6ca913c90670d8e81";
     $ftype = 6;
 
-    $filename = 'test10.jpg';
+
 
     $list_ret = $client->queryFileList($token,$ftype, 0, 10);
     var_dump($list_ret);
 
-    echo "====4444==<br />";
-    $alloc_ret = $client->allocobj($token, $ftype, $filename) ;
-    var_dump($alloc_ret);
-    echo "====5555==<br />";
+//     echo "====4444==<br />";
+//     $alloc_ret = $client->allocobj($token, $ftype, 'netdiskportrait') ;
+//     var_dump($alloc_ret);
+//     echo "====5555==<br />";
 
 
-    $offer_star = 0;
-    $param['filename'] = $filename;
-    $param['offerstar'] = $offer_star;
-    $param['bin'] = 0;
+//     $offer_star = 0;
+//     $param['filename'] = $filename;
+//     $param['offerstar'] = $offer_star;
+//     $param['bin'] = 0;
 
-    $filepath = 'C:\\Users\\Administrator\\Desktop\\'.$filename;
+    $filepath = 'C:\\Users\\Administrator\\Desktop\\test10.jpg';
     if (file_exists($filepath)){
 
-    $filename = basename($filepath);
-    $read_size = getfilesize($filename);
+//     $filename = basename($filepath);
+//     $read_size = getfilesize($filename);
     $read_bin = file_get_contents($filepath);
     echo strlen($read_bin);
 
-    $append_ret = $client->appendObj($token, $filename, $read_bin, $ftype);
-    echo "====466666==<br />";
-    var_dump($append_ret);
-    echo "====77777==<br />";
-    $ret = $client->commitObj($token, $filename,array('comment'=>'test pic'),$ftype);
-    var_dump($ret);
+//     $append_ret = $client->appendObj($token, 'netdiskportrait', $read_bin, $ftype);
+//     echo "====466666==<br />";
+//     var_dump($append_ret);
+//     echo "====77777==<br />";
+//     $ret = $client->commitObj($token, 'netdiskportrait',array('comment'=>'test pic'),$ftype);
+//     var_dump($ret);
 
     }
-    $q_ret = $client->QueryFile($token, $ftype, $filename);
+    $q_ret = $client->QueryFile($token, $ftype, 'netdiskportrait');
 
     var_dump($q_ret);
     echo "====333==<br />";
