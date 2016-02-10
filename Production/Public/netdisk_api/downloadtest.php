@@ -50,7 +50,6 @@ use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\THttpClient;
 use Thrift\Transport\TBufferedTransport;
 use Thrift\Exception\TException;
-use proto\DownloadParam;
 
 try {
 //     if (array_search('--http', $argv)) {
@@ -67,48 +66,58 @@ try {
     $client = new \proto\CloudHardDiskServiceClient($protocol);
 
     $transport->open();
-//     $auth_ret = $client->loginAuth('13989497004', 'aerohive', 1);
-//     echo "===3====<br />";
+    $user = '13366649921';
+    $password = '654321';
+//     $auth_ret = $client->loginAuth($user, $password, 1);
 //     var_dump($auth_ret);
 //     $token = $auth_ret->token;
-//     echo "===4===<br />";
+
     $token ="f7a7bcb9ce6221b41ef9f0526ff3a355";
+    echo $token,' <br />';
+    $testfile = 'hshao_test001.ntp';
     $ftype = 8;
+    echo "===11===<br />";
+//     $alloc_ret = $client->allocobj($token, $ftype, $testfile) ;
+//     var_dump($alloc_ret);
+//     echo "====5555==<br />";
+//     $append_ret = $client->appendObj($token, $testfile, $bin , $ftype);
+//     var_dump($append_ret);
 
-    $filename = 'hshao_test001.ntp';
+//     $odescr = array('test1'=>'testa','test2'=>'testb');
 
-    $list_ret = $client->queryFileList($token,$ftype, 0, 10);
-    var_dump($list_ret);
-    $ret_del = $client->delObj($token, $filename, $ftype);
-    var_dump($ret_del);
-    echo "====4444==<br />";
-    $alloc_ret = $client->allocobj($token, $ftype, $filename) ;
-    var_dump($alloc_ret);
-    echo "====5555==<br />";
+//     $com_ret = $client->commitObj($token, $testfile, $odescr, $ftype);
+//     var_dump($com_ret);
+//     $attribute = 'test1';
+//     $ret1 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
+//     var_dump($ret1);
+//     $attribute = 'test2';
+//     $ret2 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
+//     var_dump($ret2);
 
-    $filepath = 'C:\\Users\\Administrator\\Desktop\\test.ntp';
-    if (file_exists($filepath)){
-
-//     $filename = basename($filepath);
-    $read_bin = file_get_contents($filepath);
-    echo "read len=>".strlen($read_bin);
-
-    $append_ret = $client->appendObj($token, $filename, $read_bin, $ftype);
-    echo "====466666==<br />";
-    var_dump($append_ret);
-    echo "====77777==<br />";
-    $ret = $client->commitObj($token, $filename,array('comment'=>'test ntp'),$ftype);
-    var_dump($ret);
-
-    }
-    $q_ret = $client->QueryFile($token, $ftype, $filename);
+    $q_ret = $client->QueryFile($token, $ftype, $testfile);
 
     var_dump($q_ret);
     echo "====333==<br />";
-    print "<br />********************<br />";
-    $list_ret = $client->queryFileList($token,$ftype, 0, 10);
-    var_dump($list_ret);
-    print "<br />********************<br />";
+    $filepath = 'C:\\Users\\Administrator\\Desktop\\'.$testfile."download";
+    $download_arr['objid'] =  $testfile;
+    $download_arr['offerset'] =  0;
+    $download_arr['reqlen'] =  $q_ret->finfo->filesize/2;
+    $download_arr['type'] =  $ftype;
+    $download_param = new \proto\DownloadParam($download_arr);
+
+    $download  = $client->downloadFile($token, $download_param);
+    var_dump($download->result);
+    file_put_contents($filepath, $download->bin,FILE_APPEND | LOCK_EX);
+
+    $download_arr['objid'] =  $testfile;
+    $download_arr['offerset'] =  $q_ret->finfo->filesize/2;
+    $download_arr['reqlen'] =  $q_ret->finfo->filesize;
+    $download_arr['type'] =  $ftype;
+    $download_param = new \proto\DownloadParam($download_arr);
+    $download1  = $client->downloadFile($token, $download_param);
+    var_dump($download1->result);
+    file_put_contents($filepath, $download1->bin,FILE_APPEND | LOCK_EX);
+
 
     $transport->close();
 

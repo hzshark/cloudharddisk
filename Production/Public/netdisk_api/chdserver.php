@@ -342,7 +342,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               $user = new UserService();
               $upload = $user->queryUserUploadId(session('userid'), $oid);
               if (isset($upload['uploadid'])){
-                $append_ret = $conn->commitObj($token,$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
+                $append_ret = $conn->commitObj(session('userid'),$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
                 $ret['ret'] = $append_ret['status'];
                 $ret['msg'] = $append_ret['msg'];
               }else {
@@ -418,7 +418,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           $aws_key = session('user_key');
           $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
-
+           if ($offer_set > 0){
+               $offer_set += 1;
+           }
           $string = $conn->downloadFile($Bucket_name, $filename, $offer_set, $buf_size);
           if (empty($string)){
               $h_ret = array('ret'=>2,'msg'=>'download File ['.$filename.'] failed');

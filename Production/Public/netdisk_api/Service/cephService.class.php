@@ -283,6 +283,7 @@ class cephService
                 return false;
             }
         }
+
         return true;
     }
     public function queryusage($Buckets) {
