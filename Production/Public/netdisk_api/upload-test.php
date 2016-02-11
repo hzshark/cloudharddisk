@@ -75,10 +75,11 @@ try {
     $token ="f7a7bcb9ce6221b41ef9f0526ff3a355";
     $ftype = 8;
 
-    $filename = 'hshao_test001.ntp';
+    $filename = 'hshao_test002.ntp';
 
     $list_ret = $client->queryFileList($token,$ftype, 0, 10);
     var_dump($list_ret);
+//     exit(0);
     $ret_del = $client->delObj($token, $filename, $ftype);
     var_dump($ret_del);
     echo "====4444==<br />";

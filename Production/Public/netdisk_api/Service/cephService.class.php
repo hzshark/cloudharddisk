@@ -206,15 +206,20 @@ class cephService
 
     public function downloadFile($bucket_name, $object_name, $offerset, $buf_size){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
+        $ret = array('status'=>7,'msg'=>'downlaod file ['.$object_name.'], unkonw error! ');
         if ($Connection->if_object_exists($bucket_name, $object_name)){
-            $end_offerset = $offerset + $buf_size;
+            $end_offerset = $offerset + $buf_size - 1;
             $opt['range'] = $offerset.'-'. $end_offerset;
             $Object = $Connection->get_object($bucket_name, $object_name, $opt);
             if ($Object->isOK()){
-                return $Object->body;
+                $ret = array('status'=>0,'msg'=> $Object->body);
+            }else{
+                $ret = array('status'=>2,'msg'=>'downlaod file ['.$object_name.'], get obejct failed! '.$opt['range']);
             }
+        }else{
+            $ret = array('status'=>3,'msg'=>'downlaod file ['.$object_name.'], obejct not exist!! ');
         }
-        return '';
+        return $ret;
     }
 
     public function changeObjectACL($bucket_name, $object_name, $user_acl=self::ACL_PRIVATE){

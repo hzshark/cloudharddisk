@@ -74,7 +74,8 @@ try {
 
     $token ="f7a7bcb9ce6221b41ef9f0526ff3a355";
     echo $token,' <br />';
-    $testfile = 'hshao_test001.ntp';
+//     $testfile = '1455075113529.ntp';
+    $testfile = 'hshao_test002.ntp';
     $ftype = 8;
     echo "===11===<br />";
 //     $alloc_ret = $client->allocobj($token, $ftype, $testfile) ;
@@ -98,26 +99,29 @@ try {
 
     var_dump($q_ret);
     echo "====333==<br />";
-    $filepath = 'C:\\Users\\Administrator\\Desktop\\'.$testfile."download";
-    $download_arr['objid'] =  $testfile;
-    $download_arr['offerset'] =  0;
-    $download_arr['reqlen'] =  $q_ret->finfo->filesize/2;
-    $download_arr['type'] =  $ftype;
-    $download_param = new \proto\DownloadParam($download_arr);
+    $filepath = 'C:\\Users\\Administrator\\Desktop\\'.$testfile."1111";
+    $offerset = 0;
+    $total = $q_ret->finfo->filesize;
+    $readlen = 1000;
+    while ($offerset <= $total){
+        $download_arr['objid'] =  $testfile;
+        $download_arr['offerset'] =  $offerset;
+        $download_arr['reqlen'] =  $readlen;
+        $download_arr['type'] =  $ftype;
+        $download_param = new \proto\DownloadParam($download_arr);
+        $download  = $client->downloadFile($token, $download_param);
+        var_dump($download->result);
+        if ($download->result->ret == 0){
+            $offerset = $offerset + $readlen;
+            file_put_contents($filepath, $download->bin,FILE_APPEND | LOCK_EX);
+        }else{
+            throw \Exception('aa');
+        }
+    }
 
-    $download  = $client->downloadFile($token, $download_param);
-    var_dump($download->result);
-    file_put_contents($filepath, $download->bin,FILE_APPEND | LOCK_EX);
 
-    $download_arr['objid'] =  $testfile;
-    $download_arr['offerset'] =  $q_ret->finfo->filesize/2;
-    $download_arr['reqlen'] =  $q_ret->finfo->filesize;
-    $download_arr['type'] =  $ftype;
-    $download_param = new \proto\DownloadParam($download_arr);
-    $download1  = $client->downloadFile($token, $download_param);
-    var_dump($download1->result);
-    file_put_contents($filepath, $download1->bin,FILE_APPEND | LOCK_EX);
-
+    echo "<br />";
+    echo "<br />";
 
     $transport->close();
 

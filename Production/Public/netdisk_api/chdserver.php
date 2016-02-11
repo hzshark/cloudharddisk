@@ -418,21 +418,15 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           $aws_key = session('user_key');
           $aws_secret_key = session('user_secret_key');
           $conn = new cephService($host, $aws_key, $aws_secret_key);
-           if ($offer_set > 0){
-               $offer_set += 1;
-           }
-          $string = $conn->downloadFile($Bucket_name, $filename, $offer_set, $buf_size);
-          if (empty($string)){
-              $h_ret = array('ret'=>2,'msg'=>'download File ['.$filename.'] failed');
+          $ret= $conn->downloadFile($Bucket_name, $filename, $offer_set, $buf_size);
+          if ($ret['status'] != 0){
+              $h_ret = array('ret'=>$ret['status'],'msg'=>$ret['msg']);
           }else{
-              $h_ret = array('ret'=>0,'msg'=>'download File ['.$filename.'] successfully');
+              $h_ret = array('ret'=>$ret['status'],'msg'=>'download File ['.$filename.'] successfully');
           }
       }
-
       $ret_h = new \proto\RetHead($h_ret);
-
-      $ret_arr = array('result'=>$ret_h,'bin'=>isset($string)?$string:'');
-
+      $ret_arr = array('result'=>$ret_h,'bin'=>$ret['status'] == 0?$ret['msg']:'');
       $ret_d = new DownloadResult($ret_arr);
       return $ret_d;
   }
