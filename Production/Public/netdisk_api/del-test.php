@@ -72,21 +72,23 @@ try {
 //     var_dump($auth_ret);
 //     $token = $auth_ret->token;
 //     echo "===4===<br />";
-    $token ="f3452dd52ecfd725bc14781d3c16b019";
+    $token ="f7a7bcb9ce6221b41ef9f0526ff3a355";
     $ftype = 6;
 
-    $filename = 'test7.jpg';
-
-    $list_ret = $client->queryFileList($token,$ftype, 0, 10);
-    var_dump($list_ret);
+    $filename = 'netdiskportrait';
+    $queryobj_ret = $client->queryobj($token, $ftype, $filename);
+    var_dump($queryobj_ret);
+//     $list_ret = $client->queryFileList($token,$ftype, 0, 10);
+//     var_dump($list_ret);
     $del_ret = $client->delObj($token, $filename, $ftype) ;
     var_dump($del_ret);
-
+    $queryobj_ret = $client->queryobj($token, $ftype, $filename);
+    var_dump($queryobj_ret);
     echo "====333==<br />";
-    print "<br />********************<br />";
-    $list_ret = $client->queryFileList($token,$ftype, 0, 10);
-    var_dump($list_ret);
-    print "<br />********************<br />";
+//     print "<br />********************<br />";
+//     $list_ret = $client->queryFileList($token,$ftype, 0, 10);
+//     var_dump($list_ret);
+//     print "<br />********************<br />";
 
     $transport->close();
 

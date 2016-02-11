@@ -82,9 +82,9 @@ try {
 //     $user = '13355786900';
     $user = '13366649921';
     $password = '654321';
-    $ftype = 8;
-    $testfile = '1454851101792.ntp';// 145851101792
-    $filedata = 'test data';
+    $ftype = 6;
+    $testfile = 'netdiskportrait';// 145851101792
+    $filedata = file_get_contents('test10.jpg');
     $odescr = array('test1'=>'testa','test2'=>'testb');
     $attribute = 'test1';
 
@@ -185,20 +185,20 @@ try {
         echo $queryobj_ret->ret;
         echo "<br />";
     }
-//     echo "<br />";
-//     echo "<br />";
-//     echo "test allocobj interface...";
-//     $alloc_ret = $client->allocobj($token, $ftype, $testfile) ;
-//     if ($alloc_ret->result->ret == $SUCCESS){
-//         echo "allocobj is ok. ";
-//         var_dump($alloc_ret->resourceid);
-//     }else{
-//         echo "<b>allocobj is error. </b>";
-//         echo $alloc_ret->result->msg;
-//         echo "<br />";
-//         echo $alloc_ret->result->ret;
-//         echo "<br />";
-//     }
+    echo "<br />";
+    echo "<br />";
+    echo "test allocobj interface...";
+    $alloc_ret = $client->allocobj($token, $ftype, $testfile) ;
+    if ($alloc_ret->result->ret == $SUCCESS){
+        echo "allocobj is ok. ";
+        var_dump($alloc_ret->resourceid);
+    }else{
+        echo "<b>allocobj is error. </b>";
+        echo $alloc_ret->result->msg;
+        echo "<br />";
+        echo $alloc_ret->result->ret;
+        echo "<br />";
+    }
     echo "<br />";
     echo "<br />";
     echo "test appendObj interface...";
@@ -274,7 +274,49 @@ try {
     }
     echo "<br />";
     echo "<br />";
+    echo "<br />";
+    echo "<br />";
+    echo "test queryFileList interface...";
+    $list_ret = $client->queryFileList($token,$ftype, 0, 10);
+    if ($list_ret->result->ret == $SUCCESS){
+        echo "queryFileList is ok. ";
+        var_dump($list_ret->files);
+    }else{
+        echo "<b>queryFileList is error. </b>";
+        echo $list_ret->result->msg;
+        echo "<br />";
+        echo $list_ret->result->ret;
+        echo "<br />";
+    }
+    require_once __DIR__ .'/lib/basic.class.php';
+    echo "====333==<br />";
+    $filepath = '/data/html/www/netdisk_api/test11.jpg';
+    removeFile($filepath);
+    $offerset = 0;
+    $total = $qfile_ret->finfo->filesize;
+    $readlen = 1000;
+    while ($offerset <= $total){
+        $download_arr['objid'] =  $testfile;
+        $download_arr['offerset'] =  $offerset;
+        $download_arr['reqlen'] =  $readlen;
+        $download_arr['type'] =  $ftype;
+        $download_param = new \proto\DownloadParam($download_arr);
+        $download  = $client->downloadFile($token, $download_param);
+        var_dump($download->result);
+        if ($download->result->ret == 0){
+            $offerset = $offerset + $readlen;
+            file_put_contents($filepath, $download->bin,FILE_APPEND | LOCK_EX);
+        }else{
+            throw \Exception('aaa');
+        }
+    }
+    echo "<br />";
+    echo 'test10.jpg md5=>'.md5_file( '/data/html/www/netdisk_api/test10.jpg');
+    echo "<br />";
+    echo 'test11.jpg md5=>'.md5_file($filepath);
+    echo "<br />";
 
+    echo '<img src="test11.jpg"  />';
     $transport->close();
 
 } catch (TException $tx) {

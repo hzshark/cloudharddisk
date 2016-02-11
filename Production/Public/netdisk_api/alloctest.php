@@ -70,7 +70,7 @@ try {
 //     var_dump($auth_ret);
 //     $token = $auth_ret->token;
 
-    $token ="f9d2db952c7bcee6ca913c90670d8e81";
+    $token ="f7a7bcb9ce6221b41ef9f0526ff3a355";
     echo $token,' <br />';
     $testfile = 'netdiskportrait';
     $ftype = 6;
@@ -92,12 +92,12 @@ try {
 //     $ret2 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
 //     var_dump($ret2);
 
-    $q_ret = $client->QueryFile($token, $ftype, 'netdiskportrait');
+    $q_ret = $client->QueryFile($token, $ftype, $testfile);
 
     var_dump($q_ret);
     echo "====333==<br />";
 
-    $filepath = 'C:\\Users\\Administrator\\Desktop\\test11.jpg';
+    $filepath = 'C:\\Users\\Administrator\\Desktop\\test12.jpg';
     $download_arr['objid'] =  'netdiskportrait';
     $download_arr['offerset'] =  0;
     $download_arr['reqlen'] =  74671;

@@ -267,28 +267,23 @@ class cephService
 
     public function deleteObject($bucket_name, $object_name){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
+        $user = new UserService();
         if ($Connection->if_object_exists($bucket_name, $object_name)){
             $res = $Connection->delete_object($bucket_name, $object_name);
-            if ($res->isOK()){
-                return TRUE;
-            }else{
+            if (!$res->isOK()){
                 return false;
             }
         }elseif ($Connection->if_object_exists($bucket_name, $object_name.'~')){
-            $user = new UserService();
-            $upload = $user->queryUserUploadId(session('userid'), add);
+            $upload = $user->queryUserUploadId(session('userid'), $object_name);
             $Connection->abort_multipart_upload($bucket_name, $object_name.'~', $upload['uploadid']);
             $res = $Connection->delete_object($bucket_name, $object_name.'~');
-            $user->deleteUserUploadMarker(session('userid'), $object_name);
-            $part_file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$object_name.'~'.DIRECTORY_SEPARATOR;
-            rmdir($part_file_path);
-            if ($res->isOK()){
-                return TRUE;
-            }else{
+            if (!$res->isOK()){
                 return false;
             }
         }
-
+        $user->deleteUserUploadMarker(session('userid'), $object_name);
+        $part_file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$object_name.'~'.DIRECTORY_SEPARATOR;
+        removeFile($part_file_path);
         return true;
     }
     public function queryusage($Buckets) {
