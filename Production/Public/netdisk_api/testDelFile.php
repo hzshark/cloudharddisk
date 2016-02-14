@@ -122,9 +122,9 @@ try {
         echo "<br />";
     }else{
         echo "<b>queryobj offset is error. </b>";
-        echo $queryobj_ret->msg;
+        echo $queryobj_ret->result->msg;
         echo "<br />";
-        echo $queryobj_ret->ret;
+        echo $queryobj_ret->result->ret;
         echo "<br />";
     }
 
@@ -152,9 +152,9 @@ try {
         echo "<br />";
     }else{
         echo "<b>queryobj offset is error. </b>";
-        echo $queryobj_ret->msg;
+        echo $queryobj_ret->result->msg;
         echo "<br />";
-        echo $queryobj_ret->ret;
+        echo $queryobj_ret->result->ret;
         echo "<br />";
     }
     echo "<br />";
@@ -180,9 +180,9 @@ try {
         echo "<br />";
     }else{
         echo "<b>queryobj offset is error. </b>";
-        echo $queryobj_ret->msg;
+        echo $queryobj_ret->result->msg;
         echo "<br />";
-        echo $queryobj_ret->ret;
+        echo $queryobj_ret->result->ret;
         echo "<br />";
     }
     echo "<br />";
