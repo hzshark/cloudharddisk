@@ -75,7 +75,7 @@ try {
 //     $token ="f7a7bcb9ce6221b41ef9f0526ff3a355";
     $ftype = 1;
 
-    $filename = 'hshao_test.rar';
+    $filename = '李克勤 - 月半小夜曲.mp3';
 
     $list_ret = $client->queryFileList($token,$ftype, 0, 10);
     var_dump($list_ret);
@@ -91,7 +91,7 @@ try {
     var_dump($queryobj_ret);
     
     echo time();
-    $filepath = 'C:/Users/hzshark/Desktop/Mm.rar';
+    $filepath = 'C:/Users/hzshark/Desktop/nginx-1.9.7.tar.gz';
     if (file_exists($filepath)){
         $filesize = filesize($filepath);
         $offset = $queryobj_ret->offset;

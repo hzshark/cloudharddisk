@@ -62,7 +62,7 @@ if (MEMORY_LIMIT_ON) {
 }
 defined('APP_MODE') or define('APP_MODE', 'common'); // 应用模式 默认为普通模式
 defined('CONF_PARSE') or define('CONF_PARSE', '');
-define('APP_DEBUG', false);
+define('APP_DEBUG', true);
 define('CEPH_HOST', '192.168.150.23');
 define('DEFAULT_CACHE_PATH', __DIR__ .DIRECTORY_SEPARATOR.'RunCache');
 
@@ -208,7 +208,6 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           'token'=>$token,'space'=>1024,'uspace'=>512);
       $loginret = new loginResult($ret_arr);
       return $loginret;
-
   }
 
   public function loginAuth($username, $password, $salt){
@@ -268,6 +267,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret = array('ret'=>4,'msg'=>'alloc object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
+          if (APP_DEBUG){
+              file_put_contents('/var/log/nginx/chdserver.log', $token.'|allocobj|'.$tagname.'|'.$type.PHP_EOL, FILE_APPEND | LOCK_EX);
+          }
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
           $aws_key = session('user_key');
@@ -302,6 +304,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret = array('ret'=>4,'msg'=>'append object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
+      if (APP_DEBUG){
+              file_put_contents('/var/log/nginx/chdserver.log', $token.'|appendObj|'.$oid.'|'.$type.PHP_EOL, FILE_APPEND | LOCK_EX);
+          }
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
           $aws_key = session('user_key');
@@ -333,6 +338,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret = array('ret'=>4,'msg'=>'append object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
+          if (APP_DEBUG){
+              file_put_contents('/var/log/nginx/chdserver.log', $token.'|commitObj|'.PHP_EOL, FILE_APPEND | LOCK_EX);
+          }
           if( is_array( $data ) ){
               $Bucket_name = self::_get_bucket_name_by_ftype($type);
               $host = CEPH_HOST;
@@ -362,6 +370,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $token_c = new \lib\Token_Core();
       $offset = 0;
       if ($token_c->is_token($token)){
+          if (APP_DEBUG){
+              file_put_contents('/var/log/nginx/chdserver.log', $token.'|queryobj|'.$objid.'|'.$type.PHP_EOL, FILE_APPEND | LOCK_EX);
+          }
           $user = new UserService();
           $upload = $user->queryUserUploadId(session('userid'), $objid);
           if (isset($upload['uploadid'])){
@@ -515,6 +526,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret = array('ret'=>1,'msg'=>'delete object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
+          if (APP_DEBUG){
+              file_put_contents('/var/log/nginx/chdserver.log', $token.'|delObj|'.$oid.'|'.$type.PHP_EOL, FILE_APPEND | LOCK_EX);
+          }
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
           $aws_key = session('user_key');
