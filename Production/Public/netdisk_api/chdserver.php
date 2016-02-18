@@ -95,7 +95,6 @@ use proto\loginResult;
 use proto\uploaddResult;
 
 use proto\AllocObjResult;
-use proto\usageResult;
 use proto\DownloadResult;
 use proto\QueryFListResult;
 
@@ -304,8 +303,10 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret = array('ret'=>4,'msg'=>'append object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
-      if (APP_DEBUG){
+          if (APP_DEBUG){
+              $starttime = microtime();
               file_put_contents('/var/log/nginx/chdserver.log', $token.'|appendObj|'.$oid.'|'.$type.PHP_EOL, FILE_APPEND | LOCK_EX);
+//               file_put_contents('/var/log/nginx/chdserver.log', ''.time().'|appendObj| token'.PHP_EOL, FILE_APPEND | LOCK_EX);
           }
           $Bucket_name = self::_get_bucket_name_by_ftype($type);
           $host = CEPH_HOST;
@@ -331,6 +332,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           }
       }
       $ret_h = new \proto\RetHead($ret);
+      if (APP_DEBUG){
+          file_put_contents('/var/log/nginx/chdserver.log', ($starttime-microtime()).'|appendObj|end result|'.PHP_EOL, FILE_APPEND | LOCK_EX);
+      }
       return $ret_h;
   }
 
@@ -340,6 +344,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       if ($token_c->is_token($token)){
           if (APP_DEBUG){
               file_put_contents('/var/log/nginx/chdserver.log', $token.'|commitObj|'.PHP_EOL, FILE_APPEND | LOCK_EX);
+              file_put_contents('/var/log/nginx/chdserver.log', ''.time().'|commitObj|start|'.PHP_EOL, FILE_APPEND | LOCK_EX);
           }
           if( is_array( $data ) ){
               $Bucket_name = self::_get_bucket_name_by_ftype($type);
@@ -350,9 +355,17 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               $user = new UserService();
               $upload = $user->queryUserUploadId(session('userid'), $oid);
               if (isset($upload['uploadid'])){
-                $append_ret = $conn->commitObj(session('userid'),$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
-                $ret['ret'] = $append_ret['status'];
-                $ret['msg'] = $append_ret['msg'];
+                $commit_ret = $conn->commitObj(session('userid'),$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
+                $ret['ret'] = $commit_ret['status'];
+                $ret['msg'] = $commit_ret['msg'];
+                if ($commit_ret['status'] == 0){
+                    $ret = $conn->queryFile($Bucket_name, $oid);
+                    if ($ret['status']===0){
+                      $filesize = $ret['filesize'] ;
+                      $user_space = $user->querySpace(session('userid'));
+                      $user->updateUserUspace(session('userid'), $user_space['uspace']+intval($filesize));
+                    }
+                }
               }else {
                   $ret['ret'] = 3;
                   $ret['msg'] = 'commit object failed,upload id not exist!' ;
@@ -360,6 +373,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
           }else{
               $ret = array('ret'=>3,'msg'=>'invaild parameter type!');
           }
+      }
+      if (APP_DEBUG){
+          file_put_contents('/var/log/nginx/chdserver.log', ''.time().'|commitObj|end|'.PHP_EOL, FILE_APPEND | LOCK_EX);
       }
       $ret_h = new \proto\RetHead($ret);
       return $ret_h;
@@ -424,6 +440,11 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $token_c = new \lib\Token_Core();
       $h_ret = array('ret'=>4,'msg'=>'download file ['.$filename.'] token invalid!');
       if ($token_c->is_token($token)){
+          if (APP_DEBUG){
+              $starttime = microtime();
+//               file_put_contents('/var/log/nginx/chdserver.log', $token.'|downloadFile|'.PHP_EOL, FILE_APPEND | LOCK_EX);
+//               file_put_contents('/var/log/nginx/chdserver.log', ''.$starttime.'|downloadFile|start|'.PHP_EOL, FILE_APPEND | LOCK_EX);
+          }
           $Bucket_name = self::_get_bucket_name_by_ftype($param->type);
           $host = CEPH_HOST;
           $aws_key = session('user_key');
@@ -439,6 +460,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret_h = new \proto\RetHead($h_ret);
       $ret_arr = array('result'=>$ret_h,'bin'=>$ret['status'] == 0?$ret['msg']:'');
       $ret_d = new DownloadResult($ret_arr);
+      if (APP_DEBUG){
+          file_put_contents('/var/log/nginx/chdserver.log', ''.microtime()-$starttime.'|downloadFile|end|'.PHP_EOL, FILE_APPEND | LOCK_EX);
+      }
       return $ret_d;
   }
 
@@ -762,35 +786,32 @@ public function queryThumbnail($token, $ftype, $objid){
         return $ret_h;
     }
     public function Resetpwd($token, $pwd, $umobile, $captcha){
-        $ret = array('ret'=>4,'msg'=>'reset user password token invalid!');
-        $token_c = new \lib\Token_Core();
-        if ($token_c->is_token($token)){
-            $proxy = "http://182.92.97.3:13128";
-            $api = 'https://webapi.sms.mob.com';//（例：https://webapi.sms.mob.com);
-            $appkey = 'f40f0f41f1d1'; //您的appkey
-            $zone = '86';
-            $apiurl = $api . '/sms/verify';
-            $param = array(
-                'appkey' => $appkey,
-                'phone' => $umobile,
-                'zone' =>  $zone,
-                'code' => $captcha,
-            ) ;
-            $vrest = VerificationCode_proxy($apiurl, $proxy, $param);
-            if (!$vrest){
-                $ret['ret'] = 1;
-                $ret['msg'] = 'verify cathcha error!';
+        $proxy = "http://182.92.97.3:13128";
+        $api = 'https://webapi.sms.mob.com';//（例：https://webapi.sms.mob.com);
+        $appkey = 'f40f0f41f1d1'; //您的appkey
+        $zone = '86';
+        $apiurl = $api . '/sms/verify';
+        $param = array(
+            'appkey' => $appkey,
+            'phone' => $umobile,
+            'zone' =>  $zone,
+            'code' => $captcha,
+        ) ;
+        $vrest = VerificationCode_proxy($apiurl, $proxy, $param);
+        if (!$vrest){
+            $ret['ret'] = 1;
+            $ret['msg'] = 'verify cathcha error!';
+        }else{
+            $user = new UserService();
+            if ($user->resetPassword($umobile, $pwd)){
+                $ret['ret'] = 0;
+                $ret['msg'] = '';
             }else{
-                $user = new UserService();
-                if ($user->resetPassword(session('userid'), $pwd)){
-                    $ret['ret'] = 0;
-                    $ret['msg'] = '';
-                }else{
-                    $ret['ret'] = 7;
-                    $ret['msg'] = 'user not exist or reset user password failed!';
-                }
+                $ret['ret'] = 7;
+                $ret['msg'] = 'user not exist or reset user password failed!';
             }
         }
+
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
     }

@@ -305,9 +305,9 @@ class UserService
         }
         return $ret;
     }
-    
-    function resetPassword($userid, $password){
-        $condition['userid'] = $userid;
+
+    function resetPassword($umobile, $password){
+        $condition['username'] = $umobile;
         $userDao = new UserModel();
         $user = $userDao->where($condition)->find();
         if ($user == null || count($user) == 0) {
@@ -318,7 +318,7 @@ class UserService
         }
         return true;
     }
-    
+
     function changedPassword($userid, $oldPassword, $newPassword){
         $condition['userid'] = $userid;
         $userDao = new UserModel();

@@ -271,6 +271,7 @@ class cephService
     public function deleteObject($bucket_name, $object_name){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $user = new UserService();
+        $fileinfo = self::queryFile($bucket_name, $$object_name);
         if ($Connection->if_object_exists($bucket_name, $object_name)){
             $res = $Connection->delete_object($bucket_name, $object_name);
             if (!$res->isOK()){
@@ -287,6 +288,11 @@ class cephService
         $user->deleteUserUploadMarker(session('userid'), $object_name);
         $part_file_path = session('user_upload_path').DIRECTORY_SEPARATOR.$object_name.'~'.DIRECTORY_SEPARATOR;
         removeFile($part_file_path);
+        if ($fileinfo['status'] == 0){
+            $filesize = $fileinfo['filesize'];
+            $user_space = $user->querySpace(session('userid'));
+            $user->updateUserUspace(session('userid'), $user_space['uspace']-intval($filesize));
+        }
         return true;
     }
     public function queryusage($Buckets) {
