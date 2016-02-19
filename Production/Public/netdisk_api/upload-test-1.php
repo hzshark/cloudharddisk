@@ -4,7 +4,7 @@ namespace API;
 //ini_set("user_agent", "PHP/THttpClient\nAccept: application/x-thrift\nContent-Type: application/x-thrift");
 error_reporting(E_ALL);
 require_once __DIR__ .'/lib/Thrift/ClassLoader/ThriftClassLoader.php';
-
+header ( "Content-Type: text/html; charset=utf-8" );
 use Thrift\ClassLoader\ThriftClassLoader;
 
 $GEN_DIR = realpath(dirname(__FILE__));
@@ -50,6 +50,7 @@ use Thrift\Protocol\TBinaryProtocol;
 use Thrift\Transport\THttpClient;
 use Thrift\Transport\TBufferedTransport;
 use Thrift\Exception\TException;
+use proto\DownloadParam;
 
 try {
 //     if (array_search('--http', $argv)) {
@@ -57,56 +58,64 @@ try {
 //     } else {
 //         $socket = new TSocket('localhost', 9090);
 //     }
-    $socket = new THttpClient('221.7.13.207', 8080, '/chdserver.php');
+//     $socket = new THttpClient('221.7.13.207', 8080, '/testchdserver.php');
 
-//     $socket = new THttpClient('localhost', 8888, '/chdserver.php');
+//     $socket = new THttpClient('localhost', 8080, '/testchdserver.php');
+    $socket = new THttpClient('10.155.30.170', 8888, '/testchdserver.php');
     $transport = new TBufferedTransport($socket, 1024, 1024);
     $protocol = new TBinaryProtocol($transport);
 
     $client = new \proto\CloudHardDiskServiceClient($protocol);
 
     $transport->open();
-//     $auth_ret = $client->loginAuth('13989497004', 'aerohive', 1);
-//     var_dump($auth_ret);
-//     $token = $auth_ret->token;
 
-    $token ="f7a7bcb9ce6221b41ef9f0526ff3a355";
-    echo $token,' <br />';
-    $testfile = '46 String Quartet No. 2 in D Major_.m4a';
-    $ftype = 7;
-    echo "===11===<br />";
-//     $alloc_ret = $client->allocobj($token, $ftype, $testfile) ;
-//     var_dump($alloc_ret);
-//     echo "====5555==<br />";
-//     $append_ret = $client->appendObj($token, $testfile, $bin , $ftype);
-//     var_dump($append_ret);
+    $ftype = 1;
 
-//     $odescr = array('test1'=>'testa','test2'=>'testb');
+    $filename = 'GlobalProtect64.msi';
+    $starttime = time();
+    echo $starttime;
+    echo "<br />";
+    $filepath = '/home/hshao/newoutput.xml';
+//     $filepath = 'C:/Users/Administrator/Downloads/GlobalProtect64.msi';
+    if (file_exists($filepath)){
+        $filesize = filesize($filepath);
+        $offset = 0;
+        $readlen = 10*1024;
+        $sendsize = 1;
+        $read_bin = file_get_contents ($filepath, $use_include_path = null, $context = null, $offset, $readlen);
+        while (true){
+            $append_ret = $client->appendObj('', $filename, $read_bin, $ftype);
 
-//     $com_ret = $client->commitObj($token, $testfile, $odescr, $ftype);
-//     var_dump($com_ret);
-//     $attribute = 'test1';
-//     $ret1 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
-//     var_dump($ret1);
-//     $attribute = 'test2';
-//     $ret2 = $client->queryAttribute($token, $attribute, $testfile, $ftype);
-//     var_dump($ret2);
+            if ($append_ret->ret == 4){
+    			if ($sendsize%10 == 0){
+                 echo ' 速率=>'.(($sendsize*$readlen /(1024*1024))/(time()-$starttime)).'MB/s'.PHP_EOL;
+                 echo ' tps=>'.($sendsize /(time()-$starttime)).PHP_EOL;
+    			}
+            }else{
+                echo "<br />";
+                var_dump($append_ret);
+                echo "offset=>". $offset;
+                echo "<br />";
+    		    echo " error !!!";
+    		    exit(1);
+            }
 
-    $q_ret = $client->QueryFile($token, $ftype, $testfile);
+            if ($sendsize > 500){
+                break;
+            }
+            $sendsize += 1;
+        }
 
-    var_dump($q_ret);
+
+    }else{
+        echo $filepath."00000000000000000000000<br />";
+    }
+    echo "<br />";
+    echo time();
+    echo "<br />";
     echo "====333==<br />";
 
-    $filepath = 'C:\\Users\\Administrator\\Desktop\\test12.jpg';
-    $download_arr['objid'] =  'netdiskportrait';
-    $download_arr['offerset'] =  0;
-    $download_arr['reqlen'] =  74671;
-    $download_arr['type'] =  $ftype;
-    $download_param = new \proto\DownloadParam($download_arr);
 
-    $download  = $client->downloadFile($token, $download_param);
-    var_dump($download->result);
-    file_put_contents($filepath, $download->bin);
     $transport->close();
 
 } catch (TException $tx) {

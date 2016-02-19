@@ -95,6 +95,7 @@ use proto\loginResult;
 use proto\uploaddResult;
 
 use proto\AllocObjResult;
+use proto\usageResult;
 use proto\DownloadResult;
 use proto\QueryFListResult;
 
@@ -301,40 +302,17 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
 
   public function appendObj($token, $oid, $bin, $type){
       $ret = array('ret'=>4,'msg'=>'append object token invalid!');
-      $token_c = new \lib\Token_Core();
-      if ($token_c->is_token($token)){
-          if (APP_DEBUG){
-              $starttime = microtime();
-              file_put_contents('/var/log/nginx/chdserver.log', $token.'|appendObj|'.$oid.'|'.$type.PHP_EOL, FILE_APPEND | LOCK_EX);
-//               file_put_contents('/var/log/nginx/chdserver.log', ''.time().'|appendObj| token'.PHP_EOL, FILE_APPEND | LOCK_EX);
-          }
-          $Bucket_name = self::_get_bucket_name_by_ftype($type);
-          $host = CEPH_HOST;
-          $aws_key = session('user_key');
-          $aws_secret_key = session('user_secret_key');
-          $conn = new cephService($host, $aws_key, $aws_secret_key);
-          $user = new UserService();
-          $upload = $user->queryUserUploadId(session('userid'), $oid);
-          if (isset($upload['uploadid'])){
-              $append_ret = $conn->appendObj(session('userid'),$Bucket_name,  $oid, $upload['uploadid'], $upload['nextpartmarker'],$bin);
-              if ($append_ret){
-                  $offset = $upload['offset'] + strlen($bin);
-                  $user->updateUserUploadOffset(session('userid'), $oid, $offset);
-                  $ret['ret'] = 0;
-                  $ret['msg'] =  session('testlen').'append object successfully!'.$offset;
-              }else{
-                  $ret['ret'] = 2;
-                  $ret['msg'] = $upload['uploadid'].'append object failed!' ;
-              }
-          }else{
-              $ret['ret'] = 3;
-              $ret['msg'] = 'append object failed,upload id not exist!' ;
-          }
-      }
+//           if (APP_DEBUG){
+//               $starttime = microtime();
+//               file_put_contents('/var/log/nginx/chdserver.log', $token.'|appendObj|'.$oid.'|'.$type.PHP_EOL, FILE_APPEND | LOCK_EX);
+//               file_put_contents('/home/hshao/chdserver.log', ''.time().'|appendObj| token'.PHP_EOL, FILE_APPEND | LOCK_EX);
+              file_put_contents('/var/log/nginx/chdserver.log', ''.time().'|appendObj| token'.PHP_EOL, FILE_APPEND | LOCK_EX);
+//           }
+//           appendToFile('/var/log/nginx/chdserver.test', $bin);
       $ret_h = new \proto\RetHead($ret);
-      if (APP_DEBUG){
-          file_put_contents('/var/log/nginx/chdserver.log', ($starttime-microtime()).'|appendObj|end result|'.PHP_EOL, FILE_APPEND | LOCK_EX);
-      }
+//       if (APP_DEBUG){
+//           file_put_contents('/var/log/nginx/chdserver.log', ($starttime-microtime()).'|appendObj|end result|'.PHP_EOL, FILE_APPEND | LOCK_EX);
+//       }
       return $ret_h;
   }
 
@@ -355,17 +333,9 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
               $user = new UserService();
               $upload = $user->queryUserUploadId(session('userid'), $oid);
               if (isset($upload['uploadid'])){
-                $commit_ret = $conn->commitObj(session('userid'),$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
-                $ret['ret'] = $commit_ret['status'];
-                $ret['msg'] = $commit_ret['msg'];
-                if ($commit_ret['status'] == 0){
-                    $q_ret = $conn->queryFile($Bucket_name, $oid);
-                    if ($ret['status']===0){
-                      $filesize = $q_ret['filesize'] ;
-                      $user_space = $user->querySpace(session('userid'));
-                      $user->updateUserUspace(session('userid'), $user_space['uspace']+intval($filesize));
-                    }
-                }
+                $append_ret = $conn->commitObj(session('userid'),$Bucket_name,  $oid, $upload['uploadid'],$upload['nextpartmarker'],$data);
+                $ret['ret'] = $append_ret['status'];
+                $ret['msg'] = $append_ret['msg'];
               }else {
                   $ret['ret'] = 3;
                   $ret['msg'] = 'commit object failed,upload id not exist!' ;

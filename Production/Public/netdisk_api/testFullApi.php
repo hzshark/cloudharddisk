@@ -73,7 +73,8 @@ function print_log(){
 }
 
 try {
-    $socket = new THttpClient('127.0.0.1', 8080, '/chdserver.php');
+    $socket = new THttpClient('221.7.13.207', 8080, '/chdserver.php');
+//     $socket = new THttpClient('127.0.0.1', 8080, '/chdserver.php');
     $transport = new TBufferedTransport($socket, 1024, 1024);
     $protocol = new TBinaryProtocol($transport);
     $client = new \proto\CloudHardDiskServiceClient($protocol);
@@ -82,7 +83,7 @@ try {
     $user = '13355786900';
     $password = '123456';
     $ftype = 6;
-    $testfile = 'test001.jpg';
+    $testfile = 'test002.jpg';
     $filedata = 'test data';
     $odescr = array('test1'=>'testa','test2'=>'testb');
     $attribute = 'test1';
@@ -271,6 +272,7 @@ try {
     if ($com_ret->ret == $SUCCESS){
         echo "commitObj is ok. ";
         echo "<br />";
+        var_dump($com_ret);
     }else{
         echo "<b>commitObj is error. </b>";
         echo $com_ret->msg;
