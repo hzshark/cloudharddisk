@@ -360,7 +360,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
                 $ret['msg'] = $commit_ret['msg'];
                 if ($commit_ret['status'] == 0){
                     $q_ret = $conn->queryFile($Bucket_name, $oid);
-                    if ($ret['status']===0){
+                    if ($q_ret['status']===0){
                       $filesize = $q_ret['filesize'] ;
                       $user_space = $user->querySpace(session('userid'));
                       $user->updateUserUspace(session('userid'), $user_space['uspace']+intval($filesize));
@@ -550,18 +550,30 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
       $ret = array('ret'=>1,'msg'=>'delete object token invalid!');
       $token_c = new \lib\Token_Core();
       if ($token_c->is_token($token)){
-          if (APP_DEBUG){
-              file_put_contents('/var/log/nginx/chdserver.log', $token.'|delObj|'.$oid.'|'.$type.PHP_EOL, FILE_APPEND | LOCK_EX);
-          }
-          $Bucket_name = self::_get_bucket_name_by_ftype($type);
-          $host = CEPH_HOST;
-          $aws_key = session('user_key');
-          $aws_secret_key = session('user_secret_key');
-          $conn = new cephService($host, $aws_key, $aws_secret_key);
-          if ($conn->deleteObject($Bucket_name, $oid)){
-              $ret = array('ret'=>0,'msg'=>'');
+          if (in_array($type, self::_get_user_all_ftype())){
+              $Bucket_name = self::_get_bucket_name_by_ftype($type);
+              $host = CEPH_HOST;
+              $aws_key = session('user_key');
+              $aws_secret_key = session('user_secret_key');
+              $conn = new cephService($host, $aws_key, $aws_secret_key);
+              $q_ret = $conn->queryFile($Bucket_name, $oid);
+              if ($conn->deleteObject($Bucket_name, $oid)){
+                  $ret = array('ret'=>0,'msg'=>'');
+                  try {
+                      $user = new UserService();
+                      if ($q_ret['status']===0){
+                          $filesize = $q_ret['filesize'] ;
+                          $user_space = $user->querySpace(session('userid'));
+                          $user->updateUserUspace(session('userid'), $user_space['uspace']-intval($filesize));
+                      }
+                  } catch (Exception $e) {
+                      
+                  }
+              }else{
+                  $ret = array('ret'=>2,'msg'=>'delete object failed!');
+              }
           }else{
-              $ret = array('ret'=>2,'msg'=>'delete object failed!');
+              $ret = array('ret'=>3,'msg'=>'delete object error,INVAILD_PARAMETER!');
           }
       }
       $ret_h = new \proto\RetHead($ret);

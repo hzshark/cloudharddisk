@@ -68,14 +68,40 @@ try {
 
     $transport->open();
 
-    $auth_ret = $client->loginAuth('hzshark', 'aerohive', 1);
+    $auth_ret = $client->loginAuth('13355786900', '123456', 1);
     echo "===3===<br />";
     var_dump($auth_ret);
     $token = $auth_ret->token;
     echo "===4===<br />";
-    $uspace = $client->querusage($token, 5);
-    var_dump($uspace);
-    $transport->close();
+//     $token = '76b15c2a89c9b22ec950fe2e2dab2ddf';
+    $ftype = 1;
+    $testfile = 'test0001.log';
+    $bin = 'testtesttest';
+    
+    echo "一开始用户已用容量：".PHP_EOL;
+    echo ($auth_ret->uspace.PHP_EOL);
+    
+    $alloc_ret = $client->allocobj($token, $ftype, $testfile) ;
+    var_dump($alloc_ret);
+    echo "====5555==<br />";
+    $append_ret = $client->appendObj($token, $testfile, $bin , $ftype);
+    var_dump($append_ret);
+    
+    $odescr = array('test1'=>'testa','test2'=>'testb');
+
+    $com_ret = $client->commitObj($token, $testfile, $odescr, $ftype);
+    var_dump($com_ret);
+    
+    
+    $auth_ret = $client->loginAuth('13355786900', '123456', 1);
+    echo "上传一个文件以后容量：".PHP_EOL;
+    echo ($auth_ret->uspace.PHP_EOL);
+    
+    $del_ret = $client->delObj($token, $testfile, $ftype) ;
+    var_dump($del_ret);
+    $auth_ret = $client->loginAuth('13355786900', '123456', 1);
+    echo "删除上传文件后已用容量：".PHP_EOL;
+    echo ($auth_ret->uspace.PHP_EOL);
 
 } catch (TException $tx) {
     print 'TException: '.$tx->getMessage()."\n";
