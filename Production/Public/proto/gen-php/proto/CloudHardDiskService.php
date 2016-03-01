@@ -256,11 +256,11 @@ interface CloudHardDiskServiceIf {
    */
   public function CreateUserBucket($umobile, $ftype);
   /**
-   * @param string $umobile
+   * @param string $token
    * @param int $ftype
    * @return \proto\RetHead
    */
-  public function DeleteBucketAllObj($umobile, $ftype);
+  public function DeleteBucketAllObj($token, $ftype);
 }
 
 class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
@@ -2108,16 +2108,16 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("CreateUserBucket failed: unknown result");
   }
 
-  public function DeleteBucketAllObj($umobile, $ftype)
+  public function DeleteBucketAllObj($token, $ftype)
   {
-    $this->send_DeleteBucketAllObj($umobile, $ftype);
+    $this->send_DeleteBucketAllObj($token, $ftype);
     return $this->recv_DeleteBucketAllObj();
   }
 
-  public function send_DeleteBucketAllObj($umobile, $ftype)
+  public function send_DeleteBucketAllObj($token, $ftype)
   {
     $args = new \proto\CloudHardDiskService_DeleteBucketAllObj_args();
-    $args->umobile = $umobile;
+    $args->token = $token;
     $args->ftype = $ftype;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
@@ -8765,7 +8765,7 @@ class CloudHardDiskService_DeleteBucketAllObj_args {
   /**
    * @var string
    */
-  public $umobile = null;
+  public $token = null;
   /**
    * @var int
    */
@@ -8775,7 +8775,7 @@ class CloudHardDiskService_DeleteBucketAllObj_args {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'umobile',
+          'var' => 'token',
           'type' => TType::STRING,
           ),
         2 => array(
@@ -8785,8 +8785,8 @@ class CloudHardDiskService_DeleteBucketAllObj_args {
         );
     }
     if (is_array($vals)) {
-      if (isset($vals['umobile'])) {
-        $this->umobile = $vals['umobile'];
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
       }
       if (isset($vals['ftype'])) {
         $this->ftype = $vals['ftype'];
@@ -8815,7 +8815,7 @@ class CloudHardDiskService_DeleteBucketAllObj_args {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->umobile);
+            $xfer += $input->readString($this->token);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -8840,9 +8840,9 @@ class CloudHardDiskService_DeleteBucketAllObj_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('CloudHardDiskService_DeleteBucketAllObj_args');
-    if ($this->umobile !== null) {
-      $xfer += $output->writeFieldBegin('umobile', TType::STRING, 1);
-      $xfer += $output->writeString($this->umobile);
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->ftype !== null) {
@@ -9634,7 +9634,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_DeleteBucketAllObj_result();
-    $result->success = $this->handler_->DeleteBucketAllObj($args->umobile, $args->ftype);
+    $result->success = $this->handler_->DeleteBucketAllObj($args->token, $args->ftype);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {

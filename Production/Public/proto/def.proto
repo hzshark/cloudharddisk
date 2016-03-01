@@ -393,6 +393,6 @@ service CloudHardDiskService {
     // 
     RetHead CreateUserBucket(1:string umobile, 2:FTYPE ftype);
 
-    RetHead DeleteBucketAllObj(1:string umobile, 2:FTYPE ftype);
+    RetHead DeleteBucketAllObj(1:Token token, 2:FTYPE ftype);
 }
 
