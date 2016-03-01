@@ -71,6 +71,12 @@ class UserService
         $userDao = new UserSpaceModel();
         return $userDao->where($condition)->find();
     }
+    
+    function deleteUserSpace($userid){
+        $condition['userid'] = $userid;
+        $userDao = new UserSpaceModel();
+        return $userDao->where($condition)->delete();
+    }
 
     function setSpace($userid, $space){
         $condition['userid'] = $userid;
@@ -106,8 +112,10 @@ class UserService
         return true;
     }
 
-    function delUser($tokenm, $name){
-
+    function delUser($username){
+        $condition['username'] = $username;
+        $userDao = new UserModel();
+        $userDao->where($condition)->delete();
         return true;
     }
     function createUser($name, $password){
@@ -118,8 +126,15 @@ class UserService
         $userDao->add($data);
         return $userDao->where($data)->find();
     }
-    function queryUser(){
-        return true;
+    function queryUser($username){
+        $condition['username'] = $username;
+        $userDao = new UserModel();
+        $user = $userDao->where($condition)->find();
+        if ($user == null || count($user) == 0) {
+            return false;
+        }else{
+            return $user;
+        }
     }
     function queryUserList(){
         return true;
@@ -259,6 +274,12 @@ class UserService
         $data['indate'] = date("Y-m-d h:i:s");
         $umobile = $userDao->add($data);
     }
+    
+    function deleteUserMobile($userid){
+        $userDao = new \UserMobileModel();
+        $data['userid'] = $userid;
+        $umobile = $userDao->where($data)->delete();
+    }
 
     function addCephAuth($userid){
         $condition['id'] = $userid%10000;
@@ -278,6 +299,12 @@ class UserService
         $data['secret_key'] = $secret_key;
         $userCeph = new \UserCephAuthModel();
         $userCeph->add($data);
+    }
+    
+    function deleteCephAuth($userid){
+        $data['user_id'] = $userid;
+        $userCeph = new \UserCephAuthModel();
+        $userCeph->where($data)->delete();
     }
 
     function RegistUser($umobile, $password, $capacity){

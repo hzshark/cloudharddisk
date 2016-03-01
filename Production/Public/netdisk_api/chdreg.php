@@ -70,7 +70,11 @@ try {
 
     $mobile = '13989497004';
     $passwd = 'aerohive';
-    $cat = '5676';
+    $cat = '2776';
+    $captcha = 'netdisk_delete';
+    $ret = $client->DeleteUser($mobile, $captcha);
+    var_dump($ret);
+    exit(0);
     $uspace = $client->RegistUser($mobile, $passwd,$cat);
     var_dump($uspace);
     $auth_ret = $client->loginAuth($mobile, $passwd, 1);

@@ -19,5 +19,6 @@ return array(
     'NET_URL'=>'http://m.xj169.com/GPhoneInfo/Interface_YJQ/GetPhone.ashx',
     'APP_ID'=>'10001001',
     'APP_KEY'=>'09m4id2533ln7pjj',
+    'NET_ROLES' => 'netdisk_delete',
     
 );

@@ -684,7 +684,7 @@ public function queryThumbnail($token, $ftype, $objid){
 
     }
 
-
+    
     public function RegistUser($umobile, $password, $captcha){
         $ret = array('ret'=>7,'msg'=>'regist user failed!');
 
@@ -712,30 +712,20 @@ public function queryThumbnail($token, $ftype, $objid){
                 $host = CEPH_HOST;
                 $aws_key = session('user_key');
                 $aws_secret_key = session('user_secret_key');
-
                 $Buckets = array();
                 $userTypes = self::_get_user_all_ftype();
                 foreach ($userTypes as $type){
                     $bucketname = self::_get_bucket_name_by_ftype($type);
-                    //$cb_ret = $conn->createUserBucket($bucketname);
-                    try {
-                        $pythonpath = '/usr/bin/python';
-                        $python_script = __DIR__.'/lib/createUserBucket.py';
-                        $param = '-a '.session('user_key').' -s '.session('user_secret_key').' -b '.$bucketname;
-                        $command = $pythonpath.' '.$python_script.' '.$param;
-                        exec($command, $output, $ret_var);
-                    }catch (\Exception $e){
-                        $reg_ret['status'] = 7;
-                        $reg_ret['msg'] = 'create user bucket have a exeption!';
-                        break;
-                    }
                     $conn = new cephService($host, $aws_key, $aws_secret_key);
-                    if (!$conn->queryBucketExist($bucketname)){
+                    $cb_ret = $conn->createUserBucket($bucketname);
+                    if ($cb_ret->isOK()){
+                        $reg_ret['status'] = 0;
+                        $reg_ret['msg'] = '';
+                    }else{
                         $reg_ret['status'] = 2;
                         $reg_ret['msg'] = 'create user bucket failed!';
                         break;
                     }
-
                 }
             }
             $ret = array('ret'=>$reg_ret['status'],'msg'=>$reg_ret['msg']);
@@ -943,7 +933,106 @@ public function queryThumbnail($token, $ftype, $objid){
         $ret_net = new NetMobileNumberResult(array('result'=>$ret_h,'url'=>$req_phone));
         return $ret_net;
     }
+    
+    public function CreateUserBucket($umobile, $ftype){
+        if (in_array($ftype, self::_get_user_all_ftype())){
+            $user = new UserService();
+            $u = $user->queryUser($umobile);
+            if ($u){
+                $userid = $u['userid'];
+                $user_ceph = $user->queryCephAuth($userid);
+                $host = CEPH_HOST;
+                $aws_key = session('user_key');
+                $aws_secret_key = session('user_secret_key');
+                $bucketname = self::_get_bucket_name_by_ftype($ftype);
+                $conn = new cephService($host, $aws_key, $aws_secret_key);
+                $res = $conn->createUserBucket($bucketname);
+                if ($res->isOK()){
+                    $ret = array('ret'=>0,'msg'=>'');
+                }else{
+                    $ret = array('ret'=>2,'msg'=>'create user bucket ['.$bucketname.'] failed!');
+                }
+            }else{
+                $ret = array('ret'=>3,'msg'=>'create user bucket, the mobile not exist!');
+            }
+            
+        }else {
+            $ret = array('ret'=>3,'msg'=>'create user bucket, the ftype invalid param!');
+        }
+        
+        $ret_h = new \proto\RetHead($ret);
+        return $ret_h;
+    }
+    
+    public function DeleteUser($umobile, $captcha){
+        $del_ret = array('ret'=>0,'msg'=>''.C("NET_ROLES"));
+        if ($captcha == C("NET_ROLES")){
+            $user = new UserService();
+            $u = $user->queryUser($umobile);
+            if ($u){
+                $userid = $u['userid'];
+                session('username', $umobile);
+                session('userid', $userid);
+                $user_ceph = $user->queryCephAuth($userid);
+                $host = CEPH_HOST;
+                $aws_key = session('user_key');
+                $aws_secret_key = session('user_secret_key');
+                $del_ret = array('ret'=>2,'msg'=>'delete userid '. $userid);
+                $conn = new cephService($host, $aws_key, $aws_secret_key);
+                $userTypes = self::_get_user_all_ftype();
+                foreach ($userTypes as $type){
+                    $bucketname = self::_get_bucket_name_by_ftype($type);
+                    $conn = new cephService($host, $aws_key, $aws_secret_key);
+                    $cb_ret = $conn->deleteUserBucket($bucketname);
+                    if ($cb_ret){
+                        if ($cb_ret->isOK()){
+                            $del_ret['ret'] = 0;
+                            $del_ret['msg'] = 'delete user bucket '. $bucketname .' successful!';
+                        }else{
+                            $del_ret['ret'] = 2;
+                            $del_ret['msg'] = 'delete user bucket '. $bucketname .' failed!';
+                            break;
+                        }
+                    }else{
+                        $del_ret['ret'] = 2;
+                        $del_ret['msg'] = 'delete user bucket '. $bucketname .' all object failed!';
+                        break;
+                    }
+                }
+//                 $user->deleteCephAuth($userid);
+//                 $user->deleteUserMobile($userid);
+//                 $user->deleteUserSpace($userid);
+//                 $user->delUser($umobile);
+            }
+        }else{
+            $del_ret['ret'] = 3;
+            $del_ret['msg'] = 'captcha value failed!'.C("NET_ROLES");
+        }
+        $ret_h = new \proto\RetHead($del_ret);
+        return $ret_h;
+    }
 
+    public function DeleteBucketAllObj($token, $ftype){
+        $ret = array('ret'=>4,'msg'=>'delete user bucket all object token invalid!');
+        $token_c = new \lib\Token_Core();
+        $ualias = '';
+        if ($token_c->is_token($token)){
+            $host = CEPH_HOST;
+            $aws_key = session('user_key');
+            $aws_secret_key = session('user_secret_key');
+            $conn = new cephService($host, $aws_key, $aws_secret_key);
+            $bucket_name = self::_get_bucket_name_by_ftype($ftype);
+            $del_ret = $conn->deleteAllObjectByBucket($bucket_name);
+            if ($del_ret){
+                $ret = array('ret'=>0,'msg'=>'');
+            }else{
+                $ret = array('ret'=>2,'msg'=>'delete all object failed!');
+            }
+            
+        }
+        $ret_h = new \proto\RetHead($ret);
+        return $ret_h;
+    }
 
 }
 // header("Content-Type:text/html; charset=utf-8");
