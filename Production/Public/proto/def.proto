@@ -386,5 +386,13 @@ service CloudHardDiskService {
     // 查询用户信息
     UserInfoResult QueryUserInfo(1:Token token);
     // touxiang wenjian ming: netdiskportrait
+    
+
+    // 删除用户
+    RetHead DeleteUser(1:string umobile, 2:string captcha); 
+    // 
+    RetHead CreateUserBucket(1:string umobile, 2:FTYPE ftype);
+
+    RetHead DeleteBucketAllObj(1:string umobile, 2:FTYPE ftype);
 }
 
