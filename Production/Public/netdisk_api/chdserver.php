@@ -63,7 +63,7 @@ if (MEMORY_LIMIT_ON) {
 defined('APP_MODE') or define('APP_MODE', 'common'); // 应用模式 默认为普通模式
 defined('CONF_PARSE') or define('CONF_PARSE', '');
 define('APP_DEBUG', true);
-define('CEPH_HOST', '192.168.150.23');
+define('CEPH_HOST', 'netdisk_admin');
 define('DEFAULT_CACHE_PATH', __DIR__ .DIRECTORY_SEPARATOR.'RunCache');
 
 if (APP_DEBUG){
@@ -567,7 +567,7 @@ class CloudHardDiskHandler implements \proto\CloudHardDiskServiceIf{
                           $user->updateUserUspace(session('userid'), $user_space['uspace']-intval($filesize));
                       }
                   } catch (Exception $e) {
-                      
+
                   }
               }else{
                   $ret = array('ret'=>2,'msg'=>'delete object failed!');
@@ -684,7 +684,7 @@ public function queryThumbnail($token, $ftype, $objid){
 
     }
 
-    
+
     public function RegistUser($umobile, $password, $captcha){
         $ret = array('ret'=>7,'msg'=>'regist user failed!');
 
@@ -717,10 +717,11 @@ public function queryThumbnail($token, $ftype, $objid){
                 foreach ($userTypes as $type){
                     $bucketname = self::_get_bucket_name_by_ftype($type);
                     $conn = new cephService($host, $aws_key, $aws_secret_key);
-                    $cb_ret = $conn->createUserBucket($bucketname);
+                    $vhost = CEPH_HOST.'/'.$bucketname;
+                    $cb_ret = $conn->createUserBucket($bucketname, $vhost);
                     if ($cb_ret->isOK()){
                         $reg_ret['status'] = 0;
-                        $reg_ret['msg'] = '';
+                        $reg_ret['msg'] = ''.$vhost;
                     }else{
                         $reg_ret['status'] = 2;
                         $reg_ret['msg'] = 'create user bucket failed!';
@@ -933,7 +934,7 @@ public function queryThumbnail($token, $ftype, $objid){
         $ret_net = new NetMobileNumberResult(array('result'=>$ret_h,'url'=>$req_phone));
         return $ret_net;
     }
-    
+
     public function CreateUserBucket($umobile, $ftype){
         if (in_array($ftype, self::_get_user_all_ftype())){
             $user = new UserService();
@@ -955,15 +956,15 @@ public function queryThumbnail($token, $ftype, $objid){
             }else{
                 $ret = array('ret'=>3,'msg'=>'create user bucket, the mobile not exist!');
             }
-            
+
         }else {
             $ret = array('ret'=>3,'msg'=>'create user bucket, the ftype invalid param!');
         }
-        
+
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;
     }
-    
+
     public function DeleteUser($umobile, $captcha){
         $del_ret = array('ret'=>0,'msg'=>''.C("NET_ROLES"));
         if ($captcha == C("NET_ROLES")){
@@ -985,24 +986,19 @@ public function queryThumbnail($token, $ftype, $objid){
                     $conn = new cephService($host, $aws_key, $aws_secret_key);
                     $cb_ret = $conn->deleteUserBucket($bucketname);
                     if ($cb_ret){
-                        if ($cb_ret->isOK()){
                             $del_ret['ret'] = 0;
-                            $del_ret['msg'] = 'delete user bucket '. $bucketname .' successful!';
-                        }else{
-                            $del_ret['ret'] = 2;
-                            $del_ret['msg'] = 'delete user bucket '. $bucketname .' failed!';
-                            break;
-                        }
+                            $del_ret['msg'] .= 'delete user bucket '. $bucketname .' successful!';
                     }else{
                         $del_ret['ret'] = 2;
-                        $del_ret['msg'] = 'delete user bucket '. $bucketname .' all object failed!';
+                        $del_ret['msg'] = 'delete user bucket '. $bucketname .' failed!';
                         break;
                     }
+
                 }
-//                 $user->deleteCephAuth($userid);
-//                 $user->deleteUserMobile($userid);
-//                 $user->deleteUserSpace($userid);
-//                 $user->delUser($umobile);
+                $user->deleteCephAuth($userid);
+                $user->deleteUserMobile($userid);
+                $user->deleteUserSpace($userid);
+                $user->delUser($umobile);
             }
         }else{
             $del_ret['ret'] = 3;
@@ -1028,7 +1024,7 @@ public function queryThumbnail($token, $ftype, $objid){
             }else{
                 $ret = array('ret'=>2,'msg'=>'delete all object failed!');
             }
-            
+
         }
         $ret_h = new \proto\RetHead($ret);
         return $ret_h;

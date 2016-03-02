@@ -341,24 +341,26 @@ class cephService
         return array('status'=>$status, 'msg'=>$msg);
     }
 
-    public function createUserBucket($bucket_name) {
+    public function createUserBucket($bucket_name, $vhost) {
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $region = \AmazonS3::DEFAULT_URL;
-        $Connection->set_vhost(CEPH_HOST.'/'.$bucket_name);
+        $Connection->set_vhost($vhost);
         return $Connection->create_bucket($bucket_name, $region);
     }
-    
+
     public function deleteUserBucket($bucket_name){
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
-        $res = $Connection->delete_all_objects($bucket_name);
+        $res = $Connection->if_bucket_exists($bucket_name);
         if ($res){
-            return $Connection->delete_bucket($bucket_name);
+            $force = true;
+            $ret = $Connection->delete_bucket($bucket_name, $force);
+            return $ret->isOK();
         }else {
-            return false;
+            return true;
         }
-        
+
     }
-    
+
     public function deleteAllObjectByBucket($bucket_name) {
         $Connection = isset($this->ceph_conn)?$this->ceph_conn:$this->connectionCeph();
         $ObjectsListResponse = $Connection->delete_all_objects($bucket_name);

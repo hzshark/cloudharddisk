@@ -179,7 +179,7 @@ try {
         var_dump($queryobj_ret->offset);
         echo "<br />";
     }else{
-        echo "<b>queryobj offset is error. </b>";
+        echo "<b>queryobj offset is error. </b>".PHP_EOL;
         echo $queryobj_ret->result->msg;
         echo "<br />";
         echo $queryobj_ret->result->ret;
