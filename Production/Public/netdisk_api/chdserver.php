@@ -721,7 +721,7 @@ public function queryThumbnail($token, $ftype, $objid){
                     $cb_ret = $conn->createUserBucket($bucketname, $vhost);
                     if ($cb_ret->isOK()){
                         $reg_ret['status'] = 0;
-                        $reg_ret['msg'] = ''.$vhost;
+                        $reg_ret['msg'] = '';
                     }else{
                         $reg_ret['status'] = 2;
                         $reg_ret['msg'] = 'create user bucket failed!';
