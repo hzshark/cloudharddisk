@@ -898,23 +898,23 @@ class LoginResult {
           ),
         3 => array(
           'var' => 'space',
-          'type' => TType::I32,
+          'type' => TType::I64,
           ),
         4 => array(
           'var' => 'uspace',
-          'type' => TType::I32,
+          'type' => TType::I64,
           ),
         5 => array(
           'var' => 'userid',
-          'type' => TType::I32,
+          'type' => TType::I64,
           ),
         6 => array(
           'var' => 'flow',
-          'type' => TType::I32,
+          'type' => TType::I64,
           ),
         7 => array(
           'var' => 'uflow',
-          'type' => TType::I32,
+          'type' => TType::I64,
           ),
         );
     }
@@ -978,36 +978,36 @@ class LoginResult {
           }
           break;
         case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->space);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->space);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 4:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->uspace);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->uspace);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 5:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->userid);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->userid);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 6:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->flow);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->flow);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 7:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->uflow);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->uflow);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -1039,28 +1039,28 @@ class LoginResult {
       $xfer += $output->writeFieldEnd();
     }
     if ($this->space !== null) {
-      $xfer += $output->writeFieldBegin('space', TType::I32, 3);
-      $xfer += $output->writeI32($this->space);
+      $xfer += $output->writeFieldBegin('space', TType::I64, 3);
+      $xfer += $output->writeI64($this->space);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->uspace !== null) {
-      $xfer += $output->writeFieldBegin('uspace', TType::I32, 4);
-      $xfer += $output->writeI32($this->uspace);
+      $xfer += $output->writeFieldBegin('uspace', TType::I64, 4);
+      $xfer += $output->writeI64($this->uspace);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->userid !== null) {
-      $xfer += $output->writeFieldBegin('userid', TType::I32, 5);
-      $xfer += $output->writeI32($this->userid);
+      $xfer += $output->writeFieldBegin('userid', TType::I64, 5);
+      $xfer += $output->writeI64($this->userid);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->flow !== null) {
-      $xfer += $output->writeFieldBegin('flow', TType::I32, 6);
-      $xfer += $output->writeI32($this->flow);
+      $xfer += $output->writeFieldBegin('flow', TType::I64, 6);
+      $xfer += $output->writeI64($this->flow);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->uflow !== null) {
-      $xfer += $output->writeFieldBegin('uflow', TType::I32, 7);
-      $xfer += $output->writeI32($this->uflow);
+      $xfer += $output->writeFieldBegin('uflow', TType::I64, 7);
+      $xfer += $output->writeI64($this->uflow);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -1101,7 +1101,7 @@ class UserInfoResult {
           ),
         3 => array(
           'var' => 'userid',
-          'type' => TType::I32,
+          'type' => TType::I64,
           ),
         );
     }
@@ -1154,8 +1154,8 @@ class UserInfoResult {
           }
           break;
         case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->userid);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->userid);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -1190,8 +1190,8 @@ class UserInfoResult {
       $xfer += $output->writeFieldEnd();
     }
     if ($this->userid !== null) {
-      $xfer += $output->writeFieldBegin('userid', TType::I32, 3);
-      $xfer += $output->writeI32($this->userid);
+      $xfer += $output->writeFieldBegin('userid', TType::I64, 3);
+      $xfer += $output->writeI64($this->userid);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -1867,11 +1867,11 @@ class UsageResult {
           ),
         2 => array(
           'var' => 'capacity',
-          'type' => TType::I32,
+          'type' => TType::I64,
           ),
         3 => array(
           'var' => 'usage',
-          'type' => TType::I32,
+          'type' => TType::I64,
           ),
         );
     }
@@ -1916,15 +1916,15 @@ class UsageResult {
           }
           break;
         case 2:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->capacity);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->capacity);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->usage);
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->usage);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -1951,13 +1951,13 @@ class UsageResult {
       $xfer += $output->writeFieldEnd();
     }
     if ($this->capacity !== null) {
-      $xfer += $output->writeFieldBegin('capacity', TType::I32, 2);
-      $xfer += $output->writeI32($this->capacity);
+      $xfer += $output->writeFieldBegin('capacity', TType::I64, 2);
+      $xfer += $output->writeI64($this->capacity);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->usage !== null) {
-      $xfer += $output->writeFieldBegin('usage', TType::I32, 3);
-      $xfer += $output->writeI32($this->usage);
+      $xfer += $output->writeFieldBegin('usage', TType::I64, 3);
+      $xfer += $output->writeI64($this->usage);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
