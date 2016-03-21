@@ -122,7 +122,7 @@ struct LoginResult {
   2: Token  token;  //身份牌
   3: i64  space ;   //用户空间单位K
   4: i64  uspace;   //已经使用的用户空间 单位k
-  5: i64 userid;             // 
+  5: i32 userid;             // 
   6: optional i64  flow;     // 免费流量
   7: optional i64  uflow;    // 已使用流量
 }
@@ -131,7 +131,7 @@ struct LoginResult {
 struct UserInfoResult {
   1: RetHead result;
   2: optional UserInfo uinfo;
-  3: optional i64 userid;
+  3: optional i32 userid;
 }
 
 // User Alias
