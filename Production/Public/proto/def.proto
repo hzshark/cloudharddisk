@@ -394,5 +394,7 @@ service CloudHardDiskService {
     RetHead CreateUserBucket(1:string umobile, 2:FTYPE ftype);
 
     RetHead DeleteBucketAllObj(1:Token token, 2:FTYPE ftype);
+    // 只能订购和退订9元版套餐
+    RetHead reverseVAC(1:Token token, 2:string umobile, 3:string operationType);    # operationType  1: 订购, 2:退订
 }
 

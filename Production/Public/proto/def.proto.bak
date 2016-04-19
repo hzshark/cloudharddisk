@@ -47,9 +47,10 @@ enum FTYPE{
   SMS = 2,		// 短信备份文件
   ADDRESS = 3,		//通讯录备份文件
   DFlOW = 4,            // 3g 流量
-  STORE   =5 ,              //存储 
+  STORE   =5 ,            //存储 
   PICTURE = 6 ,		//图片
-  MUSIC =7              //音乐
+  MUSIC =7  ,            //音乐
+  NOTEPAD =8		 //记事簿	
   }
 
 
@@ -119,11 +120,11 @@ struct UserInfo {
 struct LoginResult {
   1: RetHead result;
   2: Token  token;  //身份牌
-  3: i32  space ;   //用户空间单位K
-  4: i32  uspace;   //已经使用的用户空间 单位k
+  3: i64  space ;   //用户空间单位K
+  4: i64  uspace;   //已经使用的用户空间 单位k
   5: i32 userid;             // 
-  6: optional i32  flow;     // 免费流量
-  7: optional i32  uflow;    // 已使用流量
+  6: optional i64  flow;     // 免费流量
+  7: optional i64  uflow;    // 已使用流量
 }
 
 // UserInfo
@@ -178,8 +179,8 @@ struct QueryUpldObjResult {
 struct UsageResult
 {
   1:RetHead result; 	
-  2:i32 capacity;
-  3:i32 usage;
+  2:i64 capacity;
+  3:i64 usage;
 }
 
 struct AppInfo
@@ -260,6 +261,7 @@ struct VersionResult {
     1:RetHead result;
     2:string version;
     3:string url;
+    4:string whatsnew;
 }
 
 struct CaptchaResult {
@@ -351,7 +353,7 @@ service CloudHardDiskService {
     
     QueryThumbnailResult queryThumbnail(1:Token token,2:FTYPE ftype,3:string objid);
     
-    RetHead Resetpwd(1:Token token,2:string pwd); //重置密码
+    RetHead Resetpwd(1:Token token,2:string pwd,3:string umobile,4:string captcha); //重置密码
 
     RetHead Changepwd(1:Token token,2:string pwd_org,3:string pwd);//修改密码 让用户输入
     
@@ -362,13 +364,11 @@ service CloudHardDiskService {
     **/
     RetHead BindUmobile(2:string captcha,3:string umobile,4:string imie)
     
-    //注册需要参数 1.用户名 2.密码 3.手机号 4.验证码 5.套餐类型  此方法暂不对外开放
-    RetHead RegistUserContract(1:string uname,2:string password;3:string umobile, 4:string imie,5:PTYPE ptype);
     
-    //
-    RetHead RegistUser(1:string uname,2:string password;3:string umobile); 
+    //app 端注册
+    RetHead RegistUser(1:string umobile,2:string password, 3:string captcha); 
     
-    RetHead VerifyCathcha(1:Token token,2:string captcha);   
+    RetHead VerifyCathcha(1:string umobile,2:string captcha);   
     RetHead OrderPlan(1:Token token,2:PTYPE ptype);     // use app order plan
     //别名修改走删除后添加方式
     RetHead SetAlias(1:Token token,2:string ualias);
@@ -386,5 +386,15 @@ service CloudHardDiskService {
     // 查询用户信息
     UserInfoResult QueryUserInfo(1:Token token);
     // touxiang wenjian ming: netdiskportrait
+    
+
+    // 删除用户
+    RetHead DeleteUser(1:string umobile, 2:string captcha); 
+    // 
+    RetHead CreateUserBucket(1:string umobile, 2:FTYPE ftype);
+
+    RetHead DeleteBucketAllObj(1:Token token, 2:FTYPE ftype);
+    // 只能订购和退订9元版套餐
+    RetHead reverseVAC(1:Token token, 2:string umobile, string operationType);    # operationType  1: 订购, 2:退订
 }
 
