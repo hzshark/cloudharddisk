@@ -264,10 +264,10 @@ interface CloudHardDiskServiceIf {
   /**
    * @param string $token
    * @param string $umobile
-   * @param string $operationType
+   * @param int $ptype
    * @return \proto\RetHead
    */
-  public function reverseVAC($token, $umobile, $operationType);
+  public function reverseVAC($token, $umobile, $ptype);
 }
 
 class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
@@ -2167,18 +2167,18 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("DeleteBucketAllObj failed: unknown result");
   }
 
-  public function reverseVAC($token, $umobile, $operationType)
+  public function reverseVAC($token, $umobile, $ptype)
   {
-    $this->send_reverseVAC($token, $umobile, $operationType);
+    $this->send_reverseVAC($token, $umobile, $ptype);
     return $this->recv_reverseVAC();
   }
 
-  public function send_reverseVAC($token, $umobile, $operationType)
+  public function send_reverseVAC($token, $umobile, $ptype)
   {
     $args = new \proto\CloudHardDiskService_reverseVAC_args();
     $args->token = $token;
     $args->umobile = $umobile;
-    $args->operationType = $operationType;
+    $args->ptype = $ptype;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -9009,9 +9009,9 @@ class CloudHardDiskService_reverseVAC_args {
    */
   public $umobile = null;
   /**
-   * @var string
+   * @var int
    */
-  public $operationType = null;
+  public $ptype = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -9025,8 +9025,8 @@ class CloudHardDiskService_reverseVAC_args {
           'type' => TType::STRING,
           ),
         3 => array(
-          'var' => 'operationType',
-          'type' => TType::STRING,
+          'var' => 'ptype',
+          'type' => TType::I32,
           ),
         );
     }
@@ -9037,8 +9037,8 @@ class CloudHardDiskService_reverseVAC_args {
       if (isset($vals['umobile'])) {
         $this->umobile = $vals['umobile'];
       }
-      if (isset($vals['operationType'])) {
-        $this->operationType = $vals['operationType'];
+      if (isset($vals['ptype'])) {
+        $this->ptype = $vals['ptype'];
       }
     }
   }
@@ -9077,8 +9077,8 @@ class CloudHardDiskService_reverseVAC_args {
           }
           break;
         case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->operationType);
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->ptype);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -9106,9 +9106,9 @@ class CloudHardDiskService_reverseVAC_args {
       $xfer += $output->writeString($this->umobile);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->operationType !== null) {
-      $xfer += $output->writeFieldBegin('operationType', TType::STRING, 3);
-      $xfer += $output->writeString($this->operationType);
+    if ($this->ptype !== null) {
+      $xfer += $output->writeFieldBegin('ptype', TType::I32, 3);
+      $xfer += $output->writeI32($this->ptype);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -9914,7 +9914,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_reverseVAC_result();
-    $result->success = $this->handler_->reverseVAC($args->token, $args->umobile, $args->operationType);
+    $result->success = $this->handler_->reverseVAC($args->token, $args->umobile, $args->ptype);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {

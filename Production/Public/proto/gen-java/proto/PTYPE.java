@@ -12,9 +12,8 @@ import java.util.HashMap;
 import org.apache.thrift.TEnum;
 
 public enum PTYPE implements org.apache.thrift.TEnum {
-  FREE(1),
-  NINE(2),
-  FIFTEEN(3);
+  FREE(2),
+  NINE(1);
 
   private final int value;
 
@@ -35,12 +34,10 @@ public enum PTYPE implements org.apache.thrift.TEnum {
    */
   public static PTYPE findByValue(int value) { 
     switch (value) {
-      case 1:
-        return FREE;
       case 2:
+        return FREE;
+      case 1:
         return NINE;
-      case 3:
-        return FIFTEEN;
       default:
         return null;
     }

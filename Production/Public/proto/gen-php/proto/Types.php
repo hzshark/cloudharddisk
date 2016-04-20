@@ -62,13 +62,11 @@ final class FTYPE {
 }
 
 final class PTYPE {
-  const FREE = 1;
-  const NINE = 2;
-  const FIFTEEN = 3;
+  const FREE = 2;
+  const NINE = 1;
   static public $__names = array(
-    1 => 'FREE',
-    2 => 'NINE',
-    3 => 'FIFTEEN',
+    2 => 'FREE',
+    1 => 'NINE',
   );
 }
 

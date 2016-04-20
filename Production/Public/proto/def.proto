@@ -57,9 +57,8 @@ enum FTYPE{
 
 
 enum PTYPE{
-  FREE = 1,           // 免费套餐
-  NINE = 2,               // 9元套餐
-  FIFTEEN = 3,        // 15元套餐
+  FREE = 2,           // 免费套餐
+  NINE = 1,               // 9元套餐
   }
 
 enum SYNCTYPE{
@@ -395,6 +394,6 @@ service CloudHardDiskService {
 
     RetHead DeleteBucketAllObj(1:Token token, 2:FTYPE ftype);
     // 只能订购和退订9元版套餐
-    RetHead reverseVAC(1:Token token, 2:string umobile, 3:string operationType);    # operationType  1: 订购, 2:退订
+    RetHead reverseVAC(1:Token token, 2:string umobile, 3:PTYPE ptype);    # operationType  1: 订购, 2:退订
 }
 
