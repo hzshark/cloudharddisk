@@ -280,7 +280,7 @@ struct NetURLResult
 struct NetMobileNumberResult
 {
   1:RetHead result;
-  2:string url;
+  2:string mobile;
 }
 
 /**
