@@ -394,6 +394,6 @@ service CloudHardDiskService {
 
     RetHead DeleteBucketAllObj(1:Token token, 2:FTYPE ftype);
     // 只能订购和退订9元版套餐
-    RetHead reverseVAC(1:Token token, 2:string umobile, 3:PTYPE ptype);    # operationType  1: 订购, 2:退订
+    RetHead reverseVAC(1:Token token, 2:PTYPE ptype);    # PType  1: 九元版, 2:退订9元版
 }
 

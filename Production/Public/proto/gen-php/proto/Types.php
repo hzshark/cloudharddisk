@@ -3591,7 +3591,7 @@ class NetMobileNumberResult {
   /**
    * @var string
    */
-  public $url = null;
+  public $mobile = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3602,7 +3602,7 @@ class NetMobileNumberResult {
           'class' => '\proto\RetHead',
           ),
         2 => array(
-          'var' => 'url',
+          'var' => 'mobile',
           'type' => TType::STRING,
           ),
         );
@@ -3611,8 +3611,8 @@ class NetMobileNumberResult {
       if (isset($vals['result'])) {
         $this->result = $vals['result'];
       }
-      if (isset($vals['url'])) {
-        $this->url = $vals['url'];
+      if (isset($vals['mobile'])) {
+        $this->mobile = $vals['mobile'];
       }
     }
   }
@@ -3646,7 +3646,7 @@ class NetMobileNumberResult {
           break;
         case 2:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->url);
+            $xfer += $input->readString($this->mobile);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -3672,9 +3672,9 @@ class NetMobileNumberResult {
       $xfer += $this->result->write($output);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->url !== null) {
-      $xfer += $output->writeFieldBegin('url', TType::STRING, 2);
-      $xfer += $output->writeString($this->url);
+    if ($this->mobile !== null) {
+      $xfer += $output->writeFieldBegin('mobile', TType::STRING, 2);
+      $xfer += $output->writeString($this->mobile);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
