@@ -1,4 +1,4 @@
-
+﻿
 
 
 
@@ -376,9 +376,9 @@ service CloudHardDiskService {
     UserAliasResult QueryAlias(1:Token token);
 
     //获取手机访问url地址,url获取以后手机需要get访问以后才能调用获取手机号码接口
-    NetURLResult GetMobileAccessUrl(1:Token token);
+    NetURLResult GetMobileAccessUrl();
     //获取手机号码
-    NetMobileNumberResult GetMobileNumber(1:Token token);
+    NetMobileNumberResult GetMobileNumber();
     
     // 设置用户信息
     RetHead SetUserInfo(1:Token token,2:UserInfo uinfo);

@@ -223,15 +223,13 @@ interface CloudHardDiskServiceIf {
    */
   public function QueryAlias($token);
   /**
-   * @param string $token
    * @return \proto\NetURLResult
    */
-  public function GetMobileAccessUrl($token);
+  public function GetMobileAccessUrl();
   /**
-   * @param string $token
    * @return \proto\NetMobileNumberResult
    */
-  public function GetMobileNumber($token);
+  public function GetMobileNumber();
   /**
    * @param string $token
    * @param \proto\UserInfo $uinfo
@@ -1805,16 +1803,15 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("QueryAlias failed: unknown result");
   }
 
-  public function GetMobileAccessUrl($token)
+  public function GetMobileAccessUrl()
   {
-    $this->send_GetMobileAccessUrl($token);
+    $this->send_GetMobileAccessUrl();
     return $this->recv_GetMobileAccessUrl();
   }
 
-  public function send_GetMobileAccessUrl($token)
+  public function send_GetMobileAccessUrl()
   {
     $args = new \proto\CloudHardDiskService_GetMobileAccessUrl_args();
-    $args->token = $token;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -1856,16 +1853,15 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("GetMobileAccessUrl failed: unknown result");
   }
 
-  public function GetMobileNumber($token)
+  public function GetMobileNumber()
   {
-    $this->send_GetMobileNumber($token);
+    $this->send_GetMobileNumber();
     return $this->recv_GetMobileNumber();
   }
 
-  public function send_GetMobileNumber($token)
+  public function send_GetMobileNumber()
   {
     $args = new \proto\CloudHardDiskService_GetMobileNumber_args();
-    $args->token = $token;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -7816,24 +7812,11 @@ class CloudHardDiskService_QueryAlias_result {
 class CloudHardDiskService_GetMobileAccessUrl_args {
   static $_TSPEC;
 
-  /**
-   * @var string
-   */
-  public $token = null;
 
-  public function __construct($vals=null) {
+  public function __construct() {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
-        1 => array(
-          'var' => 'token',
-          'type' => TType::STRING,
-          ),
         );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['token'])) {
-        $this->token = $vals['token'];
-      }
     }
   }
 
@@ -7856,13 +7839,6 @@ class CloudHardDiskService_GetMobileAccessUrl_args {
       }
       switch ($fid)
       {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -7876,11 +7852,6 @@ class CloudHardDiskService_GetMobileAccessUrl_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('CloudHardDiskService_GetMobileAccessUrl_args');
-    if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
-      $xfer += $output->writeString($this->token);
-      $xfer += $output->writeFieldEnd();
-    }
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -7971,24 +7942,11 @@ class CloudHardDiskService_GetMobileAccessUrl_result {
 class CloudHardDiskService_GetMobileNumber_args {
   static $_TSPEC;
 
-  /**
-   * @var string
-   */
-  public $token = null;
 
-  public function __construct($vals=null) {
+  public function __construct() {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
-        1 => array(
-          'var' => 'token',
-          'type' => TType::STRING,
-          ),
         );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['token'])) {
-        $this->token = $vals['token'];
-      }
     }
   }
 
@@ -8011,13 +7969,6 @@ class CloudHardDiskService_GetMobileNumber_args {
       }
       switch ($fid)
       {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -8031,11 +7982,6 @@ class CloudHardDiskService_GetMobileNumber_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('CloudHardDiskService_GetMobileNumber_args');
-    if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
-      $xfer += $output->writeString($this->token);
-      $xfer += $output->writeFieldEnd();
-    }
     $xfer += $output->writeFieldStop();
     $xfer += $output->writeStructEnd();
     return $xfer;
@@ -9756,7 +9702,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_GetMobileAccessUrl_result();
-    $result->success = $this->handler_->GetMobileAccessUrl($args->token);
+    $result->success = $this->handler_->GetMobileAccessUrl();
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -9775,7 +9721,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_GetMobileNumber_result();
-    $result->success = $this->handler_->GetMobileNumber($args->token);
+    $result->success = $this->handler_->GetMobileNumber();
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
