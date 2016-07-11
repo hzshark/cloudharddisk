@@ -111,9 +111,9 @@ public class CloudHardDiskService {
 
     public UserAliasResult QueryAlias(String token) throws org.apache.thrift.TException;
 
-    public NetURLResult GetMobileAccessUrl(String token) throws org.apache.thrift.TException;
+    public NetURLResult GetMobileAccessUrl() throws org.apache.thrift.TException;
 
-    public NetMobileNumberResult GetMobileNumber(String token) throws org.apache.thrift.TException;
+    public NetMobileNumberResult GetMobileNumber(String Url) throws org.apache.thrift.TException;
 
     public RetHead SetUserInfo(String token, UserInfo uinfo) throws org.apache.thrift.TException;
 
@@ -189,9 +189,9 @@ public class CloudHardDiskService {
 
     public void QueryAlias(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void GetMobileAccessUrl(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void GetMobileAccessUrl(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void GetMobileNumber(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void GetMobileNumber(String Url, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void SetUserInfo(String token, UserInfo uinfo, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -940,16 +940,15 @@ public class CloudHardDiskService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "QueryAlias failed: unknown result");
     }
 
-    public NetURLResult GetMobileAccessUrl(String token) throws org.apache.thrift.TException
+    public NetURLResult GetMobileAccessUrl() throws org.apache.thrift.TException
     {
-      send_GetMobileAccessUrl(token);
+      send_GetMobileAccessUrl();
       return recv_GetMobileAccessUrl();
     }
 
-    public void send_GetMobileAccessUrl(String token) throws org.apache.thrift.TException
+    public void send_GetMobileAccessUrl() throws org.apache.thrift.TException
     {
       GetMobileAccessUrl_args args = new GetMobileAccessUrl_args();
-      args.setToken(token);
       sendBase("GetMobileAccessUrl", args);
     }
 
@@ -963,16 +962,16 @@ public class CloudHardDiskService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "GetMobileAccessUrl failed: unknown result");
     }
 
-    public NetMobileNumberResult GetMobileNumber(String token) throws org.apache.thrift.TException
+    public NetMobileNumberResult GetMobileNumber(String Url) throws org.apache.thrift.TException
     {
-      send_GetMobileNumber(token);
+      send_GetMobileNumber(Url);
       return recv_GetMobileNumber();
     }
 
-    public void send_GetMobileNumber(String token) throws org.apache.thrift.TException
+    public void send_GetMobileNumber(String Url) throws org.apache.thrift.TException
     {
       GetMobileNumber_args args = new GetMobileNumber_args();
-      args.setToken(token);
+      args.setUrl(Url);
       sendBase("GetMobileNumber", args);
     }
 
@@ -2213,24 +2212,21 @@ public class CloudHardDiskService {
       }
     }
 
-    public void GetMobileAccessUrl(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void GetMobileAccessUrl(org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      GetMobileAccessUrl_call method_call = new GetMobileAccessUrl_call(token, resultHandler, this, ___protocolFactory, ___transport);
+      GetMobileAccessUrl_call method_call = new GetMobileAccessUrl_call(resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class GetMobileAccessUrl_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private String token;
-      public GetMobileAccessUrl_call(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public GetMobileAccessUrl_call(org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.token = token;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("GetMobileAccessUrl", org.apache.thrift.protocol.TMessageType.CALL, 0));
         GetMobileAccessUrl_args args = new GetMobileAccessUrl_args();
-        args.setToken(token);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -2245,24 +2241,24 @@ public class CloudHardDiskService {
       }
     }
 
-    public void GetMobileNumber(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void GetMobileNumber(String Url, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      GetMobileNumber_call method_call = new GetMobileNumber_call(token, resultHandler, this, ___protocolFactory, ___transport);
+      GetMobileNumber_call method_call = new GetMobileNumber_call(Url, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class GetMobileNumber_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private String token;
-      public GetMobileNumber_call(String token, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String Url;
+      public GetMobileNumber_call(String Url, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.token = token;
+        this.Url = Url;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("GetMobileNumber", org.apache.thrift.protocol.TMessageType.CALL, 0));
         GetMobileNumber_args args = new GetMobileNumber_args();
-        args.setToken(token);
+        args.setUrl(Url);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -3132,7 +3128,7 @@ public class CloudHardDiskService {
 
       public GetMobileAccessUrl_result getResult(I iface, GetMobileAccessUrl_args args) throws org.apache.thrift.TException {
         GetMobileAccessUrl_result result = new GetMobileAccessUrl_result();
-        result.success = iface.GetMobileAccessUrl(args.token);
+        result.success = iface.GetMobileAccessUrl();
         return result;
       }
     }
@@ -3152,7 +3148,7 @@ public class CloudHardDiskService {
 
       public GetMobileNumber_result getResult(I iface, GetMobileNumber_args args) throws org.apache.thrift.TException {
         GetMobileNumber_result result = new GetMobileNumber_result();
-        result.success = iface.GetMobileNumber(args.token);
+        result.success = iface.GetMobileNumber(args.Url);
         return result;
       }
     }
@@ -4856,7 +4852,7 @@ public class CloudHardDiskService {
       }
 
       public void start(I iface, GetMobileAccessUrl_args args, org.apache.thrift.async.AsyncMethodCallback<NetURLResult> resultHandler) throws TException {
-        iface.GetMobileAccessUrl(args.token,resultHandler);
+        iface.GetMobileAccessUrl(resultHandler);
       }
     }
 
@@ -4907,7 +4903,7 @@ public class CloudHardDiskService {
       }
 
       public void start(I iface, GetMobileNumber_args args, org.apache.thrift.async.AsyncMethodCallback<NetMobileNumberResult> resultHandler) throws TException {
-        iface.GetMobileNumber(args.token,resultHandler);
+        iface.GetMobileNumber(args.Url,resultHandler);
       }
     }
 
@@ -31376,7 +31372,6 @@ public class CloudHardDiskService {
   public static class GetMobileAccessUrl_args implements org.apache.thrift.TBase<GetMobileAccessUrl_args, GetMobileAccessUrl_args._Fields>, java.io.Serializable, Cloneable, Comparable<GetMobileAccessUrl_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetMobileAccessUrl_args");
 
-    private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -31384,11 +31379,10 @@ public class CloudHardDiskService {
       schemes.put(TupleScheme.class, new GetMobileAccessUrl_argsTupleSchemeFactory());
     }
 
-    public String token; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      TOKEN((short)1, "token");
+;
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -31403,8 +31397,6 @@ public class CloudHardDiskService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // TOKEN
-            return TOKEN;
           default:
             return null;
         }
@@ -31443,13 +31435,9 @@ public class CloudHardDiskService {
         return _fieldName;
       }
     }
-
-    // isset id assignments
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "Token")));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(GetMobileAccessUrl_args.class, metaDataMap);
     }
@@ -31457,20 +31445,10 @@ public class CloudHardDiskService {
     public GetMobileAccessUrl_args() {
     }
 
-    public GetMobileAccessUrl_args(
-      String token)
-    {
-      this();
-      this.token = token;
-    }
-
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public GetMobileAccessUrl_args(GetMobileAccessUrl_args other) {
-      if (other.isSetToken()) {
-        this.token = other.token;
-      }
     }
 
     public GetMobileAccessUrl_args deepCopy() {
@@ -31479,51 +31457,15 @@ public class CloudHardDiskService {
 
     @Override
     public void clear() {
-      this.token = null;
-    }
-
-    public String getToken() {
-      return this.token;
-    }
-
-    public GetMobileAccessUrl_args setToken(String token) {
-      this.token = token;
-      return this;
-    }
-
-    public void unsetToken() {
-      this.token = null;
-    }
-
-    /** Returns true if field token is set (has been assigned a value) and false otherwise */
-    public boolean isSetToken() {
-      return this.token != null;
-    }
-
-    public void setTokenIsSet(boolean value) {
-      if (!value) {
-        this.token = null;
-      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case TOKEN:
-        if (value == null) {
-          unsetToken();
-        } else {
-          setToken((String)value);
-        }
-        break;
-
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case TOKEN:
-        return getToken();
-
       }
       throw new IllegalStateException();
     }
@@ -31535,8 +31477,6 @@ public class CloudHardDiskService {
       }
 
       switch (field) {
-      case TOKEN:
-        return isSetToken();
       }
       throw new IllegalStateException();
     }
@@ -31554,26 +31494,12 @@ public class CloudHardDiskService {
       if (that == null)
         return false;
 
-      boolean this_present_token = true && this.isSetToken();
-      boolean that_present_token = true && that.isSetToken();
-      if (this_present_token || that_present_token) {
-        if (!(this_present_token && that_present_token))
-          return false;
-        if (!this.token.equals(that.token))
-          return false;
-      }
-
       return true;
     }
 
     @Override
     public int hashCode() {
       List<Object> list = new ArrayList<Object>();
-
-      boolean present_token = true && (isSetToken());
-      list.add(present_token);
-      if (present_token)
-        list.add(token);
 
       return list.hashCode();
     }
@@ -31586,16 +31512,6 @@ public class CloudHardDiskService {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetToken()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
       return 0;
     }
 
@@ -31616,13 +31532,6 @@ public class CloudHardDiskService {
       StringBuilder sb = new StringBuilder("GetMobileAccessUrl_args(");
       boolean first = true;
 
-      sb.append("token:");
-      if (this.token == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.token);
-      }
-      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -31666,14 +31575,6 @@ public class CloudHardDiskService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // TOKEN
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.token = iprot.readString();
-                struct.setTokenIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -31689,11 +31590,6 @@ public class CloudHardDiskService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.token != null) {
-          oprot.writeFieldBegin(TOKEN_FIELD_DESC);
-          oprot.writeString(struct.token);
-          oprot.writeFieldEnd();
-        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -31711,24 +31607,11 @@ public class CloudHardDiskService {
       @Override
       public void write(org.apache.thrift.protocol.TProtocol prot, GetMobileAccessUrl_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
-        BitSet optionals = new BitSet();
-        if (struct.isSetToken()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetToken()) {
-          oprot.writeString(struct.token);
-        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, GetMobileAccessUrl_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.token = iprot.readString();
-          struct.setTokenIsSet(true);
-        }
       }
     }
 
@@ -32103,7 +31986,7 @@ public class CloudHardDiskService {
   public static class GetMobileNumber_args implements org.apache.thrift.TBase<GetMobileNumber_args, GetMobileNumber_args._Fields>, java.io.Serializable, Cloneable, Comparable<GetMobileNumber_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("GetMobileNumber_args");
 
-    private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField URL_FIELD_DESC = new org.apache.thrift.protocol.TField("Url", org.apache.thrift.protocol.TType.STRING, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -32111,11 +31994,11 @@ public class CloudHardDiskService {
       schemes.put(TupleScheme.class, new GetMobileNumber_argsTupleSchemeFactory());
     }
 
-    public String token; // required
+    public String Url; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      TOKEN((short)1, "token");
+      URL((short)1, "Url");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -32130,8 +32013,8 @@ public class CloudHardDiskService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // TOKEN
-            return TOKEN;
+          case 1: // URL
+            return URL;
           default:
             return null;
         }
@@ -32175,8 +32058,8 @@ public class CloudHardDiskService {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "Token")));
+      tmpMap.put(_Fields.URL, new org.apache.thrift.meta_data.FieldMetaData("Url", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(GetMobileNumber_args.class, metaDataMap);
     }
@@ -32185,18 +32068,18 @@ public class CloudHardDiskService {
     }
 
     public GetMobileNumber_args(
-      String token)
+      String Url)
     {
       this();
-      this.token = token;
+      this.Url = Url;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public GetMobileNumber_args(GetMobileNumber_args other) {
-      if (other.isSetToken()) {
-        this.token = other.token;
+      if (other.isSetUrl()) {
+        this.Url = other.Url;
       }
     }
 
@@ -32206,40 +32089,40 @@ public class CloudHardDiskService {
 
     @Override
     public void clear() {
-      this.token = null;
+      this.Url = null;
     }
 
-    public String getToken() {
-      return this.token;
+    public String getUrl() {
+      return this.Url;
     }
 
-    public GetMobileNumber_args setToken(String token) {
-      this.token = token;
+    public GetMobileNumber_args setUrl(String Url) {
+      this.Url = Url;
       return this;
     }
 
-    public void unsetToken() {
-      this.token = null;
+    public void unsetUrl() {
+      this.Url = null;
     }
 
-    /** Returns true if field token is set (has been assigned a value) and false otherwise */
-    public boolean isSetToken() {
-      return this.token != null;
+    /** Returns true if field Url is set (has been assigned a value) and false otherwise */
+    public boolean isSetUrl() {
+      return this.Url != null;
     }
 
-    public void setTokenIsSet(boolean value) {
+    public void setUrlIsSet(boolean value) {
       if (!value) {
-        this.token = null;
+        this.Url = null;
       }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case TOKEN:
+      case URL:
         if (value == null) {
-          unsetToken();
+          unsetUrl();
         } else {
-          setToken((String)value);
+          setUrl((String)value);
         }
         break;
 
@@ -32248,8 +32131,8 @@ public class CloudHardDiskService {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case TOKEN:
-        return getToken();
+      case URL:
+        return getUrl();
 
       }
       throw new IllegalStateException();
@@ -32262,8 +32145,8 @@ public class CloudHardDiskService {
       }
 
       switch (field) {
-      case TOKEN:
-        return isSetToken();
+      case URL:
+        return isSetUrl();
       }
       throw new IllegalStateException();
     }
@@ -32281,12 +32164,12 @@ public class CloudHardDiskService {
       if (that == null)
         return false;
 
-      boolean this_present_token = true && this.isSetToken();
-      boolean that_present_token = true && that.isSetToken();
-      if (this_present_token || that_present_token) {
-        if (!(this_present_token && that_present_token))
+      boolean this_present_Url = true && this.isSetUrl();
+      boolean that_present_Url = true && that.isSetUrl();
+      if (this_present_Url || that_present_Url) {
+        if (!(this_present_Url && that_present_Url))
           return false;
-        if (!this.token.equals(that.token))
+        if (!this.Url.equals(that.Url))
           return false;
       }
 
@@ -32297,10 +32180,10 @@ public class CloudHardDiskService {
     public int hashCode() {
       List<Object> list = new ArrayList<Object>();
 
-      boolean present_token = true && (isSetToken());
-      list.add(present_token);
-      if (present_token)
-        list.add(token);
+      boolean present_Url = true && (isSetUrl());
+      list.add(present_Url);
+      if (present_Url)
+        list.add(Url);
 
       return list.hashCode();
     }
@@ -32313,12 +32196,12 @@ public class CloudHardDiskService {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
+      lastComparison = Boolean.valueOf(isSetUrl()).compareTo(other.isSetUrl());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetToken()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
+      if (isSetUrl()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.Url, other.Url);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -32343,11 +32226,11 @@ public class CloudHardDiskService {
       StringBuilder sb = new StringBuilder("GetMobileNumber_args(");
       boolean first = true;
 
-      sb.append("token:");
-      if (this.token == null) {
+      sb.append("Url:");
+      if (this.Url == null) {
         sb.append("null");
       } else {
-        sb.append(this.token);
+        sb.append(this.Url);
       }
       first = false;
       sb.append(")");
@@ -32393,10 +32276,10 @@ public class CloudHardDiskService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // TOKEN
+            case 1: // URL
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.token = iprot.readString();
-                struct.setTokenIsSet(true);
+                struct.Url = iprot.readString();
+                struct.setUrlIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -32416,9 +32299,9 @@ public class CloudHardDiskService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.token != null) {
-          oprot.writeFieldBegin(TOKEN_FIELD_DESC);
-          oprot.writeString(struct.token);
+        if (struct.Url != null) {
+          oprot.writeFieldBegin(URL_FIELD_DESC);
+          oprot.writeString(struct.Url);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -32439,12 +32322,12 @@ public class CloudHardDiskService {
       public void write(org.apache.thrift.protocol.TProtocol prot, GetMobileNumber_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetToken()) {
+        if (struct.isSetUrl()) {
           optionals.set(0);
         }
         oprot.writeBitSet(optionals, 1);
-        if (struct.isSetToken()) {
-          oprot.writeString(struct.token);
+        if (struct.isSetUrl()) {
+          oprot.writeString(struct.Url);
         }
       }
 
@@ -32453,8 +32336,8 @@ public class CloudHardDiskService {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.token = iprot.readString();
-          struct.setTokenIsSet(true);
+          struct.Url = iprot.readString();
+          struct.setUrlIsSet(true);
         }
       }
     }
