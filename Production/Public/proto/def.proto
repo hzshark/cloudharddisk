@@ -50,7 +50,8 @@ enum FTYPE{
   STORE   =5 ,            //存储 
   PICTURE = 6 ,		//图片
   MUSIC =7  ,            //音乐
-  NOTEPAD =8		 //记事簿	
+  NOTEPAD =8,		 //记事簿	
+  PRIVATE = 9,     //私密文件
   }
 
 

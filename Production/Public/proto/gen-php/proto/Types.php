@@ -49,6 +49,7 @@ final class FTYPE {
   const PICTURE = 6;
   const MUSIC = 7;
   const NOTEPAD = 8;
+  const PRIVATE = 9;
   static public $__names = array(
     1 => 'NORMAL',
     2 => 'SMS',
@@ -58,6 +59,7 @@ final class FTYPE {
     6 => 'PICTURE',
     7 => 'MUSIC',
     8 => 'NOTEPAD',
+    9 => 'PRIVATE',
   );
 }
 
