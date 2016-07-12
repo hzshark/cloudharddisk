@@ -51,7 +51,7 @@ enum FTYPE{
   PICTURE = 6 ,		//图片
   MUSIC =7  ,            //音乐
   NOTEPAD =8,		 //记事簿	
-  PRIVATE = 9,     //私密文件
+  SECRET = 9,     //私密文件
   }
 
 
