@@ -52,7 +52,7 @@ enum FTYPE{
   MUSIC =7  ,            //音乐
   NOTEPAD =8,		 //记事簿	
   SECRET = 9,		 //私密文件
-  VODIE	 =10,
+  VIDEO	 =10,
   RECORD =11,
   }
 
