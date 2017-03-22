@@ -78,7 +78,7 @@ struct ReqObjparam{
 }
 
 // 利用thrift的序列化变成string 或bin 存储在ojbect中.
-typedef map<string,string> ObjDescrp
+typedef map<string,string> ObjDescrp;
 
 struct RetHead{ 
  1: Errcode ret;
@@ -222,7 +222,7 @@ struct QueryAttributeResult {
     1: RetHead result; 	
     2: Token token;
     3: string attribute_value;
-    4：optional ObjDescrp;
+    4: optional ObjDescrp objDescrp;
 }
 
 struct CreateShareResult {

@@ -50,6 +50,8 @@ final class FTYPE {
   const MUSIC = 7;
   const NOTEPAD = 8;
   const SECRET = 9;
+  const VIDEO = 10;
+  const RECORD = 11;
   static public $__names = array(
     1 => 'NORMAL',
     2 => 'SMS',
@@ -60,6 +62,8 @@ final class FTYPE {
     7 => 'MUSIC',
     8 => 'NOTEPAD',
     9 => 'SECRET',
+    10 => 'VIDEO',
+    11 => 'RECORD',
   );
 }
 
@@ -2490,6 +2494,10 @@ class QueryAttributeResult {
    * @var string
    */
   public $attribute_value = null;
+  /**
+   * @var array
+   */
+  public $objDescrp = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -2507,6 +2515,18 @@ class QueryAttributeResult {
           'var' => 'attribute_value',
           'type' => TType::STRING,
           ),
+        4 => array(
+          'var' => 'objDescrp',
+          'type' => TType::MAP,
+          'ktype' => TType::STRING,
+          'vtype' => TType::STRING,
+          'key' => array(
+            'type' => TType::STRING,
+          ),
+          'val' => array(
+            'type' => TType::STRING,
+            ),
+          ),
         );
     }
     if (is_array($vals)) {
@@ -2518,6 +2538,9 @@ class QueryAttributeResult {
       }
       if (isset($vals['attribute_value'])) {
         $this->attribute_value = $vals['attribute_value'];
+      }
+      if (isset($vals['objDescrp'])) {
+        $this->objDescrp = $vals['objDescrp'];
       }
     }
   }
@@ -2563,6 +2586,26 @@ class QueryAttributeResult {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::MAP) {
+            $this->objDescrp = array();
+            $_size7 = 0;
+            $_ktype8 = 0;
+            $_vtype9 = 0;
+            $xfer += $input->readMapBegin($_ktype8, $_vtype9, $_size7);
+            for ($_i11 = 0; $_i11 < $_size7; ++$_i11)
+            {
+              $key12 = '';
+              $val13 = '';
+              $xfer += $input->readString($key12);
+              $xfer += $input->readString($val13);
+              $this->objDescrp[$key12] = $val13;
+            }
+            $xfer += $input->readMapEnd();
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -2592,6 +2635,24 @@ class QueryAttributeResult {
     if ($this->attribute_value !== null) {
       $xfer += $output->writeFieldBegin('attribute_value', TType::STRING, 3);
       $xfer += $output->writeString($this->attribute_value);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->objDescrp !== null) {
+      if (!is_array($this->objDescrp)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('objDescrp', TType::MAP, 4);
+      {
+        $output->writeMapBegin(TType::STRING, TType::STRING, count($this->objDescrp));
+        {
+          foreach ($this->objDescrp as $kiter14 => $viter15)
+          {
+            $xfer += $output->writeString($kiter14);
+            $xfer += $output->writeString($viter15);
+          }
+        }
+        $output->writeMapEnd();
+      }
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -2798,15 +2859,15 @@ class QueryAppResult {
         case 2:
           if ($ftype == TType::LST) {
             $this->msg = array();
-            $_size7 = 0;
-            $_etype10 = 0;
-            $xfer += $input->readListBegin($_etype10, $_size7);
-            for ($_i11 = 0; $_i11 < $_size7; ++$_i11)
+            $_size16 = 0;
+            $_etype19 = 0;
+            $xfer += $input->readListBegin($_etype19, $_size16);
+            for ($_i20 = 0; $_i20 < $_size16; ++$_i20)
             {
-              $elem12 = null;
-              $elem12 = new \proto\AppInfo();
-              $xfer += $elem12->read($input);
-              $this->msg []= $elem12;
+              $elem21 = null;
+              $elem21 = new \proto\AppInfo();
+              $xfer += $elem21->read($input);
+              $this->msg []= $elem21;
             }
             $xfer += $input->readListEnd();
           } else {
@@ -2842,9 +2903,9 @@ class QueryAppResult {
       {
         $output->writeListBegin(TType::STRUCT, count($this->msg));
         {
-          foreach ($this->msg as $iter13)
+          foreach ($this->msg as $iter22)
           {
-            $xfer += $iter13->write($output);
+            $xfer += $iter22->write($output);
           }
         }
         $output->writeListEnd();
@@ -2929,15 +2990,15 @@ class QueryFeeResult {
         case 2:
           if ($ftype == TType::LST) {
             $this->msg = array();
-            $_size14 = 0;
-            $_etype17 = 0;
-            $xfer += $input->readListBegin($_etype17, $_size14);
-            for ($_i18 = 0; $_i18 < $_size14; ++$_i18)
+            $_size23 = 0;
+            $_etype26 = 0;
+            $xfer += $input->readListBegin($_etype26, $_size23);
+            for ($_i27 = 0; $_i27 < $_size23; ++$_i27)
             {
-              $elem19 = null;
-              $elem19 = new \proto\FeeInfo();
-              $xfer += $elem19->read($input);
-              $this->msg []= $elem19;
+              $elem28 = null;
+              $elem28 = new \proto\FeeInfo();
+              $xfer += $elem28->read($input);
+              $this->msg []= $elem28;
             }
             $xfer += $input->readListEnd();
           } else {
@@ -2973,9 +3034,9 @@ class QueryFeeResult {
       {
         $output->writeListBegin(TType::STRUCT, count($this->msg));
         {
-          foreach ($this->msg as $iter20)
+          foreach ($this->msg as $iter29)
           {
-            $xfer += $iter20->write($output);
+            $xfer += $iter29->write($output);
           }
         }
         $output->writeListEnd();
@@ -3162,14 +3223,14 @@ class QueryHelpResult {
         case 2:
           if ($ftype == TType::LST) {
             $this->msg = array();
-            $_size21 = 0;
-            $_etype24 = 0;
-            $xfer += $input->readListBegin($_etype24, $_size21);
-            for ($_i25 = 0; $_i25 < $_size21; ++$_i25)
+            $_size30 = 0;
+            $_etype33 = 0;
+            $xfer += $input->readListBegin($_etype33, $_size30);
+            for ($_i34 = 0; $_i34 < $_size30; ++$_i34)
             {
-              $elem26 = null;
-              $xfer += $input->readString($elem26);
-              $this->msg []= $elem26;
+              $elem35 = null;
+              $xfer += $input->readString($elem35);
+              $this->msg []= $elem35;
             }
             $xfer += $input->readListEnd();
           } else {
@@ -3205,9 +3266,9 @@ class QueryHelpResult {
       {
         $output->writeListBegin(TType::STRING, count($this->msg));
         {
-          foreach ($this->msg as $iter27)
+          foreach ($this->msg as $iter36)
           {
-            $xfer += $output->writeString($iter27);
+            $xfer += $output->writeString($iter36);
           }
         }
         $output->writeListEnd();

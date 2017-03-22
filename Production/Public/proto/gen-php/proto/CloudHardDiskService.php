@@ -4405,17 +4405,17 @@ class CloudHardDiskService_commitObj_args {
         case 3:
           if ($ftype == TType::MAP) {
             $this->odescr = array();
-            $_size28 = 0;
-            $_ktype29 = 0;
-            $_vtype30 = 0;
-            $xfer += $input->readMapBegin($_ktype29, $_vtype30, $_size28);
-            for ($_i32 = 0; $_i32 < $_size28; ++$_i32)
+            $_size37 = 0;
+            $_ktype38 = 0;
+            $_vtype39 = 0;
+            $xfer += $input->readMapBegin($_ktype38, $_vtype39, $_size37);
+            for ($_i41 = 0; $_i41 < $_size37; ++$_i41)
             {
-              $key33 = '';
-              $val34 = '';
-              $xfer += $input->readString($key33);
-              $xfer += $input->readString($val34);
-              $this->odescr[$key33] = $val34;
+              $key42 = '';
+              $val43 = '';
+              $xfer += $input->readString($key42);
+              $xfer += $input->readString($val43);
+              $this->odescr[$key42] = $val43;
             }
             $xfer += $input->readMapEnd();
           } else {
@@ -4460,10 +4460,10 @@ class CloudHardDiskService_commitObj_args {
       {
         $output->writeMapBegin(TType::STRING, TType::STRING, count($this->odescr));
         {
-          foreach ($this->odescr as $kiter35 => $viter36)
+          foreach ($this->odescr as $kiter44 => $viter45)
           {
-            $xfer += $output->writeString($kiter35);
-            $xfer += $output->writeString($viter36);
+            $xfer += $output->writeString($kiter44);
+            $xfer += $output->writeString($viter45);
           }
         }
         $output->writeMapEnd();
