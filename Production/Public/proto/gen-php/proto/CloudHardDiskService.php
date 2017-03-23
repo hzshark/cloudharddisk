@@ -91,9 +91,10 @@ interface CloudHardDiskServiceIf {
    * @param string $oid
    * @param string $bin
    * @param int $type
+   * @param int $offset
    * @return \proto\RetHead
    */
-  public function appendObj($token, $oid, $bin, $type);
+  public function appendObj($token, $oid, $bin, $type, $offset);
   /**
    * @param string $token
    * @param string $oid
@@ -758,19 +759,20 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("queryobj failed: unknown result");
   }
 
-  public function appendObj($token, $oid, $bin, $type)
+  public function appendObj($token, $oid, $bin, $type, $offset)
   {
-    $this->send_appendObj($token, $oid, $bin, $type);
+    $this->send_appendObj($token, $oid, $bin, $type, $offset);
     return $this->recv_appendObj();
   }
 
-  public function send_appendObj($token, $oid, $bin, $type)
+  public function send_appendObj($token, $oid, $bin, $type, $offset)
   {
     $args = new \proto\CloudHardDiskService_appendObj_args();
     $args->token = $token;
     $args->oid = $oid;
     $args->bin = $bin;
     $args->type = $type;
+    $args->offset = $offset;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -4138,6 +4140,10 @@ class CloudHardDiskService_appendObj_args {
    * @var int
    */
   public $type = null;
+  /**
+   * @var int
+   */
+  public $offset = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -4158,6 +4164,10 @@ class CloudHardDiskService_appendObj_args {
           'var' => 'type',
           'type' => TType::I32,
           ),
+        5 => array(
+          'var' => 'offset',
+          'type' => TType::I64,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -4172,6 +4182,9 @@ class CloudHardDiskService_appendObj_args {
       }
       if (isset($vals['type'])) {
         $this->type = $vals['type'];
+      }
+      if (isset($vals['offset'])) {
+        $this->offset = $vals['offset'];
       }
     }
   }
@@ -4223,6 +4236,13 @@ class CloudHardDiskService_appendObj_args {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 5:
+          if ($ftype == TType::I64) {
+            $xfer += $input->readI64($this->offset);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -4254,6 +4274,11 @@ class CloudHardDiskService_appendObj_args {
     if ($this->type !== null) {
       $xfer += $output->writeFieldBegin('type', TType::I32, 4);
       $xfer += $output->writeI32($this->type);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->offset !== null) {
+      $xfer += $output->writeFieldBegin('offset', TType::I64, 5);
+      $xfer += $output->writeI64($this->offset);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -9388,7 +9413,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_appendObj_result();
-    $result->success = $this->handler_->appendObj($args->token, $args->oid, $args->bin, $args->type);
+    $result->success = $this->handler_->appendObj($args->token, $args->oid, $args->bin, $args->type, $args->offset);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {

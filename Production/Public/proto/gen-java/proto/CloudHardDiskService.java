@@ -61,7 +61,7 @@ public class CloudHardDiskService {
 
     public QueryUpldObjResult queryobj(String token, FTYPE type, String objid) throws org.apache.thrift.TException;
 
-    public RetHead appendObj(String token, String oid, ByteBuffer bin, FTYPE type) throws org.apache.thrift.TException;
+    public RetHead appendObj(String token, String oid, ByteBuffer bin, FTYPE type, long offset) throws org.apache.thrift.TException;
 
     public RetHead commitObj(String token, String oid, Map<String,String> odescr, FTYPE type) throws org.apache.thrift.TException;
 
@@ -149,7 +149,7 @@ public class CloudHardDiskService {
 
     public void queryobj(String token, FTYPE type, String objid, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void appendObj(String token, String oid, ByteBuffer bin, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void appendObj(String token, String oid, ByteBuffer bin, FTYPE type, long offset, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void commitObj(String token, String oid, Map<String,String> odescr, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -454,19 +454,20 @@ public class CloudHardDiskService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "queryobj failed: unknown result");
     }
 
-    public RetHead appendObj(String token, String oid, ByteBuffer bin, FTYPE type) throws org.apache.thrift.TException
+    public RetHead appendObj(String token, String oid, ByteBuffer bin, FTYPE type, long offset) throws org.apache.thrift.TException
     {
-      send_appendObj(token, oid, bin, type);
+      send_appendObj(token, oid, bin, type, offset);
       return recv_appendObj();
     }
 
-    public void send_appendObj(String token, String oid, ByteBuffer bin, FTYPE type) throws org.apache.thrift.TException
+    public void send_appendObj(String token, String oid, ByteBuffer bin, FTYPE type, long offset) throws org.apache.thrift.TException
     {
       appendObj_args args = new appendObj_args();
       args.setToken(token);
       args.setOid(oid);
       args.setBin(bin);
       args.setType(type);
+      args.setOffset(offset);
       sendBase("appendObj", args);
     }
 
@@ -1494,9 +1495,9 @@ public class CloudHardDiskService {
       }
     }
 
-    public void appendObj(String token, String oid, ByteBuffer bin, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void appendObj(String token, String oid, ByteBuffer bin, FTYPE type, long offset, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      appendObj_call method_call = new appendObj_call(token, oid, bin, type, resultHandler, this, ___protocolFactory, ___transport);
+      appendObj_call method_call = new appendObj_call(token, oid, bin, type, offset, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -1506,12 +1507,14 @@ public class CloudHardDiskService {
       private String oid;
       private ByteBuffer bin;
       private FTYPE type;
-      public appendObj_call(String token, String oid, ByteBuffer bin, FTYPE type, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private long offset;
+      public appendObj_call(String token, String oid, ByteBuffer bin, FTYPE type, long offset, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.token = token;
         this.oid = oid;
         this.bin = bin;
         this.type = type;
+        this.offset = offset;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -1521,6 +1524,7 @@ public class CloudHardDiskService {
         args.setOid(oid);
         args.setBin(bin);
         args.setType(type);
+        args.setOffset(offset);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -2728,7 +2732,7 @@ public class CloudHardDiskService {
 
       public appendObj_result getResult(I iface, appendObj_args args) throws org.apache.thrift.TException {
         appendObj_result result = new appendObj_result();
-        result.success = iface.appendObj(args.token, args.oid, args.bin, args.type);
+        result.success = iface.appendObj(args.token, args.oid, args.bin, args.type, args.offset);
         return result;
       }
     }
@@ -3832,7 +3836,7 @@ public class CloudHardDiskService {
       }
 
       public void start(I iface, appendObj_args args, org.apache.thrift.async.AsyncMethodCallback<RetHead> resultHandler) throws TException {
-        iface.appendObj(args.token, args.oid, args.bin, args.type,resultHandler);
+        iface.appendObj(args.token, args.oid, args.bin, args.type, args.offset,resultHandler);
       }
     }
 
@@ -13976,6 +13980,7 @@ public class CloudHardDiskService {
     private static final org.apache.thrift.protocol.TField OID_FIELD_DESC = new org.apache.thrift.protocol.TField("oid", org.apache.thrift.protocol.TType.STRING, (short)2);
     private static final org.apache.thrift.protocol.TField BIN_FIELD_DESC = new org.apache.thrift.protocol.TField("bin", org.apache.thrift.protocol.TType.STRING, (short)3);
     private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)4);
+    private static final org.apache.thrift.protocol.TField OFFSET_FIELD_DESC = new org.apache.thrift.protocol.TField("offset", org.apache.thrift.protocol.TType.I64, (short)5);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -13991,6 +13996,7 @@ public class CloudHardDiskService {
      * @see FTYPE
      */
     public FTYPE type; // required
+    public long offset; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -14001,7 +14007,8 @@ public class CloudHardDiskService {
        * 
        * @see FTYPE
        */
-      TYPE((short)4, "type");
+      TYPE((short)4, "type"),
+      OFFSET((short)5, "offset");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -14024,6 +14031,8 @@ public class CloudHardDiskService {
             return BIN;
           case 4: // TYPE
             return TYPE;
+          case 5: // OFFSET
+            return OFFSET;
           default:
             return null;
         }
@@ -14064,6 +14073,8 @@ public class CloudHardDiskService {
     }
 
     // isset id assignments
+    private static final int __OFFSET_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -14075,6 +14086,8 @@ public class CloudHardDiskService {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , true)));
       tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, FTYPE.class)));
+      tmpMap.put(_Fields.OFFSET, new org.apache.thrift.meta_data.FieldMetaData("offset", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(appendObj_args.class, metaDataMap);
     }
@@ -14086,19 +14099,23 @@ public class CloudHardDiskService {
       String token,
       String oid,
       ByteBuffer bin,
-      FTYPE type)
+      FTYPE type,
+      long offset)
     {
       this();
       this.token = token;
       this.oid = oid;
       this.bin = org.apache.thrift.TBaseHelper.copyBinary(bin);
       this.type = type;
+      this.offset = offset;
+      setOffsetIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public appendObj_args(appendObj_args other) {
+      __isset_bitfield = other.__isset_bitfield;
       if (other.isSetToken()) {
         this.token = other.token;
       }
@@ -14111,6 +14128,7 @@ public class CloudHardDiskService {
       if (other.isSetType()) {
         this.type = other.type;
       }
+      this.offset = other.offset;
     }
 
     public appendObj_args deepCopy() {
@@ -14123,6 +14141,8 @@ public class CloudHardDiskService {
       this.oid = null;
       this.bin = null;
       this.type = null;
+      setOffsetIsSet(false);
+      this.offset = 0;
     }
 
     public String getToken() {
@@ -14239,6 +14259,29 @@ public class CloudHardDiskService {
       }
     }
 
+    public long getOffset() {
+      return this.offset;
+    }
+
+    public appendObj_args setOffset(long offset) {
+      this.offset = offset;
+      setOffsetIsSet(true);
+      return this;
+    }
+
+    public void unsetOffset() {
+      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __OFFSET_ISSET_ID);
+    }
+
+    /** Returns true if field offset is set (has been assigned a value) and false otherwise */
+    public boolean isSetOffset() {
+      return EncodingUtils.testBit(__isset_bitfield, __OFFSET_ISSET_ID);
+    }
+
+    public void setOffsetIsSet(boolean value) {
+      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __OFFSET_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case TOKEN:
@@ -14273,6 +14316,14 @@ public class CloudHardDiskService {
         }
         break;
 
+      case OFFSET:
+        if (value == null) {
+          unsetOffset();
+        } else {
+          setOffset((Long)value);
+        }
+        break;
+
       }
     }
 
@@ -14289,6 +14340,9 @@ public class CloudHardDiskService {
 
       case TYPE:
         return getType();
+
+      case OFFSET:
+        return getOffset();
 
       }
       throw new IllegalStateException();
@@ -14309,6 +14363,8 @@ public class CloudHardDiskService {
         return isSetBin();
       case TYPE:
         return isSetType();
+      case OFFSET:
+        return isSetOffset();
       }
       throw new IllegalStateException();
     }
@@ -14362,6 +14418,15 @@ public class CloudHardDiskService {
           return false;
       }
 
+      boolean this_present_offset = true;
+      boolean that_present_offset = true;
+      if (this_present_offset || that_present_offset) {
+        if (!(this_present_offset && that_present_offset))
+          return false;
+        if (this.offset != that.offset)
+          return false;
+      }
+
       return true;
     }
 
@@ -14388,6 +14453,11 @@ public class CloudHardDiskService {
       list.add(present_type);
       if (present_type)
         list.add(type.getValue());
+
+      boolean present_offset = true;
+      list.add(present_offset);
+      if (present_offset)
+        list.add(offset);
 
       return list.hashCode();
     }
@@ -14436,6 +14506,16 @@ public class CloudHardDiskService {
       }
       if (isSetType()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.type, other.type);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = Boolean.valueOf(isSetOffset()).compareTo(other.isSetOffset());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetOffset()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.offset, other.offset);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -14491,6 +14571,10 @@ public class CloudHardDiskService {
         sb.append(this.type);
       }
       first = false;
+      if (!first) sb.append(", ");
+      sb.append("offset:");
+      sb.append(this.offset);
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -14510,6 +14594,8 @@ public class CloudHardDiskService {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -14566,6 +14652,14 @@ public class CloudHardDiskService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 5: // OFFSET
+              if (schemeField.type == org.apache.thrift.protocol.TType.I64) {
+                struct.offset = iprot.readI64();
+                struct.setOffsetIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -14601,6 +14695,9 @@ public class CloudHardDiskService {
           oprot.writeI32(struct.type.getValue());
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(OFFSET_FIELD_DESC);
+        oprot.writeI64(struct.offset);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -14631,7 +14728,10 @@ public class CloudHardDiskService {
         if (struct.isSetType()) {
           optionals.set(3);
         }
-        oprot.writeBitSet(optionals, 4);
+        if (struct.isSetOffset()) {
+          optionals.set(4);
+        }
+        oprot.writeBitSet(optionals, 5);
         if (struct.isSetToken()) {
           oprot.writeString(struct.token);
         }
@@ -14644,12 +14744,15 @@ public class CloudHardDiskService {
         if (struct.isSetType()) {
           oprot.writeI32(struct.type.getValue());
         }
+        if (struct.isSetOffset()) {
+          oprot.writeI64(struct.offset);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, appendObj_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(4);
+        BitSet incoming = iprot.readBitSet(5);
         if (incoming.get(0)) {
           struct.token = iprot.readString();
           struct.setTokenIsSet(true);
@@ -14665,6 +14768,10 @@ public class CloudHardDiskService {
         if (incoming.get(3)) {
           struct.type = proto.FTYPE.findByValue(iprot.readI32());
           struct.setTypeIsSet(true);
+        }
+        if (incoming.get(4)) {
+          struct.offset = iprot.readI64();
+          struct.setOffsetIsSet(true);
         }
       }
     }

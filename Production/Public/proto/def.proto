@@ -333,7 +333,7 @@ service CloudHardDiskService {
     
     QueryUpldObjResult  queryobj(1:Token token ,2:FTYPE type,3:string objid);
 
-    RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin,4:FTYPE type,5:long offset);// 分块写入文件 offset==-1 服务器保存，大于-1 客户端指定
+    RetHead   appendObj(1:Token token,2:OBJID oid,3:binary bin,4:FTYPE type,5:i64 offset);// 分块写入文件 offset==-1 服务器保存，大于-1 客户端指定
     
     RetHead   commitObj(1:Token token,2:OBJID oid,3:ObjDescrp odescr,4:FTYPE type );// param3 object 的描述  存放sms 通信表述信息
     
