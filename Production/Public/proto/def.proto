@@ -312,7 +312,7 @@ service CloudHardDiskService {
     QueryFResult QueryFile(1:Token token ,2:FTYPE type,3:string fname);
 
     // 查询文件描述属性 
-    QueryAttributeResult queryAttribute(1:Token token,2: string attribute,3: OBJID  objid,4: FTYPE type);
+    QueryAttributeResult queryAttribute(1:Token token,2: OBJID  objid,3: FTYPE type);
     
     //RetHead     sysncnotepad(1:SYNCTYPE , 2:List notes);//完善中
  
