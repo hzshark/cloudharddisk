@@ -2491,10 +2491,6 @@ class QueryAttributeResult {
    */
   public $token = null;
   /**
-   * @var string
-   */
-  public $attribute_value = null;
-  /**
    * @var array
    */
   public $objDescrp = null;
@@ -2512,10 +2508,6 @@ class QueryAttributeResult {
           'type' => TType::STRING,
           ),
         3 => array(
-          'var' => 'attribute_value',
-          'type' => TType::STRING,
-          ),
-        4 => array(
           'var' => 'objDescrp',
           'type' => TType::MAP,
           'ktype' => TType::STRING,
@@ -2535,9 +2527,6 @@ class QueryAttributeResult {
       }
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
-      }
-      if (isset($vals['attribute_value'])) {
-        $this->attribute_value = $vals['attribute_value'];
       }
       if (isset($vals['objDescrp'])) {
         $this->objDescrp = $vals['objDescrp'];
@@ -2580,13 +2569,6 @@ class QueryAttributeResult {
           }
           break;
         case 3:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->attribute_value);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 4:
           if ($ftype == TType::MAP) {
             $this->objDescrp = array();
             $_size7 = 0;
@@ -2632,16 +2614,11 @@ class QueryAttributeResult {
       $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->attribute_value !== null) {
-      $xfer += $output->writeFieldBegin('attribute_value', TType::STRING, 3);
-      $xfer += $output->writeString($this->attribute_value);
-      $xfer += $output->writeFieldEnd();
-    }
     if ($this->objDescrp !== null) {
       if (!is_array($this->objDescrp)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
       }
-      $xfer += $output->writeFieldBegin('objDescrp', TType::MAP, 4);
+      $xfer += $output->writeFieldBegin('objDescrp', TType::MAP, 3);
       {
         $output->writeMapBegin(TType::STRING, TType::STRING, count($this->objDescrp));
         {

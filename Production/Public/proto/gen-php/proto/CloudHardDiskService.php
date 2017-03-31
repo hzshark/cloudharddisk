@@ -66,12 +66,11 @@ interface CloudHardDiskServiceIf {
   public function QueryFile($token, $type, $fname);
   /**
    * @param string $token
-   * @param string $attribute
    * @param string $objid
    * @param int $type
    * @return \proto\QueryAttributeResult
    */
-  public function queryAttribute($token, $attribute, $objid, $type);
+  public function queryAttribute($token, $objid, $type);
   /**
    * @param string $token
    * @param \proto\FileInfo $item
@@ -599,17 +598,16 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("QueryFile failed: unknown result");
   }
 
-  public function queryAttribute($token, $attribute, $objid, $type)
+  public function queryAttribute($token, $objid, $type)
   {
-    $this->send_queryAttribute($token, $attribute, $objid, $type);
+    $this->send_queryAttribute($token, $objid, $type);
     return $this->recv_queryAttribute();
   }
 
-  public function send_queryAttribute($token, $attribute, $objid, $type)
+  public function send_queryAttribute($token, $objid, $type)
   {
     $args = new \proto\CloudHardDiskService_queryAttribute_args();
     $args->token = $token;
-    $args->attribute = $attribute;
     $args->objid = $objid;
     $args->type = $type;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
@@ -3466,10 +3464,6 @@ class CloudHardDiskService_queryAttribute_args {
   /**
    * @var string
    */
-  public $attribute = null;
-  /**
-   * @var string
-   */
   public $objid = null;
   /**
    * @var int
@@ -3484,14 +3478,10 @@ class CloudHardDiskService_queryAttribute_args {
           'type' => TType::STRING,
           ),
         2 => array(
-          'var' => 'attribute',
-          'type' => TType::STRING,
-          ),
-        3 => array(
           'var' => 'objid',
           'type' => TType::STRING,
           ),
-        4 => array(
+        3 => array(
           'var' => 'type',
           'type' => TType::I32,
           ),
@@ -3500,9 +3490,6 @@ class CloudHardDiskService_queryAttribute_args {
     if (is_array($vals)) {
       if (isset($vals['token'])) {
         $this->token = $vals['token'];
-      }
-      if (isset($vals['attribute'])) {
-        $this->attribute = $vals['attribute'];
       }
       if (isset($vals['objid'])) {
         $this->objid = $vals['objid'];
@@ -3541,19 +3528,12 @@ class CloudHardDiskService_queryAttribute_args {
           break;
         case 2:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->attribute);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 3:
-          if ($ftype == TType::STRING) {
             $xfer += $input->readString($this->objid);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
-        case 4:
+        case 3:
           if ($ftype == TType::I32) {
             $xfer += $input->readI32($this->type);
           } else {
@@ -3578,18 +3558,13 @@ class CloudHardDiskService_queryAttribute_args {
       $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->attribute !== null) {
-      $xfer += $output->writeFieldBegin('attribute', TType::STRING, 2);
-      $xfer += $output->writeString($this->attribute);
-      $xfer += $output->writeFieldEnd();
-    }
     if ($this->objid !== null) {
-      $xfer += $output->writeFieldBegin('objid', TType::STRING, 3);
+      $xfer += $output->writeFieldBegin('objid', TType::STRING, 2);
       $xfer += $output->writeString($this->objid);
       $xfer += $output->writeFieldEnd();
     }
     if ($this->type !== null) {
-      $xfer += $output->writeFieldBegin('type', TType::I32, 4);
+      $xfer += $output->writeFieldBegin('type', TType::I32, 3);
       $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
@@ -9356,7 +9331,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_queryAttribute_result();
-    $result->success = $this->handler_->queryAttribute($args->token, $args->attribute, $args->objid, $args->type);
+    $result->success = $this->handler_->queryAttribute($args->token, $args->objid, $args->type);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {

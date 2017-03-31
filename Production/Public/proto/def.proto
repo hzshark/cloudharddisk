@@ -221,8 +221,7 @@ struct UploadParam {
 struct QueryAttributeResult {
     1: RetHead result; 	
     2: Token token;
-    3: string attribute_value;
-    4: optional ObjDescrp objDescrp;
+    3: optional ObjDescrp objDescrp;
 }
 
 struct CreateShareResult {
