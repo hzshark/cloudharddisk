@@ -54,6 +54,7 @@ enum FTYPE{
   SECRET = 9,		 //私密文件
   VIDEO	 =10,
   RECORD =11,
+  THUMB = 12             //视频文件的预留封面
   }
 
 
