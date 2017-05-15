@@ -207,12 +207,6 @@ interface CloudHardDiskServiceIf {
   public function VerifyCathcha($umobile, $captcha);
   /**
    * @param string $token
-   * @param int $ptype
-   * @return \proto\RetHead
-   */
-  public function OrderPlan($token, $ptype);
-  /**
-   * @param string $token
    * @param string $ualias
    * @return \proto\RetHead
    */
@@ -244,12 +238,6 @@ interface CloudHardDiskServiceIf {
   public function QueryUserInfo($token);
   /**
    * @param string $umobile
-   * @param string $captcha
-   * @return \proto\RetHead
-   */
-  public function DeleteUser($umobile, $captcha);
-  /**
-   * @param string $umobile
    * @param int $ftype
    * @return \proto\RetHead
    */
@@ -261,11 +249,17 @@ interface CloudHardDiskServiceIf {
    */
   public function DeleteBucketAllObj($token, $ftype);
   /**
+   * @param string $umobile
+   * @param string $captcha
+   * @return \proto\RetHead
+   */
+  public function Cancel($umobile, $captcha);
+  /**
    * @param string $token
    * @param int $ptype
    * @return \proto\RetHead
    */
-  public function reverseVAC($token, $ptype);
+  public function Order($token, $ptype);
 }
 
 class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
@@ -1649,58 +1643,6 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("VerifyCathcha failed: unknown result");
   }
 
-  public function OrderPlan($token, $ptype)
-  {
-    $this->send_OrderPlan($token, $ptype);
-    return $this->recv_OrderPlan();
-  }
-
-  public function send_OrderPlan($token, $ptype)
-  {
-    $args = new \proto\CloudHardDiskService_OrderPlan_args();
-    $args->token = $token;
-    $args->ptype = $ptype;
-    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
-    {
-      thrift_protocol_write_binary($this->output_, 'OrderPlan', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-    }
-    else
-    {
-      $this->output_->writeMessageBegin('OrderPlan', TMessageType::CALL, $this->seqid_);
-      $args->write($this->output_);
-      $this->output_->writeMessageEnd();
-      $this->output_->getTransport()->flush();
-    }
-  }
-
-  public function recv_OrderPlan()
-  {
-    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_OrderPlan_result', $this->input_->isStrictRead());
-    else
-    {
-      $rseqid = 0;
-      $fname = null;
-      $mtype = 0;
-
-      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-      if ($mtype == TMessageType::EXCEPTION) {
-        $x = new TApplicationException();
-        $x->read($this->input_);
-        $this->input_->readMessageEnd();
-        throw $x;
-      }
-      $result = new \proto\CloudHardDiskService_OrderPlan_result();
-      $result->read($this->input_);
-      $this->input_->readMessageEnd();
-    }
-    if ($result->success !== null) {
-      return $result->success;
-    }
-    throw new \Exception("OrderPlan failed: unknown result");
-  }
-
   public function SetAlias($token, $ualias)
   {
     $this->send_SetAlias($token, $ualias);
@@ -2008,58 +1950,6 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("QueryUserInfo failed: unknown result");
   }
 
-  public function DeleteUser($umobile, $captcha)
-  {
-    $this->send_DeleteUser($umobile, $captcha);
-    return $this->recv_DeleteUser();
-  }
-
-  public function send_DeleteUser($umobile, $captcha)
-  {
-    $args = new \proto\CloudHardDiskService_DeleteUser_args();
-    $args->umobile = $umobile;
-    $args->captcha = $captcha;
-    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
-    {
-      thrift_protocol_write_binary($this->output_, 'DeleteUser', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
-    }
-    else
-    {
-      $this->output_->writeMessageBegin('DeleteUser', TMessageType::CALL, $this->seqid_);
-      $args->write($this->output_);
-      $this->output_->writeMessageEnd();
-      $this->output_->getTransport()->flush();
-    }
-  }
-
-  public function recv_DeleteUser()
-  {
-    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_DeleteUser_result', $this->input_->isStrictRead());
-    else
-    {
-      $rseqid = 0;
-      $fname = null;
-      $mtype = 0;
-
-      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
-      if ($mtype == TMessageType::EXCEPTION) {
-        $x = new TApplicationException();
-        $x->read($this->input_);
-        $this->input_->readMessageEnd();
-        throw $x;
-      }
-      $result = new \proto\CloudHardDiskService_DeleteUser_result();
-      $result->read($this->input_);
-      $this->input_->readMessageEnd();
-    }
-    if ($result->success !== null) {
-      return $result->success;
-    }
-    throw new \Exception("DeleteUser failed: unknown result");
-  }
-
   public function CreateUserBucket($umobile, $ftype)
   {
     $this->send_CreateUserBucket($umobile, $ftype);
@@ -2164,35 +2054,35 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("DeleteBucketAllObj failed: unknown result");
   }
 
-  public function reverseVAC($token, $ptype)
+  public function Cancel($umobile, $captcha)
   {
-    $this->send_reverseVAC($token, $ptype);
-    return $this->recv_reverseVAC();
+    $this->send_Cancel($umobile, $captcha);
+    return $this->recv_Cancel();
   }
 
-  public function send_reverseVAC($token, $ptype)
+  public function send_Cancel($umobile, $captcha)
   {
-    $args = new \proto\CloudHardDiskService_reverseVAC_args();
-    $args->token = $token;
-    $args->ptype = $ptype;
+    $args = new \proto\CloudHardDiskService_Cancel_args();
+    $args->umobile = $umobile;
+    $args->captcha = $captcha;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($this->output_, 'reverseVAC', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+      thrift_protocol_write_binary($this->output_, 'Cancel', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
     }
     else
     {
-      $this->output_->writeMessageBegin('reverseVAC', TMessageType::CALL, $this->seqid_);
+      $this->output_->writeMessageBegin('Cancel', TMessageType::CALL, $this->seqid_);
       $args->write($this->output_);
       $this->output_->writeMessageEnd();
       $this->output_->getTransport()->flush();
     }
   }
 
-  public function recv_reverseVAC()
+  public function recv_Cancel()
   {
     $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
-    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_reverseVAC_result', $this->input_->isStrictRead());
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_Cancel_result', $this->input_->isStrictRead());
     else
     {
       $rseqid = 0;
@@ -2206,14 +2096,66 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
         $this->input_->readMessageEnd();
         throw $x;
       }
-      $result = new \proto\CloudHardDiskService_reverseVAC_result();
+      $result = new \proto\CloudHardDiskService_Cancel_result();
       $result->read($this->input_);
       $this->input_->readMessageEnd();
     }
     if ($result->success !== null) {
       return $result->success;
     }
-    throw new \Exception("reverseVAC failed: unknown result");
+    throw new \Exception("Cancel failed: unknown result");
+  }
+
+  public function Order($token, $ptype)
+  {
+    $this->send_Order($token, $ptype);
+    return $this->recv_Order();
+  }
+
+  public function send_Order($token, $ptype)
+  {
+    $args = new \proto\CloudHardDiskService_Order_args();
+    $args->token = $token;
+    $args->ptype = $ptype;
+    $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($this->output_, 'Order', TMessageType::CALL, $args, $this->seqid_, $this->output_->isStrictWrite());
+    }
+    else
+    {
+      $this->output_->writeMessageBegin('Order', TMessageType::CALL, $this->seqid_);
+      $args->write($this->output_);
+      $this->output_->writeMessageEnd();
+      $this->output_->getTransport()->flush();
+    }
+  }
+
+  public function recv_Order()
+  {
+    $bin_accel = ($this->input_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_read_binary');
+    if ($bin_accel) $result = thrift_protocol_read_binary($this->input_, '\proto\CloudHardDiskService_Order_result', $this->input_->isStrictRead());
+    else
+    {
+      $rseqid = 0;
+      $fname = null;
+      $mtype = 0;
+
+      $this->input_->readMessageBegin($fname, $mtype, $rseqid);
+      if ($mtype == TMessageType::EXCEPTION) {
+        $x = new TApplicationException();
+        $x->read($this->input_);
+        $this->input_->readMessageEnd();
+        throw $x;
+      }
+      $result = new \proto\CloudHardDiskService_Order_result();
+      $result->read($this->input_);
+      $this->input_->readMessageEnd();
+    }
+    if ($result->success !== null) {
+      return $result->success;
+    }
+    throw new \Exception("Order failed: unknown result");
   }
 
 }
@@ -7339,184 +7281,6 @@ class CloudHardDiskService_VerifyCathcha_result {
 
 }
 
-class CloudHardDiskService_OrderPlan_args {
-  static $_TSPEC;
-
-  /**
-   * @var string
-   */
-  public $token = null;
-  /**
-   * @var int
-   */
-  public $ptype = null;
-
-  public function __construct($vals=null) {
-    if (!isset(self::$_TSPEC)) {
-      self::$_TSPEC = array(
-        1 => array(
-          'var' => 'token',
-          'type' => TType::STRING,
-          ),
-        2 => array(
-          'var' => 'ptype',
-          'type' => TType::I32,
-          ),
-        );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['token'])) {
-        $this->token = $vals['token'];
-      }
-      if (isset($vals['ptype'])) {
-        $this->ptype = $vals['ptype'];
-      }
-    }
-  }
-
-  public function getName() {
-    return 'CloudHardDiskService_OrderPlan_args';
-  }
-
-  public function read($input)
-  {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->token);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->ptype);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
-  }
-
-  public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_OrderPlan_args');
-    if ($this->token !== null) {
-      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
-      $xfer += $output->writeString($this->token);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->ptype !== null) {
-      $xfer += $output->writeFieldBegin('ptype', TType::I32, 2);
-      $xfer += $output->writeI32($this->ptype);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
-  }
-
-}
-
-class CloudHardDiskService_OrderPlan_result {
-  static $_TSPEC;
-
-  /**
-   * @var \proto\RetHead
-   */
-  public $success = null;
-
-  public function __construct($vals=null) {
-    if (!isset(self::$_TSPEC)) {
-      self::$_TSPEC = array(
-        0 => array(
-          'var' => 'success',
-          'type' => TType::STRUCT,
-          'class' => '\proto\RetHead',
-          ),
-        );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['success'])) {
-        $this->success = $vals['success'];
-      }
-    }
-  }
-
-  public function getName() {
-    return 'CloudHardDiskService_OrderPlan_result';
-  }
-
-  public function read($input)
-  {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 0:
-          if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\RetHead();
-            $xfer += $this->success->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
-  }
-
-  public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_OrderPlan_result');
-    if ($this->success !== null) {
-      if (!is_object($this->success)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('success', TType::STRUCT, 0);
-      $xfer += $this->success->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
-  }
-
-}
-
 class CloudHardDiskService_SetAlias_args {
   static $_TSPEC;
 
@@ -8473,184 +8237,6 @@ class CloudHardDiskService_QueryUserInfo_result {
 
 }
 
-class CloudHardDiskService_DeleteUser_args {
-  static $_TSPEC;
-
-  /**
-   * @var string
-   */
-  public $umobile = null;
-  /**
-   * @var string
-   */
-  public $captcha = null;
-
-  public function __construct($vals=null) {
-    if (!isset(self::$_TSPEC)) {
-      self::$_TSPEC = array(
-        1 => array(
-          'var' => 'umobile',
-          'type' => TType::STRING,
-          ),
-        2 => array(
-          'var' => 'captcha',
-          'type' => TType::STRING,
-          ),
-        );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['umobile'])) {
-        $this->umobile = $vals['umobile'];
-      }
-      if (isset($vals['captcha'])) {
-        $this->captcha = $vals['captcha'];
-      }
-    }
-  }
-
-  public function getName() {
-    return 'CloudHardDiskService_DeleteUser_args';
-  }
-
-  public function read($input)
-  {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 1:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->umobile);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        case 2:
-          if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->captcha);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
-  }
-
-  public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_DeleteUser_args');
-    if ($this->umobile !== null) {
-      $xfer += $output->writeFieldBegin('umobile', TType::STRING, 1);
-      $xfer += $output->writeString($this->umobile);
-      $xfer += $output->writeFieldEnd();
-    }
-    if ($this->captcha !== null) {
-      $xfer += $output->writeFieldBegin('captcha', TType::STRING, 2);
-      $xfer += $output->writeString($this->captcha);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
-  }
-
-}
-
-class CloudHardDiskService_DeleteUser_result {
-  static $_TSPEC;
-
-  /**
-   * @var \proto\RetHead
-   */
-  public $success = null;
-
-  public function __construct($vals=null) {
-    if (!isset(self::$_TSPEC)) {
-      self::$_TSPEC = array(
-        0 => array(
-          'var' => 'success',
-          'type' => TType::STRUCT,
-          'class' => '\proto\RetHead',
-          ),
-        );
-    }
-    if (is_array($vals)) {
-      if (isset($vals['success'])) {
-        $this->success = $vals['success'];
-      }
-    }
-  }
-
-  public function getName() {
-    return 'CloudHardDiskService_DeleteUser_result';
-  }
-
-  public function read($input)
-  {
-    $xfer = 0;
-    $fname = null;
-    $ftype = 0;
-    $fid = 0;
-    $xfer += $input->readStructBegin($fname);
-    while (true)
-    {
-      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
-      if ($ftype == TType::STOP) {
-        break;
-      }
-      switch ($fid)
-      {
-        case 0:
-          if ($ftype == TType::STRUCT) {
-            $this->success = new \proto\RetHead();
-            $xfer += $this->success->read($input);
-          } else {
-            $xfer += $input->skip($ftype);
-          }
-          break;
-        default:
-          $xfer += $input->skip($ftype);
-          break;
-      }
-      $xfer += $input->readFieldEnd();
-    }
-    $xfer += $input->readStructEnd();
-    return $xfer;
-  }
-
-  public function write($output) {
-    $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_DeleteUser_result');
-    if ($this->success !== null) {
-      if (!is_object($this->success)) {
-        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
-      }
-      $xfer += $output->writeFieldBegin('success', TType::STRUCT, 0);
-      $xfer += $this->success->write($output);
-      $xfer += $output->writeFieldEnd();
-    }
-    $xfer += $output->writeFieldStop();
-    $xfer += $output->writeStructEnd();
-    return $xfer;
-  }
-
-}
-
 class CloudHardDiskService_CreateUserBucket_args {
   static $_TSPEC;
 
@@ -9007,7 +8593,185 @@ class CloudHardDiskService_DeleteBucketAllObj_result {
 
 }
 
-class CloudHardDiskService_reverseVAC_args {
+class CloudHardDiskService_Cancel_args {
+  static $_TSPEC;
+
+  /**
+   * @var string
+   */
+  public $umobile = null;
+  /**
+   * @var string
+   */
+  public $captcha = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'umobile',
+          'type' => TType::STRING,
+          ),
+        2 => array(
+          'var' => 'captcha',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['umobile'])) {
+        $this->umobile = $vals['umobile'];
+      }
+      if (isset($vals['captcha'])) {
+        $this->captcha = $vals['captcha'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'CloudHardDiskService_Cancel_args';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->umobile);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->captcha);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('CloudHardDiskService_Cancel_args');
+    if ($this->umobile !== null) {
+      $xfer += $output->writeFieldBegin('umobile', TType::STRING, 1);
+      $xfer += $output->writeString($this->umobile);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->captcha !== null) {
+      $xfer += $output->writeFieldBegin('captcha', TType::STRING, 2);
+      $xfer += $output->writeString($this->captcha);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class CloudHardDiskService_Cancel_result {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $success = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        0 => array(
+          'var' => 'success',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['success'])) {
+        $this->success = $vals['success'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'CloudHardDiskService_Cancel_result';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 0:
+          if ($ftype == TType::STRUCT) {
+            $this->success = new \proto\RetHead();
+            $xfer += $this->success->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('CloudHardDiskService_Cancel_result');
+    if ($this->success !== null) {
+      if (!is_object($this->success)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('success', TType::STRUCT, 0);
+      $xfer += $this->success->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class CloudHardDiskService_Order_args {
   static $_TSPEC;
 
   /**
@@ -9043,7 +8807,7 @@ class CloudHardDiskService_reverseVAC_args {
   }
 
   public function getName() {
-    return 'CloudHardDiskService_reverseVAC_args';
+    return 'CloudHardDiskService_Order_args';
   }
 
   public function read($input)
@@ -9087,7 +8851,7 @@ class CloudHardDiskService_reverseVAC_args {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_reverseVAC_args');
+    $xfer += $output->writeStructBegin('CloudHardDiskService_Order_args');
     if ($this->token !== null) {
       $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
       $xfer += $output->writeString($this->token);
@@ -9105,7 +8869,7 @@ class CloudHardDiskService_reverseVAC_args {
 
 }
 
-class CloudHardDiskService_reverseVAC_result {
+class CloudHardDiskService_Order_result {
   static $_TSPEC;
 
   /**
@@ -9131,7 +8895,7 @@ class CloudHardDiskService_reverseVAC_result {
   }
 
   public function getName() {
-    return 'CloudHardDiskService_reverseVAC_result';
+    return 'CloudHardDiskService_Order_result';
   }
 
   public function read($input)
@@ -9169,7 +8933,7 @@ class CloudHardDiskService_reverseVAC_result {
 
   public function write($output) {
     $xfer = 0;
-    $xfer += $output->writeStructBegin('CloudHardDiskService_reverseVAC_result');
+    $xfer += $output->writeStructBegin('CloudHardDiskService_Order_result');
     if ($this->success !== null) {
       if (!is_object($this->success)) {
         throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
@@ -9706,25 +9470,6 @@ class CloudHardDiskServiceProcessor {
       $output->getTransport()->flush();
     }
   }
-  protected function process_OrderPlan($seqid, $input, $output) {
-    $args = new \proto\CloudHardDiskService_OrderPlan_args();
-    $args->read($input);
-    $input->readMessageEnd();
-    $result = new \proto\CloudHardDiskService_OrderPlan_result();
-    $result->success = $this->handler_->OrderPlan($args->token, $args->ptype);
-    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
-    {
-      thrift_protocol_write_binary($output, 'OrderPlan', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
-    }
-    else
-    {
-      $output->writeMessageBegin('OrderPlan', TMessageType::REPLY, $seqid);
-      $result->write($output);
-      $output->writeMessageEnd();
-      $output->getTransport()->flush();
-    }
-  }
   protected function process_SetAlias($seqid, $input, $output) {
     $args = new \proto\CloudHardDiskService_SetAlias_args();
     $args->read($input);
@@ -9839,25 +9584,6 @@ class CloudHardDiskServiceProcessor {
       $output->getTransport()->flush();
     }
   }
-  protected function process_DeleteUser($seqid, $input, $output) {
-    $args = new \proto\CloudHardDiskService_DeleteUser_args();
-    $args->read($input);
-    $input->readMessageEnd();
-    $result = new \proto\CloudHardDiskService_DeleteUser_result();
-    $result->success = $this->handler_->DeleteUser($args->umobile, $args->captcha);
-    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
-    if ($bin_accel)
-    {
-      thrift_protocol_write_binary($output, 'DeleteUser', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
-    }
-    else
-    {
-      $output->writeMessageBegin('DeleteUser', TMessageType::REPLY, $seqid);
-      $result->write($output);
-      $output->writeMessageEnd();
-      $output->getTransport()->flush();
-    }
-  }
   protected function process_CreateUserBucket($seqid, $input, $output) {
     $args = new \proto\CloudHardDiskService_CreateUserBucket_args();
     $args->read($input);
@@ -9896,20 +9622,39 @@ class CloudHardDiskServiceProcessor {
       $output->getTransport()->flush();
     }
   }
-  protected function process_reverseVAC($seqid, $input, $output) {
-    $args = new \proto\CloudHardDiskService_reverseVAC_args();
+  protected function process_Cancel($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_Cancel_args();
     $args->read($input);
     $input->readMessageEnd();
-    $result = new \proto\CloudHardDiskService_reverseVAC_result();
-    $result->success = $this->handler_->reverseVAC($args->token, $args->ptype);
+    $result = new \proto\CloudHardDiskService_Cancel_result();
+    $result->success = $this->handler_->Cancel($args->umobile, $args->captcha);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
-      thrift_protocol_write_binary($output, 'reverseVAC', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+      thrift_protocol_write_binary($output, 'Cancel', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
     }
     else
     {
-      $output->writeMessageBegin('reverseVAC', TMessageType::REPLY, $seqid);
+      $output->writeMessageBegin('Cancel', TMessageType::REPLY, $seqid);
+      $result->write($output);
+      $output->writeMessageEnd();
+      $output->getTransport()->flush();
+    }
+  }
+  protected function process_Order($seqid, $input, $output) {
+    $args = new \proto\CloudHardDiskService_Order_args();
+    $args->read($input);
+    $input->readMessageEnd();
+    $result = new \proto\CloudHardDiskService_Order_result();
+    $result->success = $this->handler_->Order($args->token, $args->ptype);
+    $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
+    if ($bin_accel)
+    {
+      thrift_protocol_write_binary($output, 'Order', TMessageType::REPLY, $result, $seqid, $output->isStrictWrite());
+    }
+    else
+    {
+      $output->writeMessageBegin('Order', TMessageType::REPLY, $seqid);
       $result->write($output);
       $output->writeMessageEnd();
       $output->getTransport()->flush();

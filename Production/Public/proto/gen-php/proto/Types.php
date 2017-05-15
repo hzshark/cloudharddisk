@@ -52,6 +52,7 @@ final class FTYPE {
   const SECRET = 9;
   const VIDEO = 10;
   const RECORD = 11;
+  const THUMB = 12;
   static public $__names = array(
     1 => 'NORMAL',
     2 => 'SMS',
@@ -64,6 +65,7 @@ final class FTYPE {
     9 => 'SECRET',
     10 => 'VIDEO',
     11 => 'RECORD',
+    12 => 'THUMB',
   );
 }
 
