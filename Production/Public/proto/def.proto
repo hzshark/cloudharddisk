@@ -399,7 +399,7 @@ service CloudHardDiskService {
     RetHead DeleteBucketAllObj(1:Token token, 2:FTYPE ftype);
    
    // 注销业务
-    RetHead Cancel(1:string umobile, 2:string captcha); 
+    RetHead Cancel(1:Token token, 2:string umobile); 
    
     // 反向vac订购
     RetHead Order(1:Token token, 2:PTYPE ptype);    # PType  1: 九元版, 2:退订9元版

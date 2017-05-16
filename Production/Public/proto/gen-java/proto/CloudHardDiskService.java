@@ -121,7 +121,7 @@ public class CloudHardDiskService {
 
     public RetHead DeleteBucketAllObj(String token, FTYPE ftype) throws org.apache.thrift.TException;
 
-    public RetHead Cancel(String umobile, String captcha) throws org.apache.thrift.TException;
+    public RetHead Cancel(String token, String umobile) throws org.apache.thrift.TException;
 
     public RetHead Order(String token, PTYPE ptype) throws org.apache.thrift.TException;
 
@@ -197,7 +197,7 @@ public class CloudHardDiskService {
 
     public void DeleteBucketAllObj(String token, FTYPE ftype, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void Cancel(String umobile, String captcha, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void Cancel(String token, String umobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void Order(String token, PTYPE ptype, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -1052,17 +1052,17 @@ public class CloudHardDiskService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "DeleteBucketAllObj failed: unknown result");
     }
 
-    public RetHead Cancel(String umobile, String captcha) throws org.apache.thrift.TException
+    public RetHead Cancel(String token, String umobile) throws org.apache.thrift.TException
     {
-      send_Cancel(umobile, captcha);
+      send_Cancel(token, umobile);
       return recv_Cancel();
     }
 
-    public void send_Cancel(String umobile, String captcha) throws org.apache.thrift.TException
+    public void send_Cancel(String token, String umobile) throws org.apache.thrift.TException
     {
       Cancel_args args = new Cancel_args();
+      args.setToken(token);
       args.setUmobile(umobile);
-      args.setCaptcha(captcha);
       sendBase("Cancel", args);
     }
 
@@ -2347,27 +2347,27 @@ public class CloudHardDiskService {
       }
     }
 
-    public void Cancel(String umobile, String captcha, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void Cancel(String token, String umobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      Cancel_call method_call = new Cancel_call(umobile, captcha, resultHandler, this, ___protocolFactory, ___transport);
+      Cancel_call method_call = new Cancel_call(token, umobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class Cancel_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private String token;
       private String umobile;
-      private String captcha;
-      public Cancel_call(String umobile, String captcha, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public Cancel_call(String token, String umobile, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
+        this.token = token;
         this.umobile = umobile;
-        this.captcha = captcha;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("Cancel", org.apache.thrift.protocol.TMessageType.CALL, 0));
         Cancel_args args = new Cancel_args();
+        args.setToken(token);
         args.setUmobile(umobile);
-        args.setCaptcha(captcha);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -3164,7 +3164,7 @@ public class CloudHardDiskService {
 
       public Cancel_result getResult(I iface, Cancel_args args) throws org.apache.thrift.TException {
         Cancel_result result = new Cancel_result();
-        result.success = iface.Cancel(args.umobile, args.captcha);
+        result.success = iface.Cancel(args.token, args.umobile);
         return result;
       }
     }
@@ -5022,7 +5022,7 @@ public class CloudHardDiskService {
       }
 
       public void start(I iface, Cancel_args args, org.apache.thrift.async.AsyncMethodCallback<RetHead> resultHandler) throws TException {
-        iface.Cancel(args.umobile, args.captcha,resultHandler);
+        iface.Cancel(args.token, args.umobile,resultHandler);
       }
     }
 
@@ -35025,8 +35025,8 @@ public class CloudHardDiskService {
   public static class Cancel_args implements org.apache.thrift.TBase<Cancel_args, Cancel_args._Fields>, java.io.Serializable, Cloneable, Comparable<Cancel_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("Cancel_args");
 
-    private static final org.apache.thrift.protocol.TField UMOBILE_FIELD_DESC = new org.apache.thrift.protocol.TField("umobile", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField CAPTCHA_FIELD_DESC = new org.apache.thrift.protocol.TField("captcha", org.apache.thrift.protocol.TType.STRING, (short)2);
+    private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)1);
+    private static final org.apache.thrift.protocol.TField UMOBILE_FIELD_DESC = new org.apache.thrift.protocol.TField("umobile", org.apache.thrift.protocol.TType.STRING, (short)2);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -35034,13 +35034,13 @@ public class CloudHardDiskService {
       schemes.put(TupleScheme.class, new Cancel_argsTupleSchemeFactory());
     }
 
+    public String token; // required
     public String umobile; // required
-    public String captcha; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      UMOBILE((short)1, "umobile"),
-      CAPTCHA((short)2, "captcha");
+      TOKEN((short)1, "token"),
+      UMOBILE((short)2, "umobile");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -35055,10 +35055,10 @@ public class CloudHardDiskService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // UMOBILE
+          case 1: // TOKEN
+            return TOKEN;
+          case 2: // UMOBILE
             return UMOBILE;
-          case 2: // CAPTCHA
-            return CAPTCHA;
           default:
             return null;
         }
@@ -35102,9 +35102,9 @@ public class CloudHardDiskService {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING          , "Token")));
       tmpMap.put(_Fields.UMOBILE, new org.apache.thrift.meta_data.FieldMetaData("umobile", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.CAPTCHA, new org.apache.thrift.meta_data.FieldMetaData("captcha", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(Cancel_args.class, metaDataMap);
@@ -35114,23 +35114,23 @@ public class CloudHardDiskService {
     }
 
     public Cancel_args(
-      String umobile,
-      String captcha)
+      String token,
+      String umobile)
     {
       this();
+      this.token = token;
       this.umobile = umobile;
-      this.captcha = captcha;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public Cancel_args(Cancel_args other) {
+      if (other.isSetToken()) {
+        this.token = other.token;
+      }
       if (other.isSetUmobile()) {
         this.umobile = other.umobile;
-      }
-      if (other.isSetCaptcha()) {
-        this.captcha = other.captcha;
       }
     }
 
@@ -35140,8 +35140,32 @@ public class CloudHardDiskService {
 
     @Override
     public void clear() {
+      this.token = null;
       this.umobile = null;
-      this.captcha = null;
+    }
+
+    public String getToken() {
+      return this.token;
+    }
+
+    public Cancel_args setToken(String token) {
+      this.token = token;
+      return this;
+    }
+
+    public void unsetToken() {
+      this.token = null;
+    }
+
+    /** Returns true if field token is set (has been assigned a value) and false otherwise */
+    public boolean isSetToken() {
+      return this.token != null;
+    }
+
+    public void setTokenIsSet(boolean value) {
+      if (!value) {
+        this.token = null;
+      }
     }
 
     public String getUmobile() {
@@ -35168,32 +35192,16 @@ public class CloudHardDiskService {
       }
     }
 
-    public String getCaptcha() {
-      return this.captcha;
-    }
-
-    public Cancel_args setCaptcha(String captcha) {
-      this.captcha = captcha;
-      return this;
-    }
-
-    public void unsetCaptcha() {
-      this.captcha = null;
-    }
-
-    /** Returns true if field captcha is set (has been assigned a value) and false otherwise */
-    public boolean isSetCaptcha() {
-      return this.captcha != null;
-    }
-
-    public void setCaptchaIsSet(boolean value) {
-      if (!value) {
-        this.captcha = null;
-      }
-    }
-
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
+      case TOKEN:
+        if (value == null) {
+          unsetToken();
+        } else {
+          setToken((String)value);
+        }
+        break;
+
       case UMOBILE:
         if (value == null) {
           unsetUmobile();
@@ -35202,24 +35210,16 @@ public class CloudHardDiskService {
         }
         break;
 
-      case CAPTCHA:
-        if (value == null) {
-          unsetCaptcha();
-        } else {
-          setCaptcha((String)value);
-        }
-        break;
-
       }
     }
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
+      case TOKEN:
+        return getToken();
+
       case UMOBILE:
         return getUmobile();
-
-      case CAPTCHA:
-        return getCaptcha();
 
       }
       throw new IllegalStateException();
@@ -35232,10 +35232,10 @@ public class CloudHardDiskService {
       }
 
       switch (field) {
+      case TOKEN:
+        return isSetToken();
       case UMOBILE:
         return isSetUmobile();
-      case CAPTCHA:
-        return isSetCaptcha();
       }
       throw new IllegalStateException();
     }
@@ -35253,21 +35253,21 @@ public class CloudHardDiskService {
       if (that == null)
         return false;
 
+      boolean this_present_token = true && this.isSetToken();
+      boolean that_present_token = true && that.isSetToken();
+      if (this_present_token || that_present_token) {
+        if (!(this_present_token && that_present_token))
+          return false;
+        if (!this.token.equals(that.token))
+          return false;
+      }
+
       boolean this_present_umobile = true && this.isSetUmobile();
       boolean that_present_umobile = true && that.isSetUmobile();
       if (this_present_umobile || that_present_umobile) {
         if (!(this_present_umobile && that_present_umobile))
           return false;
         if (!this.umobile.equals(that.umobile))
-          return false;
-      }
-
-      boolean this_present_captcha = true && this.isSetCaptcha();
-      boolean that_present_captcha = true && that.isSetCaptcha();
-      if (this_present_captcha || that_present_captcha) {
-        if (!(this_present_captcha && that_present_captcha))
-          return false;
-        if (!this.captcha.equals(that.captcha))
           return false;
       }
 
@@ -35278,15 +35278,15 @@ public class CloudHardDiskService {
     public int hashCode() {
       List<Object> list = new ArrayList<Object>();
 
+      boolean present_token = true && (isSetToken());
+      list.add(present_token);
+      if (present_token)
+        list.add(token);
+
       boolean present_umobile = true && (isSetUmobile());
       list.add(present_umobile);
       if (present_umobile)
         list.add(umobile);
-
-      boolean present_captcha = true && (isSetCaptcha());
-      list.add(present_captcha);
-      if (present_captcha)
-        list.add(captcha);
 
       return list.hashCode();
     }
@@ -35299,22 +35299,22 @@ public class CloudHardDiskService {
 
       int lastComparison = 0;
 
+      lastComparison = Boolean.valueOf(isSetToken()).compareTo(other.isSetToken());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetToken()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.token, other.token);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       lastComparison = Boolean.valueOf(isSetUmobile()).compareTo(other.isSetUmobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
       if (isSetUmobile()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.umobile, other.umobile);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetCaptcha()).compareTo(other.isSetCaptcha());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetCaptcha()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.captcha, other.captcha);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -35339,19 +35339,19 @@ public class CloudHardDiskService {
       StringBuilder sb = new StringBuilder("Cancel_args(");
       boolean first = true;
 
+      sb.append("token:");
+      if (this.token == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.token);
+      }
+      first = false;
+      if (!first) sb.append(", ");
       sb.append("umobile:");
       if (this.umobile == null) {
         sb.append("null");
       } else {
         sb.append(this.umobile);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("captcha:");
-      if (this.captcha == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.captcha);
       }
       first = false;
       sb.append(")");
@@ -35397,18 +35397,18 @@ public class CloudHardDiskService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // UMOBILE
+            case 1: // TOKEN
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.umobile = iprot.readString();
-                struct.setUmobileIsSet(true);
+                struct.token = iprot.readString();
+                struct.setTokenIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 2: // CAPTCHA
+            case 2: // UMOBILE
               if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.captcha = iprot.readString();
-                struct.setCaptchaIsSet(true);
+                struct.umobile = iprot.readString();
+                struct.setUmobileIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -35428,14 +35428,14 @@ public class CloudHardDiskService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.token != null) {
+          oprot.writeFieldBegin(TOKEN_FIELD_DESC);
+          oprot.writeString(struct.token);
+          oprot.writeFieldEnd();
+        }
         if (struct.umobile != null) {
           oprot.writeFieldBegin(UMOBILE_FIELD_DESC);
           oprot.writeString(struct.umobile);
-          oprot.writeFieldEnd();
-        }
-        if (struct.captcha != null) {
-          oprot.writeFieldBegin(CAPTCHA_FIELD_DESC);
-          oprot.writeString(struct.captcha);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -35456,18 +35456,18 @@ public class CloudHardDiskService {
       public void write(org.apache.thrift.protocol.TProtocol prot, Cancel_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetUmobile()) {
+        if (struct.isSetToken()) {
           optionals.set(0);
         }
-        if (struct.isSetCaptcha()) {
+        if (struct.isSetUmobile()) {
           optionals.set(1);
         }
         oprot.writeBitSet(optionals, 2);
+        if (struct.isSetToken()) {
+          oprot.writeString(struct.token);
+        }
         if (struct.isSetUmobile()) {
           oprot.writeString(struct.umobile);
-        }
-        if (struct.isSetCaptcha()) {
-          oprot.writeString(struct.captcha);
         }
       }
 
@@ -35476,12 +35476,12 @@ public class CloudHardDiskService {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
-          struct.umobile = iprot.readString();
-          struct.setUmobileIsSet(true);
+          struct.token = iprot.readString();
+          struct.setTokenIsSet(true);
         }
         if (incoming.get(1)) {
-          struct.captcha = iprot.readString();
-          struct.setCaptchaIsSet(true);
+          struct.umobile = iprot.readString();
+          struct.setUmobileIsSet(true);
         }
       }
     }

@@ -249,11 +249,11 @@ interface CloudHardDiskServiceIf {
    */
   public function DeleteBucketAllObj($token, $ftype);
   /**
+   * @param string $token
    * @param string $umobile
-   * @param string $captcha
    * @return \proto\RetHead
    */
-  public function Cancel($umobile, $captcha);
+  public function Cancel($token, $umobile);
   /**
    * @param string $token
    * @param int $ptype
@@ -2054,17 +2054,17 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("DeleteBucketAllObj failed: unknown result");
   }
 
-  public function Cancel($umobile, $captcha)
+  public function Cancel($token, $umobile)
   {
-    $this->send_Cancel($umobile, $captcha);
+    $this->send_Cancel($token, $umobile);
     return $this->recv_Cancel();
   }
 
-  public function send_Cancel($umobile, $captcha)
+  public function send_Cancel($token, $umobile)
   {
     $args = new \proto\CloudHardDiskService_Cancel_args();
+    $args->token = $token;
     $args->umobile = $umobile;
-    $args->captcha = $captcha;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -8599,31 +8599,31 @@ class CloudHardDiskService_Cancel_args {
   /**
    * @var string
    */
-  public $umobile = null;
+  public $token = null;
   /**
    * @var string
    */
-  public $captcha = null;
+  public $umobile = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
       self::$_TSPEC = array(
         1 => array(
-          'var' => 'umobile',
+          'var' => 'token',
           'type' => TType::STRING,
           ),
         2 => array(
-          'var' => 'captcha',
+          'var' => 'umobile',
           'type' => TType::STRING,
           ),
         );
     }
     if (is_array($vals)) {
+      if (isset($vals['token'])) {
+        $this->token = $vals['token'];
+      }
       if (isset($vals['umobile'])) {
         $this->umobile = $vals['umobile'];
-      }
-      if (isset($vals['captcha'])) {
-        $this->captcha = $vals['captcha'];
       }
     }
   }
@@ -8649,14 +8649,14 @@ class CloudHardDiskService_Cancel_args {
       {
         case 1:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->umobile);
+            $xfer += $input->readString($this->token);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 2:
           if ($ftype == TType::STRING) {
-            $xfer += $input->readString($this->captcha);
+            $xfer += $input->readString($this->umobile);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -8674,14 +8674,14 @@ class CloudHardDiskService_Cancel_args {
   public function write($output) {
     $xfer = 0;
     $xfer += $output->writeStructBegin('CloudHardDiskService_Cancel_args');
-    if ($this->umobile !== null) {
-      $xfer += $output->writeFieldBegin('umobile', TType::STRING, 1);
-      $xfer += $output->writeString($this->umobile);
+    if ($this->token !== null) {
+      $xfer += $output->writeFieldBegin('token', TType::STRING, 1);
+      $xfer += $output->writeString($this->token);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->captcha !== null) {
-      $xfer += $output->writeFieldBegin('captcha', TType::STRING, 2);
-      $xfer += $output->writeString($this->captcha);
+    if ($this->umobile !== null) {
+      $xfer += $output->writeFieldBegin('umobile', TType::STRING, 2);
+      $xfer += $output->writeString($this->umobile);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -9627,7 +9627,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_Cancel_result();
-    $result->success = $this->handler_->Cancel($args->umobile, $args->captcha);
+    $result->success = $this->handler_->Cancel($args->token, $args->umobile);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
