@@ -61,8 +61,10 @@ enum FTYPE{
 
 
 enum PTYPE{
-  FREE = 2,           // 免费套餐
-  NINE = 1,               // 9元套餐
+  FREE = 0,           // 免费套餐
+  SIX = 6,               // 6元套餐
+  TEN = 10
+  //0 ，6，10 
   }
 
 enum SYNCTYPE{
