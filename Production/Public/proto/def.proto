@@ -303,7 +303,7 @@ service CloudHardDiskService {
 	
     LoginResult loginAuthApp(1:string imie ,2:string username ,3:string password ,4:i32 salt);  
     	
-    LoginResult loginAuth(1:string username ,2:string password ,3:i32 salt);
+    LoginResult loginAuth(1:string username ,2:string password ,3:string salt);
 
     LoginResult verificationLoginAuth(1:string username,2:string password,3:string authcode );
 

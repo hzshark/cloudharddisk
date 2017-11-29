@@ -32,7 +32,7 @@ interface CloudHardDiskServiceIf {
   /**
    * @param string $username
    * @param string $password
-   * @param int $salt
+   * @param string $salt
    * @return \proto\LoginResult
    */
   public function loginAuth($username, $password, $salt);
@@ -2522,7 +2522,7 @@ class CloudHardDiskService_loginAuth_args {
    */
   public $password = null;
   /**
-   * @var int
+   * @var string
    */
   public $salt = null;
 
@@ -2539,7 +2539,7 @@ class CloudHardDiskService_loginAuth_args {
           ),
         3 => array(
           'var' => 'salt',
-          'type' => TType::I32,
+          'type' => TType::STRING,
           ),
         );
     }
@@ -2590,8 +2590,8 @@ class CloudHardDiskService_loginAuth_args {
           }
           break;
         case 3:
-          if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->salt);
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->salt);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -2620,8 +2620,8 @@ class CloudHardDiskService_loginAuth_args {
       $xfer += $output->writeFieldEnd();
     }
     if ($this->salt !== null) {
-      $xfer += $output->writeFieldBegin('salt', TType::I32, 3);
-      $xfer += $output->writeI32($this->salt);
+      $xfer += $output->writeFieldBegin('salt', TType::STRING, 3);
+      $xfer += $output->writeString($this->salt);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

@@ -45,7 +45,7 @@ public class CloudHardDiskService {
 
     public LoginResult loginAuthApp(String imie, String username, String password, int salt) throws org.apache.thrift.TException;
 
-    public LoginResult loginAuth(String username, String password, int salt) throws org.apache.thrift.TException;
+    public LoginResult loginAuth(String username, String password, String salt) throws org.apache.thrift.TException;
 
     public LoginResult verificationLoginAuth(String username, String password, String authcode) throws org.apache.thrift.TException;
 
@@ -136,7 +136,7 @@ public class CloudHardDiskService {
 
     public void loginAuthApp(String imie, String username, String password, int salt, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void loginAuth(String username, String password, int salt, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void loginAuth(String username, String password, String salt, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void verificationLoginAuth(String username, String password, String authcode, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -258,13 +258,13 @@ public class CloudHardDiskService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "loginAuthApp failed: unknown result");
     }
 
-    public LoginResult loginAuth(String username, String password, int salt) throws org.apache.thrift.TException
+    public LoginResult loginAuth(String username, String password, String salt) throws org.apache.thrift.TException
     {
       send_loginAuth(username, password, salt);
       return recv_loginAuth();
     }
 
-    public void send_loginAuth(String username, String password, int salt) throws org.apache.thrift.TException
+    public void send_loginAuth(String username, String password, String salt) throws org.apache.thrift.TException
     {
       loginAuth_args args = new loginAuth_args();
       args.setUsername(username);
@@ -1220,7 +1220,7 @@ public class CloudHardDiskService {
       }
     }
 
-    public void loginAuth(String username, String password, int salt, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void loginAuth(String username, String password, String salt, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       loginAuth_call method_call = new loginAuth_call(username, password, salt, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1230,8 +1230,8 @@ public class CloudHardDiskService {
     public static class loginAuth_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String username;
       private String password;
-      private int salt;
-      public loginAuth_call(String username, String password, int salt, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String salt;
+      public loginAuth_call(String username, String password, String salt, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.username = username;
         this.password = password;
@@ -6413,7 +6413,7 @@ public class CloudHardDiskService {
 
     private static final org.apache.thrift.protocol.TField USERNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("username", org.apache.thrift.protocol.TType.STRING, (short)1);
     private static final org.apache.thrift.protocol.TField PASSWORD_FIELD_DESC = new org.apache.thrift.protocol.TField("password", org.apache.thrift.protocol.TType.STRING, (short)2);
-    private static final org.apache.thrift.protocol.TField SALT_FIELD_DESC = new org.apache.thrift.protocol.TField("salt", org.apache.thrift.protocol.TType.I32, (short)3);
+    private static final org.apache.thrift.protocol.TField SALT_FIELD_DESC = new org.apache.thrift.protocol.TField("salt", org.apache.thrift.protocol.TType.STRING, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -6423,7 +6423,7 @@ public class CloudHardDiskService {
 
     public String username; // required
     public String password; // required
-    public int salt; // required
+    public String salt; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -6490,8 +6490,6 @@ public class CloudHardDiskService {
     }
 
     // isset id assignments
-    private static final int __SALT_ISSET_ID = 0;
-    private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -6500,7 +6498,7 @@ public class CloudHardDiskService {
       tmpMap.put(_Fields.PASSWORD, new org.apache.thrift.meta_data.FieldMetaData("password", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.SALT, new org.apache.thrift.meta_data.FieldMetaData("salt", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(loginAuth_args.class, metaDataMap);
     }
@@ -6511,27 +6509,27 @@ public class CloudHardDiskService {
     public loginAuth_args(
       String username,
       String password,
-      int salt)
+      String salt)
     {
       this();
       this.username = username;
       this.password = password;
       this.salt = salt;
-      setSaltIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public loginAuth_args(loginAuth_args other) {
-      __isset_bitfield = other.__isset_bitfield;
       if (other.isSetUsername()) {
         this.username = other.username;
       }
       if (other.isSetPassword()) {
         this.password = other.password;
       }
-      this.salt = other.salt;
+      if (other.isSetSalt()) {
+        this.salt = other.salt;
+      }
     }
 
     public loginAuth_args deepCopy() {
@@ -6542,8 +6540,7 @@ public class CloudHardDiskService {
     public void clear() {
       this.username = null;
       this.password = null;
-      setSaltIsSet(false);
-      this.salt = 0;
+      this.salt = null;
     }
 
     public String getUsername() {
@@ -6594,27 +6591,28 @@ public class CloudHardDiskService {
       }
     }
 
-    public int getSalt() {
+    public String getSalt() {
       return this.salt;
     }
 
-    public loginAuth_args setSalt(int salt) {
+    public loginAuth_args setSalt(String salt) {
       this.salt = salt;
-      setSaltIsSet(true);
       return this;
     }
 
     public void unsetSalt() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __SALT_ISSET_ID);
+      this.salt = null;
     }
 
     /** Returns true if field salt is set (has been assigned a value) and false otherwise */
     public boolean isSetSalt() {
-      return EncodingUtils.testBit(__isset_bitfield, __SALT_ISSET_ID);
+      return this.salt != null;
     }
 
     public void setSaltIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SALT_ISSET_ID, value);
+      if (!value) {
+        this.salt = null;
+      }
     }
 
     public void setFieldValue(_Fields field, Object value) {
@@ -6639,7 +6637,7 @@ public class CloudHardDiskService {
         if (value == null) {
           unsetSalt();
         } else {
-          setSalt((Integer)value);
+          setSalt((String)value);
         }
         break;
 
@@ -6709,12 +6707,12 @@ public class CloudHardDiskService {
           return false;
       }
 
-      boolean this_present_salt = true;
-      boolean that_present_salt = true;
+      boolean this_present_salt = true && this.isSetSalt();
+      boolean that_present_salt = true && that.isSetSalt();
       if (this_present_salt || that_present_salt) {
         if (!(this_present_salt && that_present_salt))
           return false;
-        if (this.salt != that.salt)
+        if (!this.salt.equals(that.salt))
           return false;
       }
 
@@ -6735,7 +6733,7 @@ public class CloudHardDiskService {
       if (present_password)
         list.add(password);
 
-      boolean present_salt = true;
+      boolean present_salt = true && (isSetSalt());
       list.add(present_salt);
       if (present_salt)
         list.add(salt);
@@ -6818,7 +6816,11 @@ public class CloudHardDiskService {
       first = false;
       if (!first) sb.append(", ");
       sb.append("salt:");
-      sb.append(this.salt);
+      if (this.salt == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.salt);
+      }
       first = false;
       sb.append(")");
       return sb.toString();
@@ -6839,8 +6841,6 @@ public class CloudHardDiskService {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
-        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -6882,8 +6882,8 @@ public class CloudHardDiskService {
               }
               break;
             case 3: // SALT
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.salt = iprot.readI32();
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.salt = iprot.readString();
                 struct.setSaltIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -6914,9 +6914,11 @@ public class CloudHardDiskService {
           oprot.writeString(struct.password);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(SALT_FIELD_DESC);
-        oprot.writeI32(struct.salt);
-        oprot.writeFieldEnd();
+        if (struct.salt != null) {
+          oprot.writeFieldBegin(SALT_FIELD_DESC);
+          oprot.writeString(struct.salt);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -6952,7 +6954,7 @@ public class CloudHardDiskService {
           oprot.writeString(struct.password);
         }
         if (struct.isSetSalt()) {
-          oprot.writeI32(struct.salt);
+          oprot.writeString(struct.salt);
         }
       }
 
@@ -6969,7 +6971,7 @@ public class CloudHardDiskService {
           struct.setPasswordIsSet(true);
         }
         if (incoming.get(2)) {
-          struct.salt = iprot.readI32();
+          struct.salt = iprot.readString();
           struct.setSaltIsSet(true);
         }
       }
