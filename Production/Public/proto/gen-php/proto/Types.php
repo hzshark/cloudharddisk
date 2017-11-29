@@ -27,6 +27,7 @@ final class Errcode {
   const TRY_LATER = 6;
   const ERR_OCCURED = 7;
   const FILE_EXIST = 8;
+  const ERR_IMIE = 10;
   static public $__names = array(
     0 => 'SUCCESS',
     1 => 'AUTH_ERR',
@@ -37,6 +38,7 @@ final class Errcode {
     6 => 'TRY_LATER',
     7 => 'ERR_OCCURED',
     8 => 'FILE_EXIST',
+    10 => 'ERR_IMIE',
   );
 }
 

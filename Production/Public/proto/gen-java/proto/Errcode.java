@@ -20,7 +20,8 @@ public enum Errcode implements org.apache.thrift.TEnum {
   EXCEED_SESSION_LIMIT(5),
   TRY_LATER(6),
   ERR_OCCURED(7),
-  FILE_EXIST(8);
+  FILE_EXIST(8),
+  ERR_IMIE(10);
 
   private final int value;
 
@@ -59,6 +60,8 @@ public enum Errcode implements org.apache.thrift.TEnum {
         return ERR_OCCURED;
       case 8:
         return FILE_EXIST;
+      case 10:
+        return ERR_IMIE;
       default:
         return null;
     }
