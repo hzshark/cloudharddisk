@@ -1,0 +1,3 @@
+cocoa  => ios
+php:server   => php
+java   => java
