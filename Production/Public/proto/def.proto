@@ -58,6 +58,11 @@ enum FTYPE{
   THUMB = 12             //视频文件的预留封面
   }
 
+enum PORDER{
+  NAME = 0,               // 名字
+  DATE = 1,               // 日期
+  SIZE = 2                // 大小     
+  }
 
 
 
@@ -310,7 +315,7 @@ service CloudHardDiskService {
     UploaddResult uploadFile(1:Token token ,2:UploadParam uploadparam);
 
     //queryResult queryFileList(1:i64 userid); // param3 is offset , parma4 is expect return numbers 
-    QueryFListResult queryFileList(1:Token token ,2:FTYPE type,3:i32 start,4:i32 excpet_num);
+    QueryFListResult queryFileList(1:Token token ,2:FTYPE type,3:i32 offset,4:i32 count,5 PORDER order);
 
     QueryFResult QueryFile(1:Token token ,2:FTYPE type,3:string fname);
 
