@@ -52,11 +52,12 @@ interface CloudHardDiskServiceIf {
   /**
    * @param string $token
    * @param int $type
-   * @param int $start
-   * @param int $excpet_num
+   * @param int $offset
+   * @param int $count
+   * @param int $order
    * @return \proto\QueryFListResult
    */
-  public function queryFileList($token, $type, $start, $excpet_num);
+  public function queryFileList($token, $type, $offset, $count, $order);
   /**
    * @param string $token
    * @param int $type
@@ -501,19 +502,20 @@ class CloudHardDiskServiceClient implements \proto\CloudHardDiskServiceIf {
     throw new \Exception("uploadFile failed: unknown result");
   }
 
-  public function queryFileList($token, $type, $start, $excpet_num)
+  public function queryFileList($token, $type, $offset, $count, $order)
   {
-    $this->send_queryFileList($token, $type, $start, $excpet_num);
+    $this->send_queryFileList($token, $type, $offset, $count, $order);
     return $this->recv_queryFileList();
   }
 
-  public function send_queryFileList($token, $type, $start, $excpet_num)
+  public function send_queryFileList($token, $type, $offset, $count, $order)
   {
     $args = new \proto\CloudHardDiskService_queryFileList_args();
     $args->token = $token;
     $args->type = $type;
-    $args->start = $start;
-    $args->excpet_num = $excpet_num;
+    $args->offset = $offset;
+    $args->count = $count;
+    $args->order = $order;
     $bin_accel = ($this->output_ instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {
@@ -3109,11 +3111,15 @@ class CloudHardDiskService_queryFileList_args {
   /**
    * @var int
    */
-  public $start = null;
+  public $offset = null;
   /**
    * @var int
    */
-  public $excpet_num = null;
+  public $count = null;
+  /**
+   * @var int
+   */
+  public $order = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -3127,11 +3133,15 @@ class CloudHardDiskService_queryFileList_args {
           'type' => TType::I32,
           ),
         3 => array(
-          'var' => 'start',
+          'var' => 'offset',
           'type' => TType::I32,
           ),
         4 => array(
-          'var' => 'excpet_num',
+          'var' => 'count',
+          'type' => TType::I32,
+          ),
+        5 => array(
+          'var' => 'order',
           'type' => TType::I32,
           ),
         );
@@ -3143,11 +3153,14 @@ class CloudHardDiskService_queryFileList_args {
       if (isset($vals['type'])) {
         $this->type = $vals['type'];
       }
-      if (isset($vals['start'])) {
-        $this->start = $vals['start'];
+      if (isset($vals['offset'])) {
+        $this->offset = $vals['offset'];
       }
-      if (isset($vals['excpet_num'])) {
-        $this->excpet_num = $vals['excpet_num'];
+      if (isset($vals['count'])) {
+        $this->count = $vals['count'];
+      }
+      if (isset($vals['order'])) {
+        $this->order = $vals['order'];
       }
     }
   }
@@ -3187,14 +3200,21 @@ class CloudHardDiskService_queryFileList_args {
           break;
         case 3:
           if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->start);
+            $xfer += $input->readI32($this->offset);
           } else {
             $xfer += $input->skip($ftype);
           }
           break;
         case 4:
           if ($ftype == TType::I32) {
-            $xfer += $input->readI32($this->excpet_num);
+            $xfer += $input->readI32($this->count);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 5:
+          if ($ftype == TType::I32) {
+            $xfer += $input->readI32($this->order);
           } else {
             $xfer += $input->skip($ftype);
           }
@@ -3222,14 +3242,19 @@ class CloudHardDiskService_queryFileList_args {
       $xfer += $output->writeI32($this->type);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->start !== null) {
-      $xfer += $output->writeFieldBegin('start', TType::I32, 3);
-      $xfer += $output->writeI32($this->start);
+    if ($this->offset !== null) {
+      $xfer += $output->writeFieldBegin('offset', TType::I32, 3);
+      $xfer += $output->writeI32($this->offset);
       $xfer += $output->writeFieldEnd();
     }
-    if ($this->excpet_num !== null) {
-      $xfer += $output->writeFieldBegin('excpet_num', TType::I32, 4);
-      $xfer += $output->writeI32($this->excpet_num);
+    if ($this->count !== null) {
+      $xfer += $output->writeFieldBegin('count', TType::I32, 4);
+      $xfer += $output->writeI32($this->count);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->order !== null) {
+      $xfer += $output->writeFieldBegin('order', TType::I32, 5);
+      $xfer += $output->writeI32($this->order);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();
@@ -9629,7 +9654,7 @@ class CloudHardDiskServiceProcessor {
     $args->read($input);
     $input->readMessageEnd();
     $result = new \proto\CloudHardDiskService_queryFileList_result();
-    $result->success = $this->handler_->queryFileList($args->token, $args->type, $args->start, $args->excpet_num);
+    $result->success = $this->handler_->queryFileList($args->token, $args->type, $args->offset, $args->count, $args->order);
     $bin_accel = ($output instanceof TBinaryProtocolAccelerated) && function_exists('thrift_protocol_write_binary');
     if ($bin_accel)
     {

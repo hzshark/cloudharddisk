@@ -9422,24 +9422,27 @@
 @interface queryFileList_args : NSObject <TBase, NSCoding> {
   Token __token;
   int __type;
-  int32_t __start;
-  int32_t __excpet_num;
+  int32_t __offset;
+  int32_t __count;
+  int __order;
 
   BOOL __token_isset;
   BOOL __type_isset;
-  BOOL __start_isset;
-  BOOL __excpet_num_isset;
+  BOOL __offset_isset;
+  BOOL __count_isset;
+  BOOL __order_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
 @property (nonatomic, retain, getter=token, setter=setToken:) Token token;
 @property (nonatomic, getter=type, setter=setType:) int type;
-@property (nonatomic, getter=start, setter=setStart:) int32_t start;
-@property (nonatomic, getter=excpet_num, setter=setExcpet_num:) int32_t excpet_num;
+@property (nonatomic, getter=offset, setter=setOffset:) int32_t offset;
+@property (nonatomic, getter=count, setter=setCount:) int32_t count;
+@property (nonatomic, getter=order, setter=setOrder:) int order;
 #endif
 
 - (id) init;
-- (id) initWithToken: (Token) token type: (int) type start: (int32_t) start excpet_num: (int32_t) excpet_num;
+- (id) initWithToken: (Token) token type: (int) type offset: (int32_t) offset count: (int32_t) count order: (int) order;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -9459,16 +9462,22 @@
 - (BOOL) typeIsSet;
 
 #if !__has_feature(objc_arc)
-- (int32_t) start;
-- (void) setStart: (int32_t) start;
+- (int32_t) offset;
+- (void) setOffset: (int32_t) offset;
 #endif
-- (BOOL) startIsSet;
+- (BOOL) offsetIsSet;
 
 #if !__has_feature(objc_arc)
-- (int32_t) excpet_num;
-- (void) setExcpet_num: (int32_t) excpet_num;
+- (int32_t) count;
+- (void) setCount: (int32_t) count;
 #endif
-- (BOOL) excpet_numIsSet;
+- (BOOL) countIsSet;
+
+#if !__has_feature(objc_arc)
+- (int) order;
+- (void) setOrder: (int) order;
+#endif
+- (BOOL) orderIsSet;
 
 @end
 
@@ -9482,17 +9491,19 @@
   return self;
 }
 
-- (id) initWithToken: (Token) token type: (int) type start: (int32_t) start excpet_num: (int32_t) excpet_num
+- (id) initWithToken: (Token) token type: (int) type offset: (int32_t) offset count: (int32_t) count order: (int) order
 {
   self = [super init];
   __token = [token retain_stub];
   __token_isset = YES;
   __type = type;
   __type_isset = YES;
-  __start = start;
-  __start_isset = YES;
-  __excpet_num = excpet_num;
-  __excpet_num_isset = YES;
+  __offset = offset;
+  __offset_isset = YES;
+  __count = count;
+  __count_isset = YES;
+  __order = order;
+  __order_isset = YES;
   return self;
 }
 
@@ -9509,15 +9520,20 @@
     __type = [decoder decodeIntForKey: @"type"];
     __type_isset = YES;
   }
-  if ([decoder containsValueForKey: @"start"])
+  if ([decoder containsValueForKey: @"offset"])
   {
-    __start = [decoder decodeInt32ForKey: @"start"];
-    __start_isset = YES;
+    __offset = [decoder decodeInt32ForKey: @"offset"];
+    __offset_isset = YES;
   }
-  if ([decoder containsValueForKey: @"excpet_num"])
+  if ([decoder containsValueForKey: @"count"])
   {
-    __excpet_num = [decoder decodeInt32ForKey: @"excpet_num"];
-    __excpet_num_isset = YES;
+    __count = [decoder decodeInt32ForKey: @"count"];
+    __count_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"order"])
+  {
+    __order = [decoder decodeIntForKey: @"order"];
+    __order_isset = YES;
   }
   return self;
 }
@@ -9532,13 +9548,17 @@
   {
     [encoder encodeInt: __type forKey: @"type"];
   }
-  if (__start_isset)
+  if (__offset_isset)
   {
-    [encoder encodeInt32: __start forKey: @"start"];
+    [encoder encodeInt32: __offset forKey: @"offset"];
   }
-  if (__excpet_num_isset)
+  if (__count_isset)
   {
-    [encoder encodeInt32: __excpet_num forKey: @"excpet_num"];
+    [encoder encodeInt32: __count forKey: @"count"];
+  }
+  if (__order_isset)
+  {
+    [encoder encodeInt: __order forKey: @"order"];
   }
 }
 
@@ -9555,15 +9575,20 @@
   {
     hash = (hash * 31) ^ [@(__type) hash];
   }
-  hash = (hash * 31) ^ __start_isset ? 2654435761 : 0;
-  if (__start_isset)
+  hash = (hash * 31) ^ __offset_isset ? 2654435761 : 0;
+  if (__offset_isset)
   {
-    hash = (hash * 31) ^ [@(__start) hash];
+    hash = (hash * 31) ^ [@(__offset) hash];
   }
-  hash = (hash * 31) ^ __excpet_num_isset ? 2654435761 : 0;
-  if (__excpet_num_isset)
+  hash = (hash * 31) ^ __count_isset ? 2654435761 : 0;
+  if (__count_isset)
   {
-    hash = (hash * 31) ^ [@(__excpet_num) hash];
+    hash = (hash * 31) ^ [@(__count) hash];
+  }
+  hash = (hash * 31) ^ __order_isset ? 2654435761 : 0;
+  if (__order_isset)
+  {
+    hash = (hash * 31) ^ [@(__order) hash];
   }
   return hash;
 }
@@ -9585,12 +9610,16 @@
       (__type_isset && (__type != other->__type))) {
     return NO;
   }
-  if ((__start_isset != other->__start_isset) ||
-      (__start_isset && (__start != other->__start))) {
+  if ((__offset_isset != other->__offset_isset) ||
+      (__offset_isset && (__offset != other->__offset))) {
     return NO;
   }
-  if ((__excpet_num_isset != other->__excpet_num_isset) ||
-      (__excpet_num_isset && (__excpet_num != other->__excpet_num))) {
+  if ((__count_isset != other->__count_isset) ||
+      (__count_isset && (__count != other->__count))) {
+    return NO;
+  }
+  if ((__order_isset != other->__order_isset) ||
+      (__order_isset && (__order != other->__order))) {
     return NO;
   }
   return YES;
@@ -9640,38 +9669,55 @@
   __type_isset = NO;
 }
 
-- (int32_t) start {
-  return __start;
+- (int32_t) offset {
+  return __offset;
 }
 
-- (void) setStart: (int32_t) start {
-  __start = start;
-  __start_isset = YES;
+- (void) setOffset: (int32_t) offset {
+  __offset = offset;
+  __offset_isset = YES;
 }
 
-- (BOOL) startIsSet {
-  return __start_isset;
+- (BOOL) offsetIsSet {
+  return __offset_isset;
 }
 
-- (void) unsetStart {
-  __start_isset = NO;
+- (void) unsetOffset {
+  __offset_isset = NO;
 }
 
-- (int32_t) excpet_num {
-  return __excpet_num;
+- (int32_t) count {
+  return __count;
 }
 
-- (void) setExcpet_num: (int32_t) excpet_num {
-  __excpet_num = excpet_num;
-  __excpet_num_isset = YES;
+- (void) setCount: (int32_t) count {
+  __count = count;
+  __count_isset = YES;
 }
 
-- (BOOL) excpet_numIsSet {
-  return __excpet_num_isset;
+- (BOOL) countIsSet {
+  return __count_isset;
 }
 
-- (void) unsetExcpet_num {
-  __excpet_num_isset = NO;
+- (void) unsetCount {
+  __count_isset = NO;
+}
+
+- (int) order {
+  return __order;
+}
+
+- (void) setOrder: (int) order {
+  __order = order;
+  __order_isset = YES;
+}
+
+- (BOOL) orderIsSet {
+  return __order_isset;
+}
+
+- (void) unsetOrder {
+  __order_isset = NO;
 }
 
 - (void) read: (id <TProtocol>) inProtocol
@@ -9708,7 +9754,7 @@
       case 3:
         if (fieldType == TType_I32) {
           int32_t fieldValue = [inProtocol readI32];
-          [self setStart: fieldValue];
+          [self setOffset: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
@@ -9716,7 +9762,15 @@
       case 4:
         if (fieldType == TType_I32) {
           int32_t fieldValue = [inProtocol readI32];
-          [self setExcpet_num: fieldValue];
+          [self setCount: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 5:
+        if (fieldType == TType_I32) {
+          int fieldValue = [inProtocol readI32];
+          [self setOrder: fieldValue];
         } else { 
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
@@ -9744,14 +9798,19 @@
     [outProtocol writeI32: __type];
     [outProtocol writeFieldEnd];
   }
-  if (__start_isset) {
-    [outProtocol writeFieldBeginWithName: @"start" type: TType_I32 fieldID: 3];
-    [outProtocol writeI32: __start];
+  if (__offset_isset) {
+    [outProtocol writeFieldBeginWithName: @"offset" type: TType_I32 fieldID: 3];
+    [outProtocol writeI32: __offset];
     [outProtocol writeFieldEnd];
   }
-  if (__excpet_num_isset) {
-    [outProtocol writeFieldBeginWithName: @"excpet_num" type: TType_I32 fieldID: 4];
-    [outProtocol writeI32: __excpet_num];
+  if (__count_isset) {
+    [outProtocol writeFieldBeginWithName: @"count" type: TType_I32 fieldID: 4];
+    [outProtocol writeI32: __count];
+    [outProtocol writeFieldEnd];
+  }
+  if (__order_isset) {
+    [outProtocol writeFieldBeginWithName: @"order" type: TType_I32 fieldID: 5];
+    [outProtocol writeI32: __order];
     [outProtocol writeFieldEnd];
   }
   [outProtocol writeFieldStop];
@@ -9768,10 +9827,12 @@
   [ms appendFormat: @"\"%@\"", __token];
   [ms appendString: @",type:"];
   [ms appendFormat: @"%i", __type];
-  [ms appendString: @",start:"];
-  [ms appendFormat: @"%i", __start];
-  [ms appendString: @",excpet_num:"];
-  [ms appendFormat: @"%i", __excpet_num];
+  [ms appendString: @",offset:"];
+  [ms appendFormat: @"%i", __offset];
+  [ms appendString: @",count:"];
+  [ms appendFormat: @"%i", __count];
+  [ms appendString: @",order:"];
+  [ms appendFormat: @"%i", __order];
   [ms appendString: @")"];
   return [NSString stringWithString: ms];
 }
@@ -24742,7 +24803,7 @@
   return [self recv_uploadFile];
 }
 
-- (void) send_queryFileList: (Token) token type: (int) type start: (int32_t) start excpet_num: (int32_t) excpet_num
+- (void) send_queryFileList: (Token) token type: (int) type offset: (int32_t) offset count: (int32_t) count order: (int) order
 {
   [outProtocol writeMessageBeginWithName: @"queryFileList" type: TMessageType_CALL sequenceID: 0];
   [outProtocol writeStructBeginWithName: @"queryFileList_args"];
@@ -24754,11 +24815,14 @@
   [outProtocol writeFieldBeginWithName: @"type" type: TType_I32 fieldID: 2];
   [outProtocol writeI32: type];
   [outProtocol writeFieldEnd];
-  [outProtocol writeFieldBeginWithName: @"start" type: TType_I32 fieldID: 3];
-  [outProtocol writeI32: start];
+  [outProtocol writeFieldBeginWithName: @"offset" type: TType_I32 fieldID: 3];
+  [outProtocol writeI32: offset];
   [outProtocol writeFieldEnd];
-  [outProtocol writeFieldBeginWithName: @"excpet_num" type: TType_I32 fieldID: 4];
-  [outProtocol writeI32: excpet_num];
+  [outProtocol writeFieldBeginWithName: @"count" type: TType_I32 fieldID: 4];
+  [outProtocol writeI32: count];
+  [outProtocol writeFieldEnd];
+  [outProtocol writeFieldBeginWithName: @"order" type: TType_I32 fieldID: 5];
+  [outProtocol writeI32: order];
   [outProtocol writeFieldEnd];
   [outProtocol writeFieldStop];
   [outProtocol writeStructEnd];
@@ -24781,9 +24845,9 @@
                                            reason: @"queryFileList failed: unknown result"];
 }
 
-- (QueryFListResult *) queryFileList: (Token) token type: (int) type start: (int32_t) start excpet_num: (int32_t) excpet_num
+- (QueryFListResult *) queryFileList: (Token) token type: (int) type offset: (int32_t) offset count: (int32_t) count order: (int) order
 {
-  [self send_queryFileList : token type: type start: start excpet_num: excpet_num];
+  [self send_queryFileList : token type: type offset: offset count: count order: order];
   [[outProtocol transport] flush];
   return [self recv_queryFileList];
 }
@@ -26652,7 +26716,7 @@ queryFileList_args * args = [[queryFileList_args alloc] init];
 [args read: inProtocol];
 [inProtocol readMessageEnd];
 QueryFileList_result * result = [[QueryFileList_result alloc] init];
-[result setSuccess: [mService queryFileList: [args token] type: [args type] start: [args start] excpet_num: [args excpet_num]]];
+[result setSuccess: [mService queryFileList: [args token] type: [args type] offset: [args offset] count: [args count] order: [args order]]];
 [outProtocol writeMessageBeginWithName: @"queryFileList"
                                   type: TMessageType_REPLY
                             sequenceID: seqID];

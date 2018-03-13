@@ -71,6 +71,17 @@ final class FTYPE {
   );
 }
 
+final class PORDER {
+  const NAME = 0;
+  const DATE = 1;
+  const SIZE = 2;
+  static public $__names = array(
+    0 => 'NAME',
+    1 => 'DATE',
+    2 => 'SIZE',
+  );
+}
+
 final class PTYPE {
   const FREE = 0;
   const SIX = 6;

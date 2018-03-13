@@ -47,6 +47,12 @@ enum FTYPE {
   FTYPE_THUMB = 12
 };
 
+enum PORDER {
+  PORDER_NAME = 0,
+  PORDER_DATE = 1,
+  PORDER_SIZE = 2
+};
+
 enum PTYPE {
   PTYPE_FREE = 0,
   PTYPE_SIX = 6,
@@ -1297,7 +1303,7 @@ typedef NSMutableDictionary * ObjDescrp;
 - (LoginResult *) loginAuth: (NSString *) username password: (NSString *) password salt: (NSString *) salt;  // throws TException
 - (LoginResult *) verificationLoginAuth: (NSString *) username password: (NSString *) password authcode: (NSString *) authcode;  // throws TException
 - (UploaddResult *) uploadFile: (Token) token uploadparam: (UploadParam *) uploadparam;  // throws TException
-- (QueryFListResult *) queryFileList: (Token) token type: (int) type start: (int32_t) start excpet_num: (int32_t) excpet_num;  // throws TException
+- (QueryFListResult *) queryFileList: (Token) token type: (int) type offset: (int32_t) offset count: (int32_t) count order: (int) order;  // throws TException
 - (QueryFResult *) QueryFile: (Token) token type: (int) type fname: (NSString *) fname;  // throws TException
 - (QueryAttributeResult *) queryAttribute: (Token) token objid: (OBJID) objid type: (int) type;  // throws TException
 - (AllocObjResult *) allocobj: (Token) token item: (FileInfo *) item desc: (ObjDescrp) desc;  // throws TException
