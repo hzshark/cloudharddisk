@@ -111,6 +111,15 @@ struct QueryFListResult {
   2: optional FilesMatchList files;
   /* 剩余的记录条数 */
   3: optional i32 spare ;
+  /* 分页读取时,读完后设置此值 */
+  4: optional bool isEnd;
+}
+
+/* 查询文件列表过滤器结果*/
+struct GetFilterResult {
+  1: RetHead result;
+  2: binary bitset;
+ 
 }
 
 struct QueryFResult {
@@ -314,7 +323,9 @@ service CloudHardDiskService {
 
     UploaddResult uploadFile(1:Token token ,2:UploadParam uploadparam);
 
-    //queryResult queryFileList(1:i64 userid); // param3 is offset , parma4 is expect return numbers 
+    /*根据文件类型返回 已备份文件的过滤bitset*/
+    GetFilterResult  queryFilterByFtype(1:Token token ,2:FTYPE type);
+    
     QueryFListResult queryFileList(1:Token token ,2:FTYPE type,3:i32 offset,4:i32 count,5:PORDER order);
 
     QueryFResult QueryFile(1:Token token ,2:FTYPE type,3:string fname);
