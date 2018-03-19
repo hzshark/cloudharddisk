@@ -800,7 +800,7 @@
   return self;
 }
 
-- (id) initWithResult: (RetHead *) result files: (FilesMatchList) files spare: (int32_t) spare
+- (id) initWithResult: (RetHead *) result files: (FilesMatchList) files spare: (int32_t) spare isEnd: (BOOL) isEnd
 {
   self = [super init];
   __result = [result retain_stub];
@@ -809,6 +809,8 @@
   __files_isset = YES;
   __spare = spare;
   __spare_isset = YES;
+  __isEnd = isEnd;
+  __isEnd_isset = YES;
   return self;
 }
 
@@ -830,6 +832,11 @@
     __spare = [decoder decodeInt32ForKey: @"spare"];
     __spare_isset = YES;
   }
+  if ([decoder containsValueForKey: @"isEnd"])
+  {
+    __isEnd = [decoder decodeBoolForKey: @"isEnd"];
+    __isEnd_isset = YES;
+  }
   return self;
 }
 
@@ -846,6 +853,10 @@
   if (__spare_isset)
   {
     [encoder encodeInt32: __spare forKey: @"spare"];
+  }
+  if (__isEnd_isset)
+  {
+    [encoder encodeBool: __isEnd forKey: @"isEnd"];
   }
 }
 
@@ -866,6 +877,11 @@
   if (__spare_isset)
   {
     hash = (hash * 31) ^ [@(__spare) hash];
+  }
+  hash = (hash * 31) ^ __isEnd_isset ? 2654435761 : 0;
+  if (__isEnd_isset)
+  {
+    hash = (hash * 31) ^ [@(__isEnd) hash];
   }
   return hash;
 }
@@ -889,6 +905,10 @@
   }
   if ((__spare_isset != other->__spare_isset) ||
       (__spare_isset && (__spare != other->__spare))) {
+    return NO;
+  }
+  if ((__isEnd_isset != other->__isEnd_isset) ||
+      (__isEnd_isset && (__isEnd != other->__isEnd))) {
     return NO;
   }
   return YES;
@@ -960,6 +980,23 @@
   __spare_isset = NO;
 }
 
+- (BOOL) isEnd {
+  return __isEnd;
+}
+
+- (void) setIsEnd: (BOOL) isEnd {
+  __isEnd = isEnd;
+  __isEnd_isset = YES;
+}
+
+- (BOOL) isEndIsSet {
+  return __isEnd_isset;
+}
+
+- (void) unsetIsEnd {
+  __isEnd_isset = NO;
+}
+
 - (void) read: (id <TProtocol>) inProtocol
 {
   NSString * fieldName;
@@ -1013,6 +1050,14 @@
           [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         }
         break;
+      case 4:
+        if (fieldType == TType_BOOL) {
+          BOOL fieldValue = [inProtocol readBool];
+          [self setIsEnd: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
       default:
         [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
         break;
@@ -1051,6 +1096,11 @@
     [outProtocol writeI32: __spare];
     [outProtocol writeFieldEnd];
   }
+  if (__isEnd_isset) {
+    [outProtocol writeFieldBeginWithName: @"isEnd" type: TType_BOOL fieldID: 4];
+    [outProtocol writeBool: __isEnd];
+    [outProtocol writeFieldEnd];
+  }
   [outProtocol writeFieldStop];
   [outProtocol writeStructEnd];
 }
@@ -1067,6 +1117,219 @@
   [ms appendFormat: @"%@", __files];
   [ms appendString: @",spare:"];
   [ms appendFormat: @"%i", __spare];
+  [ms appendString: @",isEnd:"];
+  [ms appendFormat: @"%i", __isEnd];
+  [ms appendString: @")"];
+  return [NSString stringWithString: ms];
+}
+
+@end
+
+@implementation GetFilterResult
+
+- (id) init
+{
+  self = [super init];
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+#endif
+  return self;
+}
+
+- (id) initWithResult: (RetHead *) result bitset: (NSData *) bitset
+{
+  self = [super init];
+  __result = [result retain_stub];
+  __result_isset = YES;
+  __bitset = [bitset retain_stub];
+  __bitset_isset = YES;
+  return self;
+}
+
+- (id) initWithCoder: (NSCoder *) decoder
+{
+  self = [super init];
+  if ([decoder containsValueForKey: @"result"])
+  {
+    __result = [[decoder decodeObjectForKey: @"result"] retain_stub];
+    __result_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"bitset"])
+  {
+    __bitset = [[decoder decodeObjectForKey: @"bitset"] retain_stub];
+    __bitset_isset = YES;
+  }
+  return self;
+}
+
+- (void) encodeWithCoder: (NSCoder *) encoder
+{
+  if (__result_isset)
+  {
+    [encoder encodeObject: __result forKey: @"result"];
+  }
+  if (__bitset_isset)
+  {
+    [encoder encodeObject: __bitset forKey: @"bitset"];
+  }
+}
+
+- (NSUInteger) hash
+{
+  NSUInteger hash = 17;
+  hash = (hash * 31) ^ __result_isset ? 2654435761 : 0;
+  if (__result_isset)
+  {
+    hash = (hash * 31) ^ [__result hash];
+  }
+  hash = (hash * 31) ^ __bitset_isset ? 2654435761 : 0;
+  if (__bitset_isset)
+  {
+    hash = (hash * 31) ^ [__bitset hash];
+  }
+  return hash;
+}
+
+- (BOOL) isEqual: (id) anObject
+{
+  if (self == anObject) {
+    return YES;
+  }
+  if (![anObject isKindOfClass:[GetFilterResult class]]) {
+    return NO;
+  }
+  GetFilterResult *other = (GetFilterResult *)anObject;
+  if ((__result_isset != other->__result_isset) ||
+      (__result_isset && ((__result || other->__result) && ![__result isEqual:other->__result]))) {
+    return NO;
+  }
+  if ((__bitset_isset != other->__bitset_isset) ||
+      (__bitset_isset && ((__bitset || other->__bitset) && ![__bitset isEqual:other->__bitset]))) {
+    return NO;
+  }
+  return YES;
+}
+
+- (void) dealloc
+{
+  [__result release_stub];
+  [__bitset release_stub];
+  [super dealloc_stub];
+}
+
+- (RetHead *) result {
+  return [[__result retain_stub] autorelease_stub];
+}
+
+- (void) setResult: (RetHead *) result {
+  [result retain_stub];
+  [__result release_stub];
+  __result = result;
+  __result_isset = YES;
+}
+
+- (BOOL) resultIsSet {
+  return __result_isset;
+}
+
+- (void) unsetResult {
+  [__result release_stub];
+  __result = nil;
+  __result_isset = NO;
+}
+
+- (NSData *) bitset {
+  return [[__bitset retain_stub] autorelease_stub];
+}
+
+- (void) setBitset: (NSData *) bitset {
+  [bitset retain_stub];
+  [__bitset release_stub];
+  __bitset = bitset;
+  __bitset_isset = YES;
+}
+
+- (BOOL) bitsetIsSet {
+  return __bitset_isset;
+}
+
+- (void) unsetBitset {
+  [__bitset release_stub];
+  __bitset = nil;
+  __bitset_isset = NO;
+}
+
+- (void) read: (id <TProtocol>) inProtocol
+{
+  NSString * fieldName;
+  int fieldType;
+  int fieldID;
+
+  [inProtocol readStructBeginReturningName: NULL];
+  while (true)
+  {
+    [inProtocol readFieldBeginReturningName: &fieldName type: &fieldType fieldID: &fieldID];
+    if (fieldType == TType_STOP) { 
+      break;
+    }
+    switch (fieldID)
+    {
+      case 1:
+        if (fieldType == TType_STRUCT) {
+          RetHead *fieldValue = [[RetHead alloc] init];
+          [fieldValue read: inProtocol];
+          [self setResult: fieldValue];
+          [fieldValue release_stub];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 2:
+        if (fieldType == TType_STRING) {
+          NSData * fieldValue = [inProtocol readBinary];
+          [self setBitset: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      default:
+        [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        break;
+    }
+    [inProtocol readFieldEnd];
+  }
+  [inProtocol readStructEnd];
+}
+
+- (void) write: (id <TProtocol>) outProtocol {
+  [outProtocol writeStructBeginWithName: @"GetFilterResult"];
+  if (__result_isset) {
+    if (__result != nil) {
+      [outProtocol writeFieldBeginWithName: @"result" type: TType_STRUCT fieldID: 1];
+      [__result write: outProtocol];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  if (__bitset_isset) {
+    if (__bitset != nil) {
+      [outProtocol writeFieldBeginWithName: @"bitset" type: TType_STRING fieldID: 2];
+      [outProtocol writeBinary: __bitset];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  [outProtocol writeFieldStop];
+  [outProtocol writeStructEnd];
+}
+
+- (void) validate {
+  // check for required fields
+}
+
+- (NSString *) description {
+  NSMutableString * ms = [NSMutableString stringWithString: @"GetFilterResult("];
+  [ms appendString: @"result:"];
+  [ms appendFormat: @"%@", __result];
+  [ms appendString: @",bitset:"];
+  [ms appendFormat: @"\"%@\"", __bitset];
   [ms appendString: @")"];
   return [NSString stringWithString: ms];
 }
@@ -9411,6 +9674,422 @@
 
 - (NSString *) description {
   NSMutableString * ms = [NSMutableString stringWithString: @"UploadFile_result("];
+  [ms appendString: @"success:"];
+  [ms appendFormat: @"%@", __success];
+  [ms appendString: @")"];
+  return [NSString stringWithString: ms];
+}
+
+@end
+
+@interface queryFilterByFtype_args : NSObject <TBase, NSCoding> {
+  Token __token;
+  int __type;
+
+  BOOL __token_isset;
+  BOOL __type_isset;
+}
+
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+@property (nonatomic, retain, getter=token, setter=setToken:) Token token;
+@property (nonatomic, getter=type, setter=setType:) int type;
+#endif
+
+- (id) init;
+- (id) initWithToken: (Token) token type: (int) type;
+
+- (void) read: (id <TProtocol>) inProtocol;
+- (void) write: (id <TProtocol>) outProtocol;
+
+- (void) validate;
+
+#if !__has_feature(objc_arc)
+- (Token) token;
+- (void) setToken: (Token) token;
+#endif
+- (BOOL) tokenIsSet;
+
+#if !__has_feature(objc_arc)
+- (int) type;
+- (void) setType: (int) type;
+#endif
+- (BOOL) typeIsSet;
+
+@end
+
+@implementation queryFilterByFtype_args
+
+- (id) init
+{
+  self = [super init];
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+#endif
+  return self;
+}
+
+- (id) initWithToken: (Token) token type: (int) type
+{
+  self = [super init];
+  __token = [token retain_stub];
+  __token_isset = YES;
+  __type = type;
+  __type_isset = YES;
+  return self;
+}
+
+- (id) initWithCoder: (NSCoder *) decoder
+{
+  self = [super init];
+  if ([decoder containsValueForKey: @"token"])
+  {
+    __token = [[decoder decodeObjectForKey: @"token"] retain_stub];
+    __token_isset = YES;
+  }
+  if ([decoder containsValueForKey: @"type"])
+  {
+    __type = [decoder decodeIntForKey: @"type"];
+    __type_isset = YES;
+  }
+  return self;
+}
+
+- (void) encodeWithCoder: (NSCoder *) encoder
+{
+  if (__token_isset)
+  {
+    [encoder encodeObject: __token forKey: @"token"];
+  }
+  if (__type_isset)
+  {
+    [encoder encodeInt: __type forKey: @"type"];
+  }
+}
+
+- (NSUInteger) hash
+{
+  NSUInteger hash = 17;
+  hash = (hash * 31) ^ __token_isset ? 2654435761 : 0;
+  if (__token_isset)
+  {
+    hash = (hash * 31) ^ [__token hash];
+  }
+  hash = (hash * 31) ^ __type_isset ? 2654435761 : 0;
+  if (__type_isset)
+  {
+    hash = (hash * 31) ^ [@(__type) hash];
+  }
+  return hash;
+}
+
+- (BOOL) isEqual: (id) anObject
+{
+  if (self == anObject) {
+    return YES;
+  }
+  if (![anObject isKindOfClass:[queryFilterByFtype_args class]]) {
+    return NO;
+  }
+  queryFilterByFtype_args *other = (queryFilterByFtype_args *)anObject;
+  if ((__token_isset != other->__token_isset) ||
+      (__token_isset && ((__token || other->__token) && ![__token isEqual:other->__token]))) {
+    return NO;
+  }
+  if ((__type_isset != other->__type_isset) ||
+      (__type_isset && (__type != other->__type))) {
+    return NO;
+  }
+  return YES;
+}
+
+- (void) dealloc
+{
+  [__token release_stub];
+  [super dealloc_stub];
+}
+
+- (NSString *) token {
+  return [[__token retain_stub] autorelease_stub];
+}
+
+- (void) setToken: (NSString *) token {
+  [token retain_stub];
+  [__token release_stub];
+  __token = token;
+  __token_isset = YES;
+}
+
+- (BOOL) tokenIsSet {
+  return __token_isset;
+}
+
+- (void) unsetToken {
+  [__token release_stub];
+  __token = nil;
+  __token_isset = NO;
+}
+
+- (int) type {
+  return __type;
+}
+
+- (void) setType: (int) type {
+  __type = type;
+  __type_isset = YES;
+}
+
+- (BOOL) typeIsSet {
+  return __type_isset;
+}
+
+- (void) unsetType {
+  __type_isset = NO;
+}
+
+- (void) read: (id <TProtocol>) inProtocol
+{
+  NSString * fieldName;
+  int fieldType;
+  int fieldID;
+
+  [inProtocol readStructBeginReturningName: NULL];
+  while (true)
+  {
+    [inProtocol readFieldBeginReturningName: &fieldName type: &fieldType fieldID: &fieldID];
+    if (fieldType == TType_STOP) { 
+      break;
+    }
+    switch (fieldID)
+    {
+      case 1:
+        if (fieldType == TType_STRING) {
+          NSString * fieldValue = [inProtocol readString];
+          [self setToken: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      case 2:
+        if (fieldType == TType_I32) {
+          int fieldValue = [inProtocol readI32];
+          [self setType: fieldValue];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      default:
+        [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        break;
+    }
+    [inProtocol readFieldEnd];
+  }
+  [inProtocol readStructEnd];
+}
+
+- (void) write: (id <TProtocol>) outProtocol {
+  [outProtocol writeStructBeginWithName: @"queryFilterByFtype_args"];
+  if (__token_isset) {
+    if (__token != nil) {
+      [outProtocol writeFieldBeginWithName: @"token" type: TType_STRING fieldID: 1];
+      [outProtocol writeString: __token];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  if (__type_isset) {
+    [outProtocol writeFieldBeginWithName: @"type" type: TType_I32 fieldID: 2];
+    [outProtocol writeI32: __type];
+    [outProtocol writeFieldEnd];
+  }
+  [outProtocol writeFieldStop];
+  [outProtocol writeStructEnd];
+}
+
+- (void) validate {
+  // check for required fields
+}
+
+- (NSString *) description {
+  NSMutableString * ms = [NSMutableString stringWithString: @"queryFilterByFtype_args("];
+  [ms appendString: @"token:"];
+  [ms appendFormat: @"\"%@\"", __token];
+  [ms appendString: @",type:"];
+  [ms appendFormat: @"%i", __type];
+  [ms appendString: @")"];
+  return [NSString stringWithString: ms];
+}
+
+@end
+
+@interface QueryFilterByFtype_result : NSObject <TBase, NSCoding> {
+  GetFilterResult * __success;
+
+  BOOL __success_isset;
+}
+
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+@property (nonatomic, retain, getter=success, setter=setSuccess:) GetFilterResult * success;
+#endif
+
+- (id) init;
+- (id) initWithSuccess: (GetFilterResult *) success;
+
+- (void) read: (id <TProtocol>) inProtocol;
+- (void) write: (id <TProtocol>) outProtocol;
+
+- (void) validate;
+
+#if !__has_feature(objc_arc)
+- (GetFilterResult *) success;
+- (void) setSuccess: (GetFilterResult *) success;
+#endif
+- (BOOL) successIsSet;
+
+@end
+
+@implementation QueryFilterByFtype_result
+
+- (id) init
+{
+  self = [super init];
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+#endif
+  return self;
+}
+
+- (id) initWithSuccess: (GetFilterResult *) success
+{
+  self = [super init];
+  __success = [success retain_stub];
+  __success_isset = YES;
+  return self;
+}
+
+- (id) initWithCoder: (NSCoder *) decoder
+{
+  self = [super init];
+  if ([decoder containsValueForKey: @"success"])
+  {
+    __success = [[decoder decodeObjectForKey: @"success"] retain_stub];
+    __success_isset = YES;
+  }
+  return self;
+}
+
+- (void) encodeWithCoder: (NSCoder *) encoder
+{
+  if (__success_isset)
+  {
+    [encoder encodeObject: __success forKey: @"success"];
+  }
+}
+
+- (NSUInteger) hash
+{
+  NSUInteger hash = 17;
+  hash = (hash * 31) ^ __success_isset ? 2654435761 : 0;
+  if (__success_isset)
+  {
+    hash = (hash * 31) ^ [__success hash];
+  }
+  return hash;
+}
+
+- (BOOL) isEqual: (id) anObject
+{
+  if (self == anObject) {
+    return YES;
+  }
+  if (![anObject isKindOfClass:[QueryFilterByFtype_result class]]) {
+    return NO;
+  }
+  QueryFilterByFtype_result *other = (QueryFilterByFtype_result *)anObject;
+  if ((__success_isset != other->__success_isset) ||
+      (__success_isset && ((__success || other->__success) && ![__success isEqual:other->__success]))) {
+    return NO;
+  }
+  return YES;
+}
+
+- (void) dealloc
+{
+  [__success release_stub];
+  [super dealloc_stub];
+}
+
+- (GetFilterResult *) success {
+  return [[__success retain_stub] autorelease_stub];
+}
+
+- (void) setSuccess: (GetFilterResult *) success {
+  [success retain_stub];
+  [__success release_stub];
+  __success = success;
+  __success_isset = YES;
+}
+
+- (BOOL) successIsSet {
+  return __success_isset;
+}
+
+- (void) unsetSuccess {
+  [__success release_stub];
+  __success = nil;
+  __success_isset = NO;
+}
+
+- (void) read: (id <TProtocol>) inProtocol
+{
+  NSString * fieldName;
+  int fieldType;
+  int fieldID;
+
+  [inProtocol readStructBeginReturningName: NULL];
+  while (true)
+  {
+    [inProtocol readFieldBeginReturningName: &fieldName type: &fieldType fieldID: &fieldID];
+    if (fieldType == TType_STOP) { 
+      break;
+    }
+    switch (fieldID)
+    {
+      case 0:
+        if (fieldType == TType_STRUCT) {
+          GetFilterResult *fieldValue = [[GetFilterResult alloc] init];
+          [fieldValue read: inProtocol];
+          [self setSuccess: fieldValue];
+          [fieldValue release_stub];
+        } else { 
+          [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        }
+        break;
+      default:
+        [TProtocolUtil skipType: fieldType onProtocol: inProtocol];
+        break;
+    }
+    [inProtocol readFieldEnd];
+  }
+  [inProtocol readStructEnd];
+}
+
+- (void) write: (id <TProtocol>) outProtocol {
+  [outProtocol writeStructBeginWithName: @"QueryFilterByFtype_result"];
+
+  if (__success_isset) {
+    if (__success != nil) {
+      [outProtocol writeFieldBeginWithName: @"success" type: TType_STRUCT fieldID: 0];
+      [__success write: outProtocol];
+      [outProtocol writeFieldEnd];
+    }
+  }
+  [outProtocol writeFieldStop];
+  [outProtocol writeStructEnd];
+}
+
+- (void) validate {
+  // check for required fields
+}
+
+- (NSString *) description {
+  NSMutableString * ms = [NSMutableString stringWithString: @"QueryFilterByFtype_result("];
   [ms appendString: @"success:"];
   [ms appendFormat: @"%@", __success];
   [ms appendString: @")"];
@@ -24803,6 +25482,46 @@
   return [self recv_uploadFile];
 }
 
+- (void) send_queryFilterByFtype: (Token) token type: (int) type
+{
+  [outProtocol writeMessageBeginWithName: @"queryFilterByFtype" type: TMessageType_CALL sequenceID: 0];
+  [outProtocol writeStructBeginWithName: @"queryFilterByFtype_args"];
+  if (token != nil)  {
+    [outProtocol writeFieldBeginWithName: @"token" type: TType_STRING fieldID: 1];
+    [outProtocol writeString: token];
+    [outProtocol writeFieldEnd];
+  }
+  [outProtocol writeFieldBeginWithName: @"type" type: TType_I32 fieldID: 2];
+  [outProtocol writeI32: type];
+  [outProtocol writeFieldEnd];
+  [outProtocol writeFieldStop];
+  [outProtocol writeStructEnd];
+  [outProtocol writeMessageEnd];
+}
+
+- (GetFilterResult *) recv_queryFilterByFtype
+{
+  TApplicationException * x = [self checkIncomingMessageException];
+  if (x != nil)  {
+    @throw x;
+  }
+  QueryFilterByFtype_result * result = [[[QueryFilterByFtype_result alloc] init] autorelease_stub];
+  [result read: inProtocol];
+  [inProtocol readMessageEnd];
+  if ([result successIsSet]) {
+    return [result success];
+  }
+  @throw [TApplicationException exceptionWithType: TApplicationException_MISSING_RESULT
+                                           reason: @"queryFilterByFtype failed: unknown result"];
+}
+
+- (GetFilterResult *) queryFilterByFtype: (Token) token type: (int) type
+{
+  [self send_queryFilterByFtype : token type: type];
+  [[outProtocol transport] flush];
+  return [self recv_queryFilterByFtype];
+}
+
 - (void) send_queryFileList: (Token) token type: (int) type offset: (int32_t) offset count: (int32_t) count order: (int) order
 {
   [outProtocol writeMessageBeginWithName: @"queryFileList" type: TMessageType_CALL sequenceID: 0];
@@ -26330,6 +27049,14 @@ mMethodMap = [[NSMutableDictionary dictionary] retain_stub];
   [mMethodMap setValue: invocation forKey: @"uploadFile"];
 }
 {
+  SEL s = @selector(process_queryFilterByFtype_withSequenceID:inProtocol:outProtocol:);
+  NSMethodSignature * sig = [self methodSignatureForSelector: s];
+  NSInvocation * invocation = [NSInvocation invocationWithMethodSignature: sig];
+  [invocation setSelector: s];
+  [invocation retainArguments];
+  [mMethodMap setValue: invocation forKey: @"queryFilterByFtype"];
+}
+{
   SEL s = @selector(process_queryFileList_withSequenceID:inProtocol:outProtocol:);
   NSMethodSignature * sig = [self methodSignatureForSelector: s];
   NSInvocation * invocation = [NSInvocation invocationWithMethodSignature: sig];
@@ -26701,6 +27428,23 @@ uploadFile_args * args = [[uploadFile_args alloc] init];
 UploadFile_result * result = [[UploadFile_result alloc] init];
 [result setSuccess: [mService uploadFile: [args token] uploadparam: [args uploadparam]]];
 [outProtocol writeMessageBeginWithName: @"uploadFile"
+                                  type: TMessageType_REPLY
+                            sequenceID: seqID];
+[result write: outProtocol];
+[outProtocol writeMessageEnd];
+[[outProtocol transport] flush];
+[result release_stub];
+[args release_stub];
+}
+
+- (void) process_queryFilterByFtype_withSequenceID: (int32_t) seqID inProtocol: (id<TProtocol>) inProtocol outProtocol: (id<TProtocol>) outProtocol
+{
+queryFilterByFtype_args * args = [[queryFilterByFtype_args alloc] init];
+[args read: inProtocol];
+[inProtocol readMessageEnd];
+QueryFilterByFtype_result * result = [[QueryFilterByFtype_result alloc] init];
+[result setSuccess: [mService queryFilterByFtype: [args token] type: [args type]]];
+[outProtocol writeMessageBeginWithName: @"queryFilterByFtype"
                                   type: TMessageType_REPLY
                             sequenceID: seqID];
 [result write: outProtocol];

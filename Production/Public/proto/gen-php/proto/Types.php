@@ -482,6 +482,10 @@ class QueryFListResult {
    * @var int
    */
   public $spare = null;
+  /**
+   * @var bool
+   */
+  public $isEnd = null;
 
   public function __construct($vals=null) {
     if (!isset(self::$_TSPEC)) {
@@ -504,6 +508,10 @@ class QueryFListResult {
           'var' => 'spare',
           'type' => TType::I32,
           ),
+        4 => array(
+          'var' => 'isEnd',
+          'type' => TType::BOOL,
+          ),
         );
     }
     if (is_array($vals)) {
@@ -515,6 +523,9 @@ class QueryFListResult {
       }
       if (isset($vals['spare'])) {
         $this->spare = $vals['spare'];
+      }
+      if (isset($vals['isEnd'])) {
+        $this->isEnd = $vals['isEnd'];
       }
     }
   }
@@ -571,6 +582,13 @@ class QueryFListResult {
             $xfer += $input->skip($ftype);
           }
           break;
+        case 4:
+          if ($ftype == TType::BOOL) {
+            $xfer += $input->readBool($this->isEnd);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
         default:
           $xfer += $input->skip($ftype);
           break;
@@ -612,6 +630,114 @@ class QueryFListResult {
     if ($this->spare !== null) {
       $xfer += $output->writeFieldBegin('spare', TType::I32, 3);
       $xfer += $output->writeI32($this->spare);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->isEnd !== null) {
+      $xfer += $output->writeFieldBegin('isEnd', TType::BOOL, 4);
+      $xfer += $output->writeBool($this->isEnd);
+      $xfer += $output->writeFieldEnd();
+    }
+    $xfer += $output->writeFieldStop();
+    $xfer += $output->writeStructEnd();
+    return $xfer;
+  }
+
+}
+
+class GetFilterResult {
+  static $_TSPEC;
+
+  /**
+   * @var \proto\RetHead
+   */
+  public $result = null;
+  /**
+   * @var string
+   */
+  public $bitset = null;
+
+  public function __construct($vals=null) {
+    if (!isset(self::$_TSPEC)) {
+      self::$_TSPEC = array(
+        1 => array(
+          'var' => 'result',
+          'type' => TType::STRUCT,
+          'class' => '\proto\RetHead',
+          ),
+        2 => array(
+          'var' => 'bitset',
+          'type' => TType::STRING,
+          ),
+        );
+    }
+    if (is_array($vals)) {
+      if (isset($vals['result'])) {
+        $this->result = $vals['result'];
+      }
+      if (isset($vals['bitset'])) {
+        $this->bitset = $vals['bitset'];
+      }
+    }
+  }
+
+  public function getName() {
+    return 'GetFilterResult';
+  }
+
+  public function read($input)
+  {
+    $xfer = 0;
+    $fname = null;
+    $ftype = 0;
+    $fid = 0;
+    $xfer += $input->readStructBegin($fname);
+    while (true)
+    {
+      $xfer += $input->readFieldBegin($fname, $ftype, $fid);
+      if ($ftype == TType::STOP) {
+        break;
+      }
+      switch ($fid)
+      {
+        case 1:
+          if ($ftype == TType::STRUCT) {
+            $this->result = new \proto\RetHead();
+            $xfer += $this->result->read($input);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        case 2:
+          if ($ftype == TType::STRING) {
+            $xfer += $input->readString($this->bitset);
+          } else {
+            $xfer += $input->skip($ftype);
+          }
+          break;
+        default:
+          $xfer += $input->skip($ftype);
+          break;
+      }
+      $xfer += $input->readFieldEnd();
+    }
+    $xfer += $input->readStructEnd();
+    return $xfer;
+  }
+
+  public function write($output) {
+    $xfer = 0;
+    $xfer += $output->writeStructBegin('GetFilterResult');
+    if ($this->result !== null) {
+      if (!is_object($this->result)) {
+        throw new TProtocolException('Bad type in structure.', TProtocolException::INVALID_DATA);
+      }
+      $xfer += $output->writeFieldBegin('result', TType::STRUCT, 1);
+      $xfer += $this->result->write($output);
+      $xfer += $output->writeFieldEnd();
+    }
+    if ($this->bitset !== null) {
+      $xfer += $output->writeFieldBegin('bitset', TType::STRING, 2);
+      $xfer += $output->writeString($this->bitset);
       $xfer += $output->writeFieldEnd();
     }
     $xfer += $output->writeFieldStop();

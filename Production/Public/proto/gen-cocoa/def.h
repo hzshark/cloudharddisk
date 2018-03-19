@@ -211,20 +211,23 @@ typedef NSMutableDictionary * ObjDescrp;
   RetHead * __result;
   FilesMatchList __files;
   int32_t __spare;
+  BOOL __isEnd;
 
   BOOL __result_isset;
   BOOL __files_isset;
   BOOL __spare_isset;
+  BOOL __isEnd_isset;
 }
 
 #if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
 @property (nonatomic, retain, getter=result, setter=setResult:) RetHead * result;
 @property (nonatomic, retain, getter=files, setter=setFiles:) FilesMatchList files;
 @property (nonatomic, getter=spare, setter=setSpare:) int32_t spare;
+@property (nonatomic, getter=isEnd, setter=setIsEnd:) BOOL isEnd;
 #endif
 
 - (id) init;
-- (id) initWithResult: (RetHead *) result files: (FilesMatchList) files spare: (int32_t) spare;
+- (id) initWithResult: (RetHead *) result files: (FilesMatchList) files spare: (int32_t) spare isEnd: (BOOL) isEnd;
 
 - (void) read: (id <TProtocol>) inProtocol;
 - (void) write: (id <TProtocol>) outProtocol;
@@ -248,6 +251,47 @@ typedef NSMutableDictionary * ObjDescrp;
 - (void) setSpare: (int32_t) spare;
 #endif
 - (BOOL) spareIsSet;
+
+#if !__has_feature(objc_arc)
+- (BOOL) isEnd;
+- (void) setIsEnd: (BOOL) isEnd;
+#endif
+- (BOOL) isEndIsSet;
+
+@end
+
+@interface GetFilterResult : NSObject <TBase, NSCoding> {
+  RetHead * __result;
+  NSData * __bitset;
+
+  BOOL __result_isset;
+  BOOL __bitset_isset;
+}
+
+#if TARGET_OS_IPHONE || (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+@property (nonatomic, retain, getter=result, setter=setResult:) RetHead * result;
+@property (nonatomic, retain, getter=bitset, setter=setBitset:) NSData * bitset;
+#endif
+
+- (id) init;
+- (id) initWithResult: (RetHead *) result bitset: (NSData *) bitset;
+
+- (void) read: (id <TProtocol>) inProtocol;
+- (void) write: (id <TProtocol>) outProtocol;
+
+- (void) validate;
+
+#if !__has_feature(objc_arc)
+- (RetHead *) result;
+- (void) setResult: (RetHead *) result;
+#endif
+- (BOOL) resultIsSet;
+
+#if !__has_feature(objc_arc)
+- (NSData *) bitset;
+- (void) setBitset: (NSData *) bitset;
+#endif
+- (BOOL) bitsetIsSet;
 
 @end
 
@@ -1303,6 +1347,7 @@ typedef NSMutableDictionary * ObjDescrp;
 - (LoginResult *) loginAuth: (NSString *) username password: (NSString *) password salt: (NSString *) salt;  // throws TException
 - (LoginResult *) verificationLoginAuth: (NSString *) username password: (NSString *) password authcode: (NSString *) authcode;  // throws TException
 - (UploaddResult *) uploadFile: (Token) token uploadparam: (UploadParam *) uploadparam;  // throws TException
+- (GetFilterResult *) queryFilterByFtype: (Token) token type: (int) type;  // throws TException
 - (QueryFListResult *) queryFileList: (Token) token type: (int) type offset: (int32_t) offset count: (int32_t) count order: (int) order;  // throws TException
 - (QueryFResult *) QueryFile: (Token) token type: (int) type fname: (NSString *) fname;  // throws TException
 - (QueryAttributeResult *) queryAttribute: (Token) token objid: (OBJID) objid type: (int) type;  // throws TException
